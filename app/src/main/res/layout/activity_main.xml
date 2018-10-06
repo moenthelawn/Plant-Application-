@@ -5,9 +5,69 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-<ImageView
-    android:layout_width= "match_parent"
-    android:layout_height= "match_parent"
 
-    />
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="262dp"
+        android:layout_height="224dp"
+        android:layout_alignBottom="@+id/imageView4"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="false"
+        android:cropToPadding="true"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/mewater" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="306dp"
+        android:layout_height="273dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        app:srcCompat="@drawable/tank" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="157dp"
+        android:layout_height="30dp"
+        android:layout_above="@+id/imageView4"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="-40dp"
+        android:layout_marginStart="13dp"
+        android:text="Current water levels:"
+        android:textColor="@android:color/holo_blue_dark" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="307dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="103dp"
+        android:background="@android:color/holo_blue_light"
+        android:text="Add a Plant"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="305dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="47dp"
+        android:background="@android:color/holo_blue_light"
+        android:text="Monitor an existing plant"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="162dp"
+        android:text="4 L"
+        android:textSize="40sp" />
+
+
 </RelativeLayout>
