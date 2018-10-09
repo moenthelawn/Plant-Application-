@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Plant Application</string>
+    <string name="add_new_plant">Add New Plant</string>
 </resources>
