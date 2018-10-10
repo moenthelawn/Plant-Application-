@@ -13,17 +13,34 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton button1;
     private ImageButton button2;
 
-    private plantDataBase allPlants;
+
+    private plantDataBase plantH;
 
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        plantH = plantDataBase.getInstance();
 
-        allPlants = plantDataBase.getInstance();
+        contentUpdate(plantH);
+        addPlants();
 
 
+    }
+    private void contentUpdate(plantDataBase plantH){
+        Plant[] allPlants = plantH.getAllPlants();
+        for (int i = 0; i < allPlants.length;i++){
+            int currentSlotNumber = allPlants[i].getSlotNumber();
+            if (currentSlotNumber != -1){
+                ImageButton changingButton = (ImageButton) findViewById(currentSlotNumber);
+                changingButton.setImageResource(R.drawable.eyeme);//Update it to the eye symbol so that we know it is already in place
+            }
+
+        }
+    }
+
+    private void addPlants() {
 
         button = (ImageButton) findViewById(R.id.imageButton13);
         button1 = (ImageButton) findViewById(R.id.imageButton10);
@@ -34,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //If this button is clicked, then we will open activity2
                 openActivity2(button.getId());
+
             }
 
         });
@@ -42,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //If this button is clicked, then we will open activity2
                 openActivity2(button1.getId());
+
             }
 
         });
@@ -50,10 +69,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //If this button is clicked, then we will open activity2
                 openActivity2(button2.getId());
+
             }
 
         });
     }
+
     public void openActivity2(int buttonID) {
 
 
