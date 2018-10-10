@@ -1,18 +1,30 @@
 package com.example.chris.plantapplication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+
 import android.widget.ImageButton;
 import android.app.Activity;
+import android.widget.RelativeLayout;
+
 
 public class Activity2 extends AppCompatActivity {
     private ImageButton button;
+    private plantDataBase allPlants;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_2);
+        allPlants = plantDataBase.getInstance(); //get the plant database
+
+
         button = (ImageButton) findViewById(R.id.imageButton);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -28,14 +40,18 @@ public class Activity2 extends AppCompatActivity {
     }
 
     public void openMainActivity() { //We want to open that activity and navigate over to the specific class
-        int buttonID= getIntent().getIntExtra("Button ID",0); //get the button session ID so we can modify its .xml paramaters
+        Intent activityThatCalled = getIntent();
 
-        ImageButton btn_tmp;
-        btn_tmp = (ImageButton)findViewById(buttonID);
-      //  btn_tmep
-       // btn_tmp.setImageResource(R.drawable.eyeme); //set that button's ID to be the eye icon
+        int buttonID= activityThatCalled.getIntExtra("Button ID",0); //get the button session ID so we can modify its .xml paramaters
 
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+       // activityThatCalled.getData().getClass();
+      //  LayoutInflater inflater = this.getLayoutInflater();
+     //   View v = inflater.inflate(R.layout.activity_main,null);
+     //   ImageButton changingButton = (ImageButton) findViewById(R.id.imageButton9);
+     //   changingButton.setImageResource(R.drawable.eyeme);
+
+        finish();
+         //Intent intent = new Intent(this, MainActivity.class);
+         //startActivity(intent);
     }
 }

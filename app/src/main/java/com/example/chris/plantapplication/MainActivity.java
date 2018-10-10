@@ -12,10 +12,18 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton button;
     private ImageButton button1;
     private ImageButton button2;
+
+    private plantDataBase allPlants;
+
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        allPlants = plantDataBase.getInstance();
+
+
 
         button = (ImageButton) findViewById(R.id.imageButton13);
         button1 = (ImageButton) findViewById(R.id.imageButton10);
@@ -47,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     public void openActivity2(int buttonID) {
+
 
         Intent intent = new Intent(this, Activity2.class);
         intent.putExtra("Button ID", buttonID);
