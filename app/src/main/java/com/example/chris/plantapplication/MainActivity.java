@@ -7,8 +7,11 @@ import android.view.View;
 import android.widget.Button;
 import android.app.Activity;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+
+
     private ImageButton button;
     private ImageButton button1;
     private ImageButton button2;
@@ -30,8 +33,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         contentUpdate();
+        //updateButtonText();
+    }
+private void updateButtonText(int buttonID, String Text) {
+    if (buttonID == 2131230805){
+        //Update it to say the plants name
+        TextView plantText = (TextView) findViewById(R.id.textView13);
+        plantText.setText(Text);
+    }
+    else if (buttonID == 2131230807){
+        //Update it to say the plants name
+        TextView plantText = (TextView) findViewById(R.id.textView12);
+        plantText.setText(Text);
+    }
+    else if (buttonID == 2131230806){
+        //Update it to say the plants name
+        TextView plantText = (TextView) findViewById(R.id.textView4);
+        plantText.setText(Text);
     }
 
+}
     private void contentUpdate(){
         Plant[] allPlants = plantH.getAllPlants();
         for (int i = 0; i < allPlants.length;i++){
@@ -45,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
 
                     threeButtons.setButtonNumberToSlot(currentButtonID[j]); //Set the current slots number
                     threeButtons.setPlant(currentButtonID[j],allPlants[i]);
+                    updateButtonText(currentButtonID[j],allPlants[i].getName());
+
                 }
             }
         }
@@ -60,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //If this button is clicked, then we will open activity2
                 openActivity2(button.getId());
-
             }
 
         });
@@ -84,11 +106,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openActivity2(int buttonID) {
+      //  boolean existornah = threeButtons.buttonExists(buttonID);
 
-
-        Intent intent = new Intent(this, Activity2.class);
-        intent.putExtra("Button ID", buttonID);
-
-        startActivity(intent);
+        if (threeButtons.buttonExists(buttonID) == false) {
+            //The button does not exist as a slot and therefore we can go to the next screen to the add plant section
+            Intent intent = new Intent(this, Activity2.class);
+            intent.putExtra("Button ID", buttonID);
+            startActivity(intent);
+        }
+        else{
+            //Then we want to go the activity to display the plant slots ID value
+            Intent intent = new Intent(this, PlantMoniteringSlot1.class);
+            intent.putExtra("Button ID", buttonID); //Add the button ID as extra such that we can monitor the plant's graph
+            startActivity(intent);
+        }
     }
 }
