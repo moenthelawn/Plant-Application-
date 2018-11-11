@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <com.sidimi.mucahit.gaugeview.GaugeView android:id="@+id/gaugeView" android:layout_width="fill_parent" android:layout_height="fill_parent"/>
 </selector>
