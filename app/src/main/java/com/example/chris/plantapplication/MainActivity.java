@@ -2,6 +2,7 @@ package com.example.chris.plantapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,13 @@ import android.app.Activity;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton button;
     private ImageButton button1;
     private ImageButton button2;
+    private ImageButton button_updates;
+    Thread myThread;
 
     private plantDataBase plantH;
     private ButtonSlots threeButtons;
@@ -31,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         plantH = plantDataBase.getInstance();
         setImageGrowthVisibility();
+
+
+        myThread = new Thread(new TcpClient(this.getApplicationContext()));
+        myThread.start();
 
         addPlants();
     }
@@ -118,7 +132,23 @@ public class MainActivity extends AppCompatActivity {
         button = (ImageButton) findViewById(R.id.imageButton4);
         button1 = (ImageButton) findViewById(R.id.imageButton6);
         button2 = (ImageButton) findViewById(R.id.imageButton7);
+        button_updates = (ImageButton)findViewById(R.id.imageButton2);
 
+
+
+        button_updates.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //If this button is clicked, then we will open activity2
+
+
+                //client.run();
+               // //frame.execute(e1.getTest)
+
+
+            }
+
+        });
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,3 +220,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
+
