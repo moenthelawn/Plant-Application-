@@ -22,7 +22,6 @@ public class TcpClient implements Runnable{
     BufferedReader bufferedReader;
     public String message;
 
-
     Handler h = new Handler();
 
     public TcpClient(Context context){
