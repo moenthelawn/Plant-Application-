@@ -21,12 +21,12 @@ public class plantDataBase {
         return empty; //otherwise we return empty
     }
 
-    public boolean setPlantSlotByString(String Name, int slotNumberID) {
+    public boolean setPlantSlotByString(String Name, int buttonID, int slotNumberID) {
         for (int i = 0; i < allPlants.length; i++) {
             Plant currentPlant = allPlants[i];
             if (currentPlant.getName() == Name) {
                 //Then we return the slot number
-                if (currentPlant.setPlantSlotNumber(slotNumberID) == true) {
+                if (currentPlant.setPlantSlotNumber(buttonID,slotNumberID) == true) {
                     return true;
                 } else {
                     return false;

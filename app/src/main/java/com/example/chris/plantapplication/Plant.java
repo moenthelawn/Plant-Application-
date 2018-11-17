@@ -1,5 +1,7 @@
 package com.example.chris.plantapplication;
 
+import android.widget.Button;
+
 import static java.lang.StrictMath.pow;
 
 public class Plant {
@@ -25,6 +27,7 @@ public class Plant {
         this.Name = Name; //We haven't named it yet
         growthStage = 1;
     }
+
     public String getName() {
         return Name;
     }
@@ -37,9 +40,10 @@ public class Plant {
     public int[] getSlotNumber() {
         return slotNumber;
     }
-    public boolean slotExists(int number){
-        for (int i = 0; i < slotNumber.length;i++){
-            if (slotNumber[i] == number){
+
+    public boolean slotExists(int number) {
+        for (int i = 0; i < slotNumber.length; i++) {
+            if (slotNumber[i] == number) {
                 return true;
 
             }
@@ -48,50 +52,49 @@ public class Plant {
         return false;
     }
 
-    public double calculateCrop(double[] coefficients, int day){
+    public double calculateCrop(double[] coefficients, int day) {
         //Loop through the crop coefficients and using their polynomial coefficients, we can return the day
         double amount = 0;
-        for (int i = 0; i < coefficients.length;i++){
-            amount = amount + (coefficients[i] * pow( (double)day,i));
+        for (int i = 0; i < coefficients.length; i++) {
+            amount = amount + (coefficients[i] * pow((double) day, i));
         }
         return amount;
 
     }
-    public double evapotransIndex(){
+
+    public double evapotransIndex() {
         //The evapotrans index is calculated as, p * (0.46T + 8) where
         //P is the percentage of daylight hours, and T is the mean room temperature
         return pFactor * ((0.46 * MeanTemperature) + 8);
     }
 
-    public double getDailyWaterAmount_millimetres(int day){
+    public double getDailyWaterAmount_millimetres(int day) {
         double evapIndex = evapotransIndex();
         int totalHavestDayLengths = 0;
-        for(int i =0; i < HarvestDayLength.length;i++){
+        for (int i = 0; i < HarvestDayLength.length; i++) {
 
             totalHavestDayLengths += HarvestDayLength[i];
-            if (day <= totalHavestDayLengths){
+            if (day <= totalHavestDayLengths) {
                 //With that index, we can use it to get the crop coefficient for that day
                 double[] coefficients = cropCoefficients[i];
-               double amount = calculateCrop(coefficients,day) * evapIndex;
-               return amount;
+                double amount = calculateCrop(coefficients, day) * evapIndex;
+                return amount;
             }
 
         }
         int end = HarvestDayLength.length - 1;
 
-        return calculateCrop(cropCoefficients[end],day) * evapotransIndex(); //The end of the coefficient array always occurs to the indefinite day watering amount
+        return calculateCrop(cropCoefficients[end], day) * evapotransIndex(); //The end of the coefficient array always occurs to the indefinite day watering amount
     }
 
-    public boolean setPlantSlotNumber(int number) { //This function will handle adding the plant to the correct slot number
-        for (int i = 0; i < slotNumber.length; i++) {
-            if (slotNumber[i] == -1 && slotExists(number) == false) {
-                //Then we append that to the database
-                slotNumber[i] = number;
+    public boolean setPlantSlotNumber(int ButtonID, int SlotNumber) { //This function will handle adding the plant to the correct slot number
+        if (slotNumber[SlotNumber-1] == -1 && slotExists(ButtonID) == false) {
+            slotNumber[SlotNumber-1] = ButtonID;
+            return true;
+        } else {
+            return false;
 
-                return true;
-            }
         }
-        return false;
     }
 
     public int[] getHarvestDayLength() {

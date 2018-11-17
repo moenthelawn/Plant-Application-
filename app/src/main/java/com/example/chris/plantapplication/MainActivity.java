@@ -28,7 +28,6 @@ import java.net.Socket;
 
 public class MainActivity extends AppCompatActivity {
 
-
     private ImageButton button;
     private ImageButton button1;
     private ImageButton button2;
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         setImageGrowthVisibility();
 
         client = new TcpClient(this.getApplicationContext());
-        myThread = new Thread(client);
+        myThread = new Thread(client); //Creating the new TCP thread
         myThread.start();
 
         addPlants();
@@ -75,10 +74,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void updateButtonText(int buttonID, String Text, Plant currentPlant) {
-        int buttonIDSTATIC = 2131230814;
-
-        if (buttonID == (buttonIDSTATIC)) { //Slot 1
+    private void updateButtonText(int slotNumber, String Text, Plant currentPlant) {
+        if (slotNumber == (1)) { //Slot 1
             //  int growthStageID = R.drawable.
             ImageView harvest = findViewById(R.id.imageView13); //Corresponding image button attached to it
 
@@ -87,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             plantText.setText(Text);
             setGrowthStageImage(harvest, currentPlant.getGrowthStage());
 
-        } else if (buttonID == (buttonIDSTATIC + 1)) { //slot 2
+        } else if (slotNumber == (2)) { //slot 2
             //Update it to say the plants name
 
             ImageView harvest = findViewById(R.id.imageView16);//Corresponding image button attached to it
@@ -95,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             TextView plantText = (TextView) findViewById(R.id.textView12);
             setGrowthStageImage(harvest, currentPlant.getGrowthStage());
             plantText.setText(Text);
-        } else if (buttonID == (buttonIDSTATIC + 2)) { //slot 3
+        } else if (slotNumber == (3)) { //slot 3
             //Update it to say the plants name
             ImageView harvest = findViewById(R.id.imageView12);//Corresponding image button attached to it
 
@@ -129,19 +126,19 @@ public class MainActivity extends AppCompatActivity {
 
                     Plant currentPlant = allPlants[i];
 
-
-                    threeButtons.setButtonNumberToSlot(currentButtonID[j]); //Set the current slots number
+                    threeButtons.setButtonNumberToSlot(currentButtonID[j], j); //Set the current slots number
                     threeButtons.setPlant(currentButtonID[j], allPlants[i]);
-                    updateButtonText(currentButtonID[j], allPlants[i].getName(), allPlants[i]);
+                    updateButtonText(j + 1, allPlants[i].getName(), allPlants[i]);
 
                 }
             }
         }
     }
-    public static int convertDipToPixels(Context context, float dips)
-    {
+
+    public static int convertDipToPixels(Context context, float dips) {
         return (int) (dips * context.getResources().getDisplayMetrics().density + 0.5f);
     }
+
     private void updateWaterTankLevels(float waterTank) {
         //grab the image view portion of it
         ImageView layout = findViewById(R.id.imageView5);
@@ -153,27 +150,28 @@ public class MainActivity extends AppCompatActivity {
         float waterPercentage = waterTank / constants.MAX_WATERTANK;
 
         int waterHeight_Adjustable = (int) (100 * waterPercentage);
-        float requiredHeight_Pixels =  (waterPercentage * MAXWATERTANKSIZE_IMAGE_HEIGHT);
+        float requiredHeight_Pixels = (waterPercentage * MAXWATERTANKSIZE_IMAGE_HEIGHT);
 
 
         // Gets the layout params that will allow you to resize the layout
         ViewGroup.LayoutParams params = layout.getLayoutParams();
 
-        String TankLevel = Float.toString( waterHeight_Adjustable) + " %";
+        String TankLevel = Float.toString(waterHeight_Adjustable) + " %";
         WaterTankLevel.setText(TankLevel); //Also we need to set the percentage of the water tank to the value of the percentage left
 
-        params.height = convertDipToPixels(this.getApplicationContext(),requiredHeight_Pixels);
+        params.height = convertDipToPixels(this.getApplicationContext(), requiredHeight_Pixels);
         layout.setLayoutParams(params);
 
     }
 
     private void updateIU_PacketUpdate(String message) {
         String[] values = message.split(";"); //Split the message into each component
-        int airHumidity = Integer.parseInt(values[0]);
+        int airHumidity = Integer.parseInt(values[0]); //Air Humidity as a percentage
         float height = Float.parseFloat(values[1]);
         float Angle = Float.parseFloat(values[2]);
-        float waterTank = Float.parseFloat(values[3]);
-        int numberDay = Integer.parseInt(values[4]);
+        float airTemperature = Float.parseFloat(values[3]);
+        float waterTank = Float.parseFloat(values[4]);
+        int numberDay = Integer.parseInt(values[5]);
 
         //Now we need to update the entire UI of the system
         updateWaterTankLevels(waterTank); //This will update the level of the water tank based on the image provided
@@ -186,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
         button1 = (ImageButton) findViewById(R.id.imageButton6);
         button2 = (ImageButton) findViewById(R.id.imageButton7);
         button_updates = (ImageButton) findViewById(R.id.imageButton2);
-
 
         button_updates.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //We want to set the location of the linear actuator
                 moveWateringHeightMeter(1); //Move the watering meter which corresponds to the first position in the plant vase
-                openActivity2(button.getId());
+                openActivity2(button.getId(), 1);
             }
 
         });
@@ -215,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //If this button is clicked, then we will open activity2
                 moveWateringHeightMeter(2); //Move the watering meter which corresponds to the seoncd position in the plant vase
-                openActivity2(button1.getId());
+                openActivity2(button1.getId(), 2);
 
             }
 
@@ -225,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //If this button is clicked, then we will open activity2
                 moveWateringHeightMeter(3);
-                openActivity2(button2.getId());
+                openActivity2(button2.getId(), 3);
             }
 
         });
@@ -252,18 +249,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void openActivity2(int buttonID) {
-        //  boolean existornah = threeButtons.buttonExists(buttonID);
+    public void openActivity2(int buttonID, int position_slot) {
+        //  boolean existornah = threeButtons.buttonExists buttonID);
 
         if (threeButtons.buttonExists(buttonID) == false) {
             //The button does not exist as a slot and therefore we can go to the next screen to the add plant section
             Intent intent = new Intent(this, Activity2.class);
+
             intent.putExtra("Button ID", buttonID);
+            intent.putExtra("Slot Number", position_slot);
+
             startActivity(intent);
         } else {
             //Then we want to go the activity to display the plant slots ID value
             Intent intent = new Intent(this, PlantMoniteringSlot1.class);
+
             intent.putExtra("Button ID", buttonID); //Add the button ID as extra such that we can monitor the plant's graph
+            intent.putExtra("Slot Number", position_slot);
+
             startActivity(intent);
         }
     }

@@ -46,7 +46,6 @@ public class Activity2 extends AppCompatActivity {
                 int harvestPeriod_days[] = {18,51,30,30,24,0}; //The harvest is spanned over the length of the plant's duration
                 double cropCoefficients[][] = {{0.72},{0.292,0.0236},{-0.86,0.0236}, {-1.17,0.0236},{-1.7364,0.0236},{1.5}};
 
-
                 basilPlant.setHarvestDayLength(harvestPeriod_days); //set the number of days
                 basilPlant.setCropCoefficients(cropCoefficients);
                 basilPlant.setpFactor(0.25); //Hardcoded value for the plant database
@@ -64,10 +63,11 @@ public class Activity2 extends AppCompatActivity {
         Intent activityThatCalled = getIntent();
 
         int buttonID= activityThatCalled.getIntExtra("Button ID",0); //get the button session ID so we can modify its .xml paramaters
+        int slotNumber = activityThatCalled.getIntExtra("Slot Number",0); //get the button session ID so we can modify its .xml paramaters
 
         //Based on the slot number that we clicked, we will add the plant number to it
         allPlants = plantDataBase.getInstance();
-        boolean b = allPlants.setPlantSlotByString(PlantName, buttonID);
+        boolean b = allPlants.setPlantSlotByString(PlantName, buttonID, slotNumber );
         finish();
         //         Intent intent = new Intent(this, MainActivity.class);
         //finish();

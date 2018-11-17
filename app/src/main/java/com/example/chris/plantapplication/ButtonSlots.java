@@ -47,15 +47,11 @@ public class ButtonSlots {
 
     }
 
-    public void setButtonNumberToSlot(int buttonNumber) {
-        for (int i = 0; i < allSlots.size(); i++) {
-            Pair<Integer, Plant> slotType = allSlots.get(i);
-            int buttonValue = slotType.getFirst();
-            if (buttonValue == -1 && buttonExists(buttonNumber) == false) {
-                slotType.setFirst(buttonNumber);
-                Log.i("Button","The plant has been added to slot ");
-                return;
-            }
+    public void setButtonNumberToSlot(int buttonNumber, int slotNumber) {
+        Pair<Integer, Plant> slotType = allSlots.get(slotNumber);
+        int buttonValue = slotType.getFirst();
+        if (buttonValue == -1 && buttonExists(buttonNumber) == false) {
+            slotType.setFirst(buttonNumber);
         }
         return;
     }
