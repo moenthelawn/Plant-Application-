@@ -24,10 +24,14 @@ public class Plant {
     private double pFactor; //Represents the percentage of sunlight received
     private double MeanTemperature; //As determined from Ed's database
 
-    public Plant(String Name,int buttonID, int slotNumber) {
+    public Plant(String Name,int buttonID, int slotNumber,int [] harvestPeriod_days, double[][] cropCoefficient, double p, float temperature) {
         this.slotNumber = slotNumber;
         this.Name = Name; //We haven't named it yet
         this.buttonNumber = buttonID;
+        HarvestDayLength = harvestPeriod_days;
+        this.cropCoefficients = cropCoefficient;
+        this.pFactor = p;
+        this.RoomTemperature = temperature;
 
         int currentDayNumber = 1; //start the day counter
         growthStage = 1; //automatic default set to one

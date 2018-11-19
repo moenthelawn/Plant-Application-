@@ -28,7 +28,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         slot_ID_Called = activityThatCalled.getIntExtra("Slot Number", 0);
 
         Log.i("Passed Value", "Button " + Integer.toString(buttonID_Called) + "passed to PlanMoniteringSlot1.java");
-        displayPlantData(buttonID_Called);
+        displayPlantData(slot_ID_Called);
 
         backButton = (ImageButton) findViewById(R.id.imageButton3);
 
@@ -68,17 +68,17 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
 
     }
 
-    public void displayPlantData(int buttonID) {
+    public void displayPlantData(int slotNumber) {
         //Here we want to update the graphical charts to show the type of plant that we have
         plantH = plantDataBase.getInstance();
-        Plant requiredPlant = plantH.getPlantByButtonNumber(buttonID);
+        Plant requiredPlant = plantH.getPlantBySlot(slotNumber);
+
         float roomTemperature = requiredPlant.getRoomTemperature();
         float humidity = requiredPlant.getAirHumidity();
 
         updateRoomTemperature(roomTemperature);
         updateHumidity(humidity);
         //updateHarvestTime()
-
         Log.i("Plant", requiredPlant.getName() + " added to PlantMoniteringSlot1");
 
     }

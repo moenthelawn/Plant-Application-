@@ -10,6 +10,7 @@ public class plantDataBase<E> {
     private static plantDataBase instance;
     private Plant[] allPlants;
     private boolean added;
+    private Plant plant;
 
     public Plant getPlantByButtonNumber(int buttonNumber) {
         //Here we will want to grab the plants data based on the inputted button number
@@ -24,13 +25,23 @@ public class plantDataBase<E> {
             }
         }
 
-        Plant empty = new Plant("", -1, -1);
+        int empty1[] = {-1};
+        double empty3[][] = {{-1}};
+        Plant empty = new Plant("", -1, -1, empty1, empty3, -1f, -1f);
         return empty; //otherwise we return empty
     }
 
     public Plant getPlantBySlot(int slotNumber) {
         return allPlants[slotNumber - 1];
 
+    }
+
+    public boolean isSlotExists(int slotNumber) {
+        if (allPlants[slotNumber - 1] == null) {
+            return false;
+        } else {
+            return true; //the plant does exist in the datbase
+        }
     }
 
     public boolean buttonExists(int buttonNumber) {
@@ -88,11 +99,10 @@ public class plantDataBase<E> {
         added = false;
     }
 
-    public void addPlant(String PlantName, int buttonID, int slotNumber) {
+    public void addPlant(String PlantName, int buttonID, int slotNumber, int[] harvestPeriod_days, double[][] cropCoefficients, float p, float temp) {
 
-        allPlants[slotNumber - 1] = new Plant(PlantName, buttonID, slotNumber);
+        allPlants[slotNumber - 1] = new Plant(PlantName, buttonID, slotNumber, harvestPeriod_days, cropCoefficients, p, temp);
         added = true;
-
     }
 
 

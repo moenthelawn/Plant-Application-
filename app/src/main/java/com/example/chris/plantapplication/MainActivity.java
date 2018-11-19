@@ -37,12 +37,10 @@ public class MainActivity extends AppCompatActivity {
 
     private GlobalConstants constants;
     private plantDataBase plantH;
-    private ButtonSlots threeButtons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        threeButtons = new ButtonSlots();
         constants = new GlobalConstants();
 
 
@@ -128,8 +126,8 @@ public class MainActivity extends AppCompatActivity {
                         ImageButton changingButton = (ImageButton) findViewById(currentButtonID);
                         changingButton.setImageResource(R.drawable.planteye);//Update it to the eye symbol so that we know it is already in plac
 
-                     //   threeButtons.setButtonNumberToSlot(currentButtonID, slotNumber); //Set the current slots number
-                     //   threeButtons.setPlant(currentButtonID, allPlants[i], slotNumber);
+                        //   threeButtons.setButtonNumberToSlot(currentButtonID, slotNumber); //Set the current slots number
+                        //   threeButtons.setPlant(currentButtonID, allPlants[i], slotNumber);
                         updateButtonText(slotNumber, allPlants[i].getName(), allPlants[i]);
                     }
                 }
@@ -167,16 +165,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void updatePlantDataBase(int plantSlot, float airTemperature, float airHumidity, int numberDay, float height) {
         //int buttonNumber = threeButtons.getButtonNumber(plantSlot);
+        plantH = plantDataBase.getInstance();
+        if (plantH.isSlotExists(plantSlot) == true) {
+            Plant CurrentPlant = plantH.getPlantBySlot(plantSlot);
 
-        Plant CurrentPlant = plantH.getPlantBySlot(plantSlot);
+            //Now we want to submit all the data to the corresponding plant
+            CurrentPlant.setRoomTemperature(airTemperature);
+            CurrentPlant.setAirHumidity(airHumidity);
 
-        //Now we want to submit all the data to the corresponding plant
-        CurrentPlant.setRoomTemperature(airTemperature);
-        CurrentPlant.setAirHumidity(airHumidity);
-
-        //Send the correct watering amount to the server database
-        double waterAmount = CurrentPlant.getDailyWaterAmount_millimetres(numberDay);
-
+            //Send the correct watering amount to the server database
+           // double waterAmount = CurrentPlant.getDailyWaterAmount_millimetres(numberDay);
+        }
     }
 
     private void updateIU_PacketUpdate(String message) {
