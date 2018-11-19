@@ -39,9 +39,15 @@ public class Activity2 extends AppCompatActivity {
 
                // float temp_min = (float) 21.2; //Min Temp:
                 //All data below only relates to Basil
-                allPlants = plantDataBase.getInstance();
-                Plant basilPlant = allPlants.getPlant("Basil");
 
+                Intent activityThatCalled = getIntent();
+
+                int buttonID= activityThatCalled.getIntExtra("Button ID",0); //get the button session ID so we can modify its .xml paramaters
+                int slotNumber = activityThatCalled.getIntExtra("Slot Number",0); //get the button session ID so we can modify its .xml paramaters
+
+                allPlants = plantDataBase.getInstance();
+                allPlants.addPlant("Basil",buttonID,slotNumber);
+                Plant basilPlant = allPlants.getPlant("Basil",slotNumber);
                 int harvestPeriod_days[] = {18,51,30,30,24,0}; //The harvest is spanned over the length of the plant's duration
                 double cropCoefficients[][] = {{0.72},{0.292,0.0236},{-0.86,0.0236}, {-1.17,0.0236},{-1.7364,0.0236},{1.5}};
 

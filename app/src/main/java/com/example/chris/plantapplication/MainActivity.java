@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         threeButtons = new ButtonSlots();
         constants = new GlobalConstants();
 
+
         setContentView(R.layout.activity_main);
         plantH = plantDataBase.getInstance();
         setImageGrowthVisibility();
@@ -114,21 +115,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void contentUpdate() {
         Plant[] allPlants = plantH.getAllPlants();
-        for (int i = 0; i < allPlants.length; i++) {
+        if (plantH.isAdded() == true) {
 
-            //Current Button ID is an array of all the buttons the plant is attached too
-            Plant currentPlant = allPlants[i];
-            int currentButtonID = currentPlant.getButtonNumber();
-            int slotNumber = currentPlant.getSlotNumber();
-            if (currentButtonID != -1) {
-                ImageButton changingButton = (ImageButton) findViewById(currentButtonID);
-                changingButton.setImageResource(R.drawable.planteye);//Update it to the eye symbol so that we know it is already in plac
+            for (int i = 0; i < allPlants.length; i++) {
 
-                threeButtons.setButtonNumberToSlot(currentButtonID, slotNumber); //Set the current slots number
-                threeButtons.setPlant(currentButtonID, allPlants[i], slotNumber);
-                updateButtonText(slotNumber + 1, allPlants[i].getName(), allPlants[i]);
+                //Current Button ID is an array of all the buttons the plant is attached too
+                Plant currentPlant = allPlants[i];
+                if (currentPlant != null) {
+                    int currentButtonID = currentPlant.getButtonNumber();
+                    int slotNumber = currentPlant.getSlotNumber();
+                    if (currentButtonID != -1) {
+                        ImageButton changingButton = (ImageButton) findViewById(currentButtonID);
+                        changingButton.setImageResource(R.drawable.planteye);//Update it to the eye symbol so that we know it is already in plac
+
+                     //   threeButtons.setButtonNumberToSlot(currentButtonID, slotNumber); //Set the current slots number
+                     //   threeButtons.setPlant(currentButtonID, allPlants[i], slotNumber);
+                        updateButtonText(slotNumber, allPlants[i].getName(), allPlants[i]);
+                    }
+                }
             }
-
         }
     }
 
@@ -161,8 +166,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updatePlantDataBase(int plantSlot, float airTemperature, float airHumidity, int numberDay, float height) {
-        int buttonNumber = threeButtons.getButtonNumber(plantSlot);
-        Plant CurrentPlant = plantH.getPlantByButtonNumber(buttonNumber);
+        //int buttonNumber = threeButtons.getButtonNumber(plantSlot);
+
+        Plant CurrentPlant = plantH.getPlantBySlot(plantSlot);
 
         //Now we want to submit all the data to the corresponding plant
         CurrentPlant.setRoomTemperature(airTemperature);
@@ -263,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
     public void openActivity2(int buttonID, int position_slot) {
         //  boolean existornah = threeButtons.buttonExists buttonID);
 
-        if (threeButtons.buttonExists(buttonID) == false) {
+        if (plantH.buttonExists(buttonID) == false) {
             //The button does not exist as a slot and therefore we can go to the next screen to the add plant section
             Intent intent = new Intent(this, Activity2.class);
 

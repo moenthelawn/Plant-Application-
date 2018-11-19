@@ -9,26 +9,48 @@ public class plantDataBase<E> {
     private static GlobalConstants constants;
     private static plantDataBase instance;
     private Plant[] allPlants;
+    private boolean added;
 
     public Plant getPlantByButtonNumber(int buttonNumber) {
         //Here we will want to grab the plants data based on the inputted button number
         for (int i = 0; i < allPlants.length; i++) {
-            Plant CurrentPlant = allPlants[i];
-            int slotNumber = CurrentPlant.getSlotNumber();
-            if (slotNumber == buttonNumber) {
-                return CurrentPlant;
+            if (allPlants[i] != null) {
+                Plant CurrentPlant = allPlants[i];
+
+                int slotNumber = CurrentPlant.getSlotNumber();
+                if (slotNumber == buttonNumber) {
+                    return CurrentPlant;
+                }
             }
         }
 
-
-        Plant empty = new Plant("",-1,-1);
+        Plant empty = new Plant("", -1, -1);
         return empty; //otherwise we return empty
     }
 
-    public void setPlantByString(String Name, int buttonID, int slotNumberID) {
-
+    public Plant getPlantBySlot(int slotNumber) {
+        return allPlants[slotNumber - 1];
 
     }
+
+    public boolean buttonExists(int buttonNumber) {
+        if (added == true) {
+            for (int i = 0; i < allPlants.length; i++) {
+                if (allPlants[i] != null) {
+                    int buttonValue = allPlants[i].getButtonNumber();
+                    if (buttonNumber == buttonValue) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    //public void setPlantByString(String Name, int buttonID, int slotNumberID) {
+
+
+    //}
     //public boolean setPlantSlotByString(String Name, int buttonID, int slotNumberID) {
     //   Plant currentPlant = allPlants[slotNumberID];
 
@@ -63,24 +85,27 @@ public class plantDataBase<E> {
     private plantDataBase() {
         //we want to add a Basil Plant
         allPlants = new Plant[GlobalConstants.MAXPLANTS];
-
+        added = false;
     }
 
     public void addPlant(String PlantName, int buttonID, int slotNumber) {
 
-            allPlants[slotNumber - 1] = new Plant(PlantName, buttonID, slotNumber);
+        allPlants[slotNumber - 1] = new Plant(PlantName, buttonID, slotNumber);
+        added = true;
 
     }
 
 
-    public Plant getPlant(String Name) {
-        for (int i = 0; i < allPlants.length; i++) {
-            if (allPlants[i].getName() == Name) {
-                //Then we have found the correct string name
-                return allPlants[i];
-            }
-        }
-        Plant emptyPlant = new Plant("", -1, -1); //Return an empty plant since we do not need to reference it
-        return emptyPlant;
+    public Plant getPlant(String Name, int slotNumber) {
+        return allPlants[slotNumber - 1];
+
+    }
+
+    public boolean isAdded() {
+        return added;
+    }
+
+    public void setAdded(boolean added) {
+        this.added = added;
     }
 }
