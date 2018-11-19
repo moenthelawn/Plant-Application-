@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
     private ButtonSlots threeButtons;
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         threeButtons = new ButtonSlots();
@@ -68,10 +67,10 @@ public class MainActivity extends AppCompatActivity {
         ImageView harvestSlot1 = findViewById(R.id.imageView13); //Corresponding image button attached to it
         ImageView harvestSlot2 = findViewById(R.id.imageView16); //Corresponding image button attached to it
         ImageView harvestSlot3 = findViewById(R.id.imageView12); //Corresponding image button attached to it
+
         harvestSlot1.setVisibility(harvestSlot1.INVISIBLE);
         harvestSlot2.setVisibility(harvestSlot2.INVISIBLE);
         harvestSlot3.setVisibility(harvestSlot3.INVISIBLE);
-
     }
 
     private void updateButtonText(int slotNumber, String Text, Plant currentPlant) {
@@ -116,22 +115,20 @@ public class MainActivity extends AppCompatActivity {
     private void contentUpdate() {
         Plant[] allPlants = plantH.getAllPlants();
         for (int i = 0; i < allPlants.length; i++) {
-            int currentButtonID[] = allPlants[i].getSlotNumber();
 
             //Current Button ID is an array of all the buttons the plant is attached too
-            for (int j = 0; j < currentButtonID.length; j++) {
-                if (currentButtonID[j] != -1) {
-                    ImageButton changingButton = (ImageButton) findViewById(currentButtonID[j]);
-                    changingButton.setImageResource(R.drawable.planteye);//Update it to the eye symbol so that we know it is already in plac
+            Plant currentPlant = allPlants[i];
+            int currentButtonID = currentPlant.getButtonNumber();
+            int slotNumber = currentPlant.getSlotNumber();
+            if (currentButtonID != -1) {
+                ImageButton changingButton = (ImageButton) findViewById(currentButtonID);
+                changingButton.setImageResource(R.drawable.planteye);//Update it to the eye symbol so that we know it is already in plac
 
-                    Plant currentPlant = allPlants[i];
-
-                    threeButtons.setButtonNumberToSlot(currentButtonID[j], j); //Set the current slots number
-                    threeButtons.setPlant(currentButtonID[j], allPlants[i]);
-                    updateButtonText(j + 1, allPlants[i].getName(), allPlants[i]);
-
-                }
+                threeButtons.setButtonNumberToSlot(currentButtonID, slotNumber); //Set the current slots number
+                threeButtons.setPlant(currentButtonID, allPlants[i], slotNumber);
+                updateButtonText(slotNumber + 1, allPlants[i].getName(), allPlants[i]);
             }
+
         }
     }
 
@@ -152,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
         int waterHeight_Adjustable = (int) (100 * waterPercentage);
         float requiredHeight_Pixels = (waterPercentage * MAXWATERTANKSIZE_IMAGE_HEIGHT);
 
-
         // Gets the layout params that will allow you to resize the layout
         ViewGroup.LayoutParams params = layout.getLayoutParams();
 
@@ -164,18 +160,32 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void updatePlantDataBase(int plantSlot, float airTemperature, float airHumidity, int numberDay, float height) {
+        int buttonNumber = threeButtons.getButtonNumber(plantSlot);
+        Plant CurrentPlant = plantH.getPlantByButtonNumber(buttonNumber);
+
+        //Now we want to submit all the data to the corresponding plant
+        CurrentPlant.setRoomTemperature(airTemperature);
+        CurrentPlant.setAirHumidity(airHumidity);
+
+        //Send the correct watering amount to the server database
+        double waterAmount = CurrentPlant.getDailyWaterAmount_millimetres(numberDay);
+
+    }
+
     private void updateIU_PacketUpdate(String message) {
         String[] values = message.split(";"); //Split the message into each component
-        int airHumidity = Integer.parseInt(values[0]); //Air Humidity as a percentage
+        float airHumidity = Float.parseFloat(values[0]); //Air Humidity as a percentage
         float height = Float.parseFloat(values[1]);
         float Angle = Float.parseFloat(values[2]);
         float airTemperature = Float.parseFloat(values[3]);
         float waterTank = Float.parseFloat(values[4]);
         int numberDay = Integer.parseInt(values[5]);
+        int plantSlot = Integer.parseInt(values[6]);
 
         //Now we need to update the entire UI of the system
         updateWaterTankLevels(waterTank); //This will update the level of the water tank based on the image provided
-
+        updatePlantDataBase(plantSlot, airTemperature, airHumidity, numberDay, height);
     }
 
     private void addPlants() {
@@ -190,11 +200,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //If this button is clicked, then we will open activity2
                 String message = client.message;
-                updateIU_PacketUpdate(message);
+                if (message != null && !message.isEmpty()) {
+                    updateIU_PacketUpdate(message);
+                }
                 //client.run();
                 // //frame.execute(e1.getTest)
             }
-
         });
         button.setOnClickListener(new View.OnClickListener() {
             @Override

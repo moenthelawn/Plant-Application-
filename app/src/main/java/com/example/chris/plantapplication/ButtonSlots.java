@@ -14,22 +14,20 @@ public class ButtonSlots {
     public ButtonSlots() {
         //Slot Declaration
         allSlots = new ArrayList<Pair>();
-        slot1 = new Pair<Integer, Plant>(-1, new Plant(""));
-        slot2 = new Pair<Integer, Plant>(-1, new Plant(""));
-        slot3 = new Pair<Integer, Plant>(-1, new Plant(""));
+        slot1 = new Pair<Integer, Plant>(-1, new Plant("",-1,-1));
+        slot2 = new Pair<Integer, Plant>(-1, new Plant("",-1,-1));
+        slot3 = new Pair<Integer, Plant>(-1, new Plant("",-1,-1));
         allSlots.add(slot1);
         allSlots.add(slot2);
         allSlots.add(slot3);
     }
 
-    public void setPlant(int button, Plant plantInput) {
-        for (int i = 0; i < allSlots.size(); i++) {
-            Pair<Integer, Plant> slotType = allSlots.get(i);
-            int buttonValue = slotType.getFirst();
-            if (buttonValue == button) {
-                slotType.setSecond(plantInput);
-            }
-        }
+    public void setPlant(int button, Plant plantInput,int slotNumber) {
+        Pair<Integer, Plant> slotType = allSlots.get(slotNumber);
+        int buttonValue = slotType.getFirst();
+
+        slotType.setSecond(plantInput);
+
 
     }
 
@@ -56,17 +54,25 @@ public class ButtonSlots {
         return;
     }
 
-    public int getSlotNumber(int buttonNumber) {
-        for (int i = 0; i < allSlots.size(); i++) {
-            Pair<Integer, Plant> slotType = allSlots.get(i);
-            int buttonValue = slotType.getFirst();
-            if (buttonValue == -1) {
-                slotType.setFirst(buttonNumber);
-                return i;
-            }
-        }
-        return -1; //Otherwise we will return a 0
+    public int getButtonNumber(int slotNumber) {
+        //Based on the slot number, we will return the button number
+        Pair<Integer, Plant> slotType = allSlots.get(slotNumber-1);
+        int buttonValue = slotType.getFirst();
+        return buttonValue;
     }
+
+
+    ///public int getSlotNumber(int buttonNumber) {
+    ///  for (int i = 0; i < allSlots.size(); i++) {
+    ///Pair<Integer, Plant> slotType = allSlots.get(i);
+    //int buttonValue = slotType.getFirst();
+    //if (buttonValue == -1) {
+    //  slotType.setFirst(buttonNumber);
+    //    return i;
+    //  }
+    //}
+    //  return -1; //Otherwise we will return a 0
+    //}
 
     public Plant getPlantType(int buttonNumber) {
         for (int i = 0; i < allSlots.size(); i++) {
@@ -77,7 +83,7 @@ public class ButtonSlots {
                 return plantValue;
             }
         }
-        Plant empty = new Plant("");
+        Plant empty = new Plant("",-1,-1);
         //Otherwise we do not return anything
         return empty;
     }

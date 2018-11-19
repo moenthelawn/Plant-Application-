@@ -27,7 +27,6 @@ public class Activity2 extends AppCompatActivity {
     }
     private void addPlants(){ //we monitor the plants
 
-
         basil = (ImageButton) findViewById(R.id.imageButton);
 
         basil.setOnClickListener(new View.OnClickListener() {
@@ -53,7 +52,6 @@ public class Activity2 extends AppCompatActivity {
 
                 int testDay = 120;
                 double waterAmount = basilPlant.getDailyWaterAmount_millimetres(testDay);
-
                 openMainActivity("Basil");
             }
         });
@@ -67,7 +65,7 @@ public class Activity2 extends AppCompatActivity {
 
         //Based on the slot number that we clicked, we will add the plant number to it
         allPlants = plantDataBase.getInstance();
-        boolean b = allPlants.setPlantSlotByString(PlantName, buttonID, slotNumber );
+        allPlants.addPlant(PlantName, buttonID, slotNumber );
         finish();
         //         Intent intent = new Intent(this, MainActivity.class);
         //finish();

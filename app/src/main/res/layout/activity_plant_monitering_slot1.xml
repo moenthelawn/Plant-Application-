@@ -523,11 +523,11 @@
 
     <TextView
         android:id="@+id/textView35"
-        android:layout_width="37dp"
+        android:layout_width="62dp"
         android:layout_height="24dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:text="66%"
         android:textColor="@color/colorPrimary"
         android:textSize="18sp"
@@ -540,13 +540,13 @@
 
     <TextView
         android:id="@+id/textView32"
-        android:layout_width="41dp"
+        android:layout_width="62dp"
         android:layout_height="24dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:text="12°C"
         android:textColor="@color/colorPrimary"
         android:textSize="18sp"

@@ -7,8 +7,8 @@ import static java.lang.StrictMath.pow;
 public class Plant {
     // All data is in SI units.
 
-    private int slotNumber[];
-
+    private int slotNumber;
+    private int buttonNumber;
 
     private String Name;
 
@@ -18,14 +18,19 @@ public class Plant {
     private double cropCoefficients[][]; //Represents the coefficients for the crop coefficients that will be used to calculate the amount of water the plant will need as a function of the number of days
     private int growthStage;
 
+    private float RoomTemperature;
+    private float airHumidity;
 
     private double pFactor; //Represents the percentage of sunlight received
     private double MeanTemperature; //As determined from Ed's database
 
-    public Plant(String Name) {
-        this.slotNumber = new int[]{-1, -1, -1};
+    public Plant(String Name,int buttonID, int slotNumber) {
+        this.slotNumber = slotNumber;
         this.Name = Name; //We haven't named it yet
-        growthStage = 1;
+        this.buttonNumber = buttonID;
+
+        int currentDayNumber = 1; //start the day counter
+        growthStage = 1; //automatic default set to one
     }
 
     public String getName() {
@@ -37,19 +42,12 @@ public class Plant {
         Name = name;
     }
 
-    public int[] getSlotNumber() {
+    public int getSlotNumber() {
         return slotNumber;
     }
 
-    public boolean slotExists(int number) {
-        for (int i = 0; i < slotNumber.length; i++) {
-            if (slotNumber[i] == number) {
-                return true;
-
-            }
-
-        }
-        return false;
+    public int getButtonNumber() {
+        return buttonNumber;
     }
 
     public double calculateCrop(double[] coefficients, int day) {
@@ -88,12 +86,13 @@ public class Plant {
     }
 
     public boolean setPlantSlotNumber(int ButtonID, int SlotNumber) { //This function will handle adding the plant to the correct slot number
-        if (slotNumber[SlotNumber-1] == -1 && slotExists(ButtonID) == false) {
-            slotNumber[SlotNumber-1] = ButtonID;
-            return true;
-        } else {
+        if (buttonNumber == -1) {
+            buttonNumber = ButtonID;
+            slotNumber = SlotNumber;
+        return true;
+        }
+        else {
             return false;
-
         }
     }
 
@@ -127,5 +126,21 @@ public class Plant {
 
     public void setGrowthStage(int growthStage) {
         this.growthStage = growthStage;
+    }
+
+    public float getRoomTemperature() {
+        return RoomTemperature;
+    }
+
+    public void setRoomTemperature(float roomTemperature) {
+        RoomTemperature = roomTemperature;
+    }
+
+    public float getAirHumidity() {
+        return airHumidity;
+    }
+
+    public void setAirHumidity(float airHumidity) {
+        this.airHumidity = airHumidity;
     }
 }
