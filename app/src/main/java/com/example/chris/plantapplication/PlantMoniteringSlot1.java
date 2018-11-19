@@ -65,7 +65,14 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         String temp = Float.toString(humidity) + "%";
         //temp += "%";
         humidityBut.setText(temp);
+    }
+    public void updateHarvestTime(int dayNumber){
+        //The harvest day length will be updated with the correct day number. Once it reached the final growth stage,
+        //Then we will update the plant
 
+        TextView HarvestDay = (TextView) findViewById(R.id.textView3);
+        String HarvestTime = Integer.toString(dayNumber) + " Days";
+        HarvestDay.setText(HarvestTime);
     }
 
     public void displayPlantData(int slotNumber) {
@@ -75,10 +82,13 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
 
         float roomTemperature = requiredPlant.getRoomTemperature();
         float humidity = requiredPlant.getAirHumidity();
+        int dayNumber = requiredPlant.getCurrentDayNumber();
+
+        int remainingDays = requiredPlant.getRemainingDaysToHarvest(dayNumber);
 
         updateRoomTemperature(roomTemperature);
         updateHumidity(humidity);
-        //updateHarvestTime()
+        updateHarvestTime(remainingDays);
         Log.i("Plant", requiredPlant.getName() + " added to PlantMoniteringSlot1");
 
     }

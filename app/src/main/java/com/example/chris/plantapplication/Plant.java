@@ -17,6 +17,7 @@ public class Plant {
     private int HarvestDayLength[]; // Array of the days allocated over each individual harvest period
     private double cropCoefficients[][]; //Represents the coefficients for the crop coefficients that will be used to calculate the amount of water the plant will need as a function of the number of days
     private int growthStage;
+    private int currentDayNumber;
 
     private float RoomTemperature;
     private float airHumidity;
@@ -24,23 +25,24 @@ public class Plant {
     private double pFactor; //Represents the percentage of sunlight received
     private double MeanTemperature; //As determined from Ed's database
 
+
     public Plant(String Name,int buttonID, int slotNumber,int [] harvestPeriod_days, double[][] cropCoefficient, double p, float temperature) {
         this.slotNumber = slotNumber;
         this.Name = Name; //We haven't named it yet
         this.buttonNumber = buttonID;
-        HarvestDayLength = harvestPeriod_days;
+        this.HarvestDayLength = harvestPeriod_days;
         this.cropCoefficients = cropCoefficient;
         this.pFactor = p;
         this.RoomTemperature = temperature;
 
-        int currentDayNumber = 1; //start the day counter
+        this.currentDayNumber = 1; //start the day counter
         growthStage = 1; //automatic default set to one
     }
+
 
     public String getName() {
         return Name;
     }
-
 
     public void setName(String name) {
         Name = name;
@@ -52,6 +54,16 @@ public class Plant {
 
     public int getButtonNumber() {
         return buttonNumber;
+    }
+    public int getRemainingDaysToHarvest(int dayNumber){
+        int daySum = 0;
+        for (int i = 1; i < HarvestDayLength.length;i++){
+            daySum += HarvestDayLength[i];
+            if (dayNumber <= daySum){
+                return (daySum - dayNumber + HarvestDayLength[0]);
+            }
+        }
+        return daySum - dayNumber + HarvestDayLength[0];
     }
 
     public double calculateCrop(double[] coefficients, int day) {
@@ -146,5 +158,13 @@ public class Plant {
 
     public void setAirHumidity(float airHumidity) {
         this.airHumidity = airHumidity;
+    }
+
+    public int getCurrentDayNumber() {
+        return currentDayNumber;
+    }
+
+    public void setCurrentDayNumber(int currentDayNumber) {
+        this.currentDayNumber = currentDayNumber;
     }
 }

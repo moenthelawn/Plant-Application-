@@ -172,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
             //Now we want to submit all the data to the corresponding plant
             CurrentPlant.setRoomTemperature(airTemperature);
             CurrentPlant.setAirHumidity(airHumidity);
+            CurrentPlant.setCurrentDayNumber(numberDay);
 
             //Send the correct watering amount to the server database
            // double waterAmount = CurrentPlant.getDailyWaterAmount_millimetres(numberDay);
@@ -216,7 +217,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //If this button is clicked, then we will open activity2
-
                 //We want to set the location of the linear actuator
                 moveWateringHeightMeter(1); //Move the watering meter which corresponds to the first position in the plant vase
                 openActivity2(button.getId(), 1);

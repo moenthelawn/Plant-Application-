@@ -59,8 +59,6 @@ public class Activity2 extends AppCompatActivity {
 
                 allPlants.addPlant("Basil", buttonID, slotNumber, harvestPeriod_days, cropCoefficients, 0.25f,22.5f);
 
-                int testDay = 120;
-
                 openMainActivity("Basil");
             }
         });
