@@ -26,7 +26,7 @@ public class Plant {
     private double MeanTemperature; //As determined from Ed's database
 
 
-    public Plant(String Name,int buttonID, int slotNumber,int [] harvestPeriod_days, double[][] cropCoefficient, double p, float temperature) {
+    public Plant(String Name, int buttonID, int slotNumber, int[] harvestPeriod_days, double[][] cropCoefficient, double p, float temperature) {
         this.slotNumber = slotNumber;
         this.Name = Name; //We haven't named it yet
         this.buttonNumber = buttonID;
@@ -55,16 +55,52 @@ public class Plant {
     public int getButtonNumber() {
         return buttonNumber;
     }
-    public int getRemainingDaysToHarvest(int dayNumber){
+
+    public int pastIndices(int past) {
         int daySum = 0;
-        for (int i = 1; i < HarvestDayLength.length;i++){
+        if (past > 0) {
+            for (int i = 0; i < past; i++) {
+                daySum += HarvestDayLength[i];
+            }
+            return daySum;
+
+        }
+        else{
+            return 0;
+        }
+    }
+
+    public int getRemainingDaysToHarvest(int dayNumber) {
+        int daySum = 0;
+        for (int i = 0; i < HarvestDayLength.length; i++) {
             daySum += HarvestDayLength[i];
-            if (dayNumber <= daySum){
-                return (daySum - dayNumber + HarvestDayLength[0]);
+            if (dayNumber <= daySum) {
+                return (daySum - dayNumber);
             }
         }
-        return daySum - dayNumber + HarvestDayLength[0];
+        return 0;
     }
+
+    public int getTotalGrowthPeriodDays(int dayNumber) {
+        //This function will take in the day number, and find the corresponding harvest period
+
+        int daySum = 0;
+        for (int i = 0; i < HarvestDayLength.length; i++) {
+            daySum += HarvestDayLength[i];
+            if (dayNumber <= daySum) {
+                //         if (i == 1) {
+                //             return HarvestDayLength[i] + HarvestDayLength[0];
+                //}
+                //else {
+                //   return HarvestDayLength[i];
+                //}
+                return HarvestDayLength[i];
+
+            }
+        }
+        return 1;
+    }
+
 
     public double calculateCrop(double[] coefficients, int day) {
         //Loop through the crop coefficients and using their polynomial coefficients, we can return the day
@@ -105,9 +141,8 @@ public class Plant {
         if (buttonNumber == -1) {
             buttonNumber = ButtonID;
             slotNumber = SlotNumber;
-        return true;
-        }
-        else {
+            return true;
+        } else {
             return false;
         }
     }
