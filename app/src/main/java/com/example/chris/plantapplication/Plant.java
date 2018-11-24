@@ -64,8 +64,7 @@ public class Plant {
             }
             return daySum;
 
-        }
-        else{
+        } else {
             return 0;
         }
     }
@@ -175,8 +174,18 @@ public class Plant {
         return growthStage;
     }
 
-    public void setGrowthStage(int growthStage) {
-        this.growthStage = growthStage;
+    public void setGrowthStage_DayNumber(int dayNumber) {
+        //This function will take in an arbitrary day number and return the correct growth stage
+        int daySum = 0;
+        for (int i = 0; i < HarvestDayLength.length; i++) {
+            daySum += HarvestDayLength[i];
+            if (dayNumber <= daySum){
+                this.growthStage = i;
+                return ;
+            }
+        }
+        this.growthStage = HarvestDayLength.length;
+        return;
     }
 
     public float getRoomTemperature() {

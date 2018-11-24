@@ -103,9 +103,29 @@ public class MainActivity extends AppCompatActivity {
 
     private void setGrowthStageImage(ImageView harvest, int growthStage) {
         //Sets the current growth stage of the plant
-        if (growthStage == 1) {
+
+        //We have all of our image views corresponding to each image
+        //Slot 3
+
+        if (growthStage == 0){
+            harvest.setImageResource(R.drawable.growthstage1);
+            harvest.setVisibility(harvest.INVISIBLE);
+        }
+        else if (growthStage == 1) {
             //Then we update the plant with the first imag e
             harvest.setImageResource(R.drawable.growthstage1);
+            harvest.setVisibility(harvest.VISIBLE);
+        }
+        else if(growthStage == 2){
+            harvest.setImageResource(R.drawable.growthstage2);
+            harvest.setVisibility(harvest.VISIBLE);
+        }
+        else if(growthStage == 3){
+            harvest.setImageResource(R.drawable.growthstage3);
+            harvest.setVisibility(harvest.VISIBLE);
+        }
+        else if(growthStage == 4){
+            harvest.setImageResource(R.drawable.growthstage4);
             harvest.setVisibility(harvest.VISIBLE);
         }
     }
@@ -172,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
             CurrentPlant.setRoomTemperature(airTemperature);
             CurrentPlant.setAirHumidity(airHumidity);
             CurrentPlant.setCurrentDayNumber(numberDay);
+            CurrentPlant.setGrowthStage_DayNumber(numberDay);
 
             //Send the correct watering amount to the server database
            // double waterAmount = CurrentPlant.getDailyWaterAmount_millimetres(numberDay);
@@ -191,6 +212,8 @@ public class MainActivity extends AppCompatActivity {
         //Now we need to update the entire UI of the system
         updateWaterTankLevels(waterTank); //This will update the level of the water tank based on the image provided
         updatePlantDataBase(plantSlot, airTemperature, airHumidity, numberDay, height);
+
+
     }
 
     private void addPlants() {
@@ -244,20 +267,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void moveWateringHeightMeter(int positionID) {
-        ImageView myView = (ImageView) findViewById(R.id.imageView7);
+        ImageView myView = (ImageView) findViewById(R.id.imageView8);
 
         ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) myView.getLayoutParams();
 
         if (positionID == 1) { //If the position is the first vase in the plant
-            params.horizontalBias = 0.02f; //We want to set the horizontal bias now
+            params.horizontalBias = 0.05f; //We want to set the horizontal bias now
             // constraintSet.setHorizontalBias(R.id.game_right, biasedValue);
             // constraintSet.applyTo((ConstraintLayout) findViewById(R.id.activity_constraint));
             //WateringHeightMeter.
         } else if (positionID == 2) {
-            params.horizontalBias = 0.49f;
+            params.horizontalBias = 0.48f;
 
         } else if (positionID == 3) {
-            params.horizontalBias = 0.98f;
+            params.horizontalBias = 0.90f;
 
         }
         myView.setLayoutParams(params); // request the view to use the new modified params

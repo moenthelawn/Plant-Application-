@@ -102,7 +102,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         TextView timeTillHarvest = (TextView) findViewById(R.id.textView30);
 
         ImageButton harvestButton = (ImageButton) findViewById(R.id.imageButton5);
-        String HarvestTime = Integer.toString(remainingDays) + " Days";
+        String HarvestTime = Integer.toString(remainingDays);
 
         if (remainingDays == 0) {
             //Then we need to add a button that says we should harvest the plant
