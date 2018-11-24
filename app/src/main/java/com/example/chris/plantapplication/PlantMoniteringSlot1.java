@@ -10,6 +10,8 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 public class PlantMoniteringSlot1 extends AppCompatActivity {
     private plantDataBase plantH; //Plant Database
     private ImageButton backButton;
@@ -68,15 +70,16 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         //temp += "%";
         humidityBut.setText(temp);
     }
-    public void animateHarvestTimeProgress(int dayNumber, int totalElapsedDays){
+
+    public void animateHarvestTimeProgress(int dayNumber, int totalElapsedDays) {
         final ProgressBar currentProgress = findViewById(R.id.progressBar);
         int currentProg = currentProgress.getProgress();
         double growthP = ((double) dayNumber / (double) totalElapsedDays);
         double growthP_inverse = 1 - growthP;
 
-        int growthPercentage = (int) (100 * growthP_inverse) ;
+        int growthPercentage = (int) (100 * growthP_inverse);
 
-        ValueAnimator animator = ValueAnimator.ofInt(currentProg,growthPercentage);
+        ValueAnimator animator = ValueAnimator.ofInt(currentProg, growthPercentage);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
             @Override
@@ -89,14 +92,32 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         animator.start();
 
     }
-    public void updateHarvestTime(int dayNumber,int totalElapsedDays){
+
+    public void updateHarvestTime(int remainingDays, int totalElapsedDays) {
         //The harvest day length will be updated with the correct day number. Once it reached the final growth stage,
         //Then we will update the plant
 
         TextView HarvestDay = (TextView) findViewById(R.id.textView3);
-        String HarvestTime = Integer.toString(dayNumber) + " Days";
-        HarvestDay.setText(HarvestTime);
-        animateHarvestTimeProgress(dayNumber, totalElapsedDays); //We want to animate the change in the progress bar
+        TextView harvestName = (TextView) findViewById(R.id.textView36);
+        TextView timeTillHarvest = (TextView) findViewById(R.id.textView30);
+
+        ImageButton harvestButton = (ImageButton) findViewById(R.id.imageButton5);
+        String HarvestTime = Integer.toString(remainingDays) + " Days";
+
+        if (remainingDays == 0) {
+            //Then we need to add a button that says we should harvest the plant
+            harvestButton.setVisibility(harvestButton.VISIBLE); //This will control the visibility for the Harvest button
+            harvestName.setVisibility(harvestName.VISIBLE);// This will control the visibility for the text that overlays the harvest button
+            timeTillHarvest.setVisibility(timeTillHarvest.INVISIBLE);
+
+        } else {
+            harvestButton.setVisibility(harvestButton.INVISIBLE); //If we have time remaining in the slot, then there is no point in displaying it
+            harvestName.setVisibility(harvestName.INVISIBLE);
+            timeTillHarvest.setVisibility(timeTillHarvest.VISIBLE);
+
+            HarvestDay.setText(HarvestTime);
+            animateHarvestTimeProgress(remainingDays, totalElapsedDays); //We want to animate the change in the progress bar
+        }
     }
 
     public void displayPlantData(int slotNumber) {

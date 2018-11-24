@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
 
         } else if (slotNumber == (2)) { //slot 2
             //Update it to say the plants name
-
             ImageView harvest = findViewById(R.id.imageView16);//Corresponding image button attached to it
 
             TextView plantText = (TextView) findViewById(R.id.textView12);
