@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 
 public class Activity2 extends AppCompatActivity {
     private ImageButton basil;
+    private ImageButton customPlant;
     private plantDataBase allPlants;
 
     @Override
@@ -38,7 +39,16 @@ public class Activity2 extends AppCompatActivity {
 
     private void addPlants() { //we monitor the plants
 
-        basil = (ImageButton) findViewById(R.id.imageButton);
+        basil = (ImageButton) findViewById(R.id.imageButton8);
+        customPlant = (ImageButton) findViewById(R.id.imageButton10);
+        customPlant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //We want to move to activity addCustomPlant
+                Intent inten1 = new Intent(v.getContext() , addCustomPlant.class);
+                startActivity(inten1);
+            }
+        });
 
         basil.setOnClickListener(new View.OnClickListener() {
             @Override
