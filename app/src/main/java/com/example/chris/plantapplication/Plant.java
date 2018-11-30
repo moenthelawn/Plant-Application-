@@ -18,7 +18,9 @@ public class Plant {
     private double cropCoefficients[][]; //Represents the coefficients for the crop coefficients that will be used to calculate the amount of water the plant will need as a function of the number of days
     private int growthStage;
     private int currentDayNumber;
+    private int totalNumberDays;
 
+    private float growth_EachDay[];
     private float RoomTemperature;
     private float airHumidity;
 
@@ -26,7 +28,7 @@ public class Plant {
     private double MeanTemperature; //As determined from Ed's database
 
 
-    public Plant(String Name, int buttonID, int slotNumber, int[] harvestPeriod_days, double[][] cropCoefficient, double p, float temperature) {
+    public Plant(String Name, int buttonID, int slotNumber, int[] harvestPeriod_days, double[][] cropCoefficient, double p, float temperature, int totalNumberDays) {
         this.slotNumber = slotNumber;
         this.Name = Name; //We haven't named it yet
         this.buttonNumber = buttonID;
@@ -34,11 +36,22 @@ public class Plant {
         this.cropCoefficients = cropCoefficient;
         this.pFactor = p;
         this.RoomTemperature = temperature;
+        this.totalNumberDays = totalNumberDays;
+
+        this.growth_EachDay = new float[totalNumberDays]; //Declaring a double array to hold the amount of days we have in our
+        initializeGrowth_Each_Day();
+
 
         this.currentDayNumber = 1; //start the day counter
         growthStage = 1; //automatic default set to one
     }
 
+    private void initializeGrowth_Each_Day() {
+        for (int i = 0; i < growth_EachDay.length; i++) {
+            growth_EachDay[i] = 0.00f; //We want to initialize all paramaters to zero for the default plant height growth
+        }
+
+    }
 
     public String getName() {
         return Name;
@@ -80,6 +93,14 @@ public class Plant {
         return 0;
     }
 
+    public void setDayGrowth_Number(int index, float Growth) {
+        this.growth_EachDay[index] = Growth;
+    }
+
+    public float[] getDayGrowth() {
+        return this.growth_EachDay;
+    }
+
     public int getTotalGrowthPeriodDays(int dayNumber) {
         //This function will take in the day number, and find the corresponding harvest period
 
@@ -115,6 +136,56 @@ public class Plant {
         //The evapotrans index is calculated as, p * (0.46T + 8) where
         //P is the percentage of daylight hours, and T is the mean room temperature
         return pFactor * ((0.46 * MeanTemperature) + 8);
+    }
+
+    public void intiliazeWeeks(float weeksAverageHeight[]) {
+        if (weeksAverageHeight.length == 0) {
+            //Initialize the paramater to 0
+            weeksAverageHeight[0] = 0;
+        } else {
+            for (int i = 0; i < weeksAverageHeight.length; i++) {
+                weeksAverageHeight[i] = 0.00f;
+            }
+        }
+    }
+
+    public int days_Available() {
+        //This function will go through the days and return the number that is available
+        for (int i = 0; i < growth_EachDay.length; i++) {
+            if (growth_EachDay[i] == 0) {
+                return i;
+            }
+        }
+        return growth_EachDay.length;
+
+    }
+
+    public float[] getWeek_days(int weeks) {
+        //This function will iterate through the float array of the different days with their heigh and convert a similiar array to that of weeks
+        float weekSum = 0;
+
+        float weeksAverageHeights[] = new float[weeks + 1];
+        int daysAvailable = days_Available();
+        //
+
+        int j = 0;
+        if (weeks != 0) {
+            for (int i = 0; i < growth_EachDay.length; i++) {
+                weekSum += growth_EachDay[i];
+                if (i % 7 == 0) {
+                    weeksAverageHeights[j] = weekSum / 7;
+                    j += 1;
+                    weekSum = 0;
+                }
+            }
+        } else if (weeks == 0) {
+            int averageheight = 0;
+            for (int i = 0; i < daysAvailable; i++) {
+                averageheight += growth_EachDay[i];
+            }
+            weeksAverageHeights[0] = averageheight / 7;
+        }
+        return weeksAverageHeights; // Return the plant height statistics back to the user
     }
 
     public double getDailyWaterAmount_millimetres(int day) {
@@ -179,9 +250,9 @@ public class Plant {
         int daySum = 0;
         for (int i = 0; i < HarvestDayLength.length; i++) {
             daySum += HarvestDayLength[i];
-            if (dayNumber <= daySum){
+            if (dayNumber <= daySum) {
                 this.growthStage = i;
-                return ;
+                return;
             }
         }
         this.growthStage = HarvestDayLength.length;

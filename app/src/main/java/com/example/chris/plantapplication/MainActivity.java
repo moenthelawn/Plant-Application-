@@ -193,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
             CurrentPlant.setAirHumidity(airHumidity);
             CurrentPlant.setCurrentDayNumber(numberDay);
             CurrentPlant.setGrowthStage_DayNumber(numberDay);
+            CurrentPlant.setDayGrowth_Number(numberDay - 1, height);
 
             //Send the correct watering amount to the server database
            // double waterAmount = CurrentPlant.getDailyWaterAmount_millimetres(numberDay);

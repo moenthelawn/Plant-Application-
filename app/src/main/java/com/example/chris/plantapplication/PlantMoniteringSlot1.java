@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -120,6 +122,85 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         }
     }
 
+    public void updatePlantGrowth(int dayNumber, float[] growth_EachDay) {
+        //This function will take in the current plant's growth height statistics for each day, and adjust the graph
+        //based on each height value
+
+        //First Bar on Graph
+        ImageView firstBar = (ImageView) findViewById(R.id.imageView28);
+        TextView firstBar_Text = (TextView) findViewById(R.id.textView18);
+
+        //Second Bar on Graph
+        ImageView secondBar = (ImageView) findViewById(R.id.imageView27);
+        TextView secondBar_Text = (TextView) findViewById(R.id.textView17);
+
+        //Third Bar on Graph
+        ImageView thirdBar = (ImageView) findViewById(R.id.imageView30);
+        TextView thirdBar_Text = (TextView) findViewById(R.id.textView19);
+
+        //Fourth Bar on Graph
+        ImageView fourthBar = (ImageView) findViewById(R.id.imageView31);
+        TextView fourthBar_Text = (TextView) findViewById(R.id.textView20);
+
+        //Fith Bar on Graph
+        ImageView fithBar = (ImageView) findViewById(R.id.imageView32);
+        TextView fithBar_Text = (TextView) findViewById(R.id.textView21);
+
+        //6th Bar on Graph
+        ImageView sixthBar = (ImageView) findViewById(R.id.imageView29);
+        TextView sixthBar_Text = (TextView) findViewById(R.id.textView22);
+
+        //7th Bar on Graph
+        ImageView seventhBar = (ImageView) findViewById(R.id.imageView33);
+        TextView seventhBar_Text = (TextView) findViewById(R.id.textView23);
+
+        ImageView[] barGraphs = {firstBar,secondBar,thirdBar,fourthBar,fithBar,sixthBar,seventhBar};
+        TextView[] textGraphs = {firstBar_Text,secondBar_Text,thirdBar_Text,fourthBar_Text,fithBar_Text,sixthBar_Text,seventhBar_Text};
+
+        //Before we start updating eve
+        int MAXBARHEIGHT = 152; //dP
+        int length_BarGraphs = barGraphs.length;
+        int length_Weeks = (dayNumber / 7);
+        for (int i = 0; i < length_BarGraphs; i++){
+            if (i <= length_Weeks){
+                float currentH = growth_EachDay[i];
+                String currentHeight = Float.toString(currentH);
+                textGraphs[i].setText(currentHeight + " cm"); // we want set the text of the bar graphs
+
+                ViewGroup.LayoutParams params = barGraphs[i].getLayoutParams();
+
+                //The max height each one can go is about 152 dP
+
+
+                int currentHeight_Bar = params.height;
+
+
+                // barGraphs[i].getHeight=
+
+              /*
+                ValueAnimator animator = ValueAnimator.ofInt(currentProg, growthPercentage);
+                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        int currentValue = (int) animation.getAnimatedValue();
+                        currentProgress.setProgress(currentValue);
+                    }
+                });
+                animator.setDuration(1000);
+                animator.start();
+                */
+            }
+            else{
+                //Otherwise we will set all of the other paramaters to 0
+                float zeroedHeight = 0;
+                String currentHeight = Float.toString(zeroedHeight);
+                textGraphs[i].setText(currentHeight + " cm");
+            }
+        }
+    }
+
+
     public void displayPlantData(int slotNumber) {
         //Here we want to update the graphical charts to show the type of plant that we have
         plantH = plantDataBase.getInstance();
@@ -131,11 +212,14 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
 
         int remainingDays = requiredPlant.getRemainingDaysToHarvest(dayNumber);
         int totalElapsedDays = requiredPlant.getTotalGrowthPeriodDays(dayNumber);
+        //float growth_EachDay = requiredPlant.getGrowthStage()
+        float growth_EachWeek[] = requiredPlant.getWeek_days((dayNumber / 7)); //getting the total number of days from the entire period
 
+        //Update various paramaters for our plant statistics
         updateRoomTemperature(roomTemperature);
-
         updateHumidity(humidity);
         updateHarvestTime(remainingDays, totalElapsedDays);
+        updatePlantGrowth(dayNumber, growth_EachWeek);
 
         Log.i("Plant", requiredPlant.getName() + " added to PlantMoniteringSlot1");
 

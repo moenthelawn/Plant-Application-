@@ -10,17 +10,19 @@
         android:id="@+id/textView23"
         android:layout_width="29dp"
         android:layout_height="14dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="68dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:text="16.4"
         android:textSize="10sp"
         app:layout_constraintBottom_toTopOf="@+id/imageView33"
         app:layout_constraintEnd_toEndOf="@+id/imageView33"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/imageView33" />
+        app:layout_constraintStart_toStartOf="@+id/imageView33"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <TextView
         android:id="@+id/textView22"
@@ -181,7 +183,7 @@
     <ImageView
         android:id="@+id/imageView30"
         android:layout_width="48dp"
-        android:layout_height="140dp"
+        android:layout_height="152dp"
         android:layout_marginTop="8dp"
         android:layout_weight="1"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"

@@ -27,7 +27,7 @@ public class plantDataBase<E> {
 
         int empty1[] = {-1};
         double empty3[][] = {{-1}};
-        Plant empty = new Plant("", -1, -1, empty1, empty3, -1f, -1f);
+        Plant empty = new Plant("", -1, -1, empty1, empty3, -1f, -1f,0);
         return empty; //otherwise we return empty
     }
 
@@ -99,9 +99,10 @@ public class plantDataBase<E> {
         added = false;
     }
 
-    public void addPlant(String PlantName, int buttonID, int slotNumber, int[] harvestPeriod_days, double[][] cropCoefficients, float p, float temp) {
+    public void addPlant(String PlantName, int buttonID, int slotNumber,
+                         int[] harvestPeriod_days, double[][] cropCoefficients, float p, float temp,int totalNumberDays) {
 
-        allPlants[slotNumber - 1] = new Plant(PlantName, buttonID, slotNumber, harvestPeriod_days, cropCoefficients, p, temp);
+        allPlants[slotNumber - 1] = new Plant(PlantName, buttonID, slotNumber, harvestPeriod_days, cropCoefficients, p, temp,totalNumberDays);
         added = true;
     }
 
