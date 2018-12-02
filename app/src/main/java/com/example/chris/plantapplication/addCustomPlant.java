@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -20,11 +21,15 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class addCustomPlant extends AppCompatActivity {
     private LocationManager locationManager;
@@ -33,6 +38,7 @@ public class addCustomPlant extends AppCompatActivity {
     private double latitude;
     private CheckBox indoorPlant;
     private Spinner dropDownMenus;
+    private TextView sunlightParamaters;
 
     private ConstraintLayout layout;
     private ConstraintSet layout_constraint;
@@ -50,6 +56,7 @@ public class addCustomPlant extends AppCompatActivity {
 
 
         dropDownMenus = new Spinner(this);
+        sunlightParamaters = new TextView(this);
         layout = (ConstraintLayout) findViewById(R.id.layout1); //Current layout of constraint layout
 
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
@@ -102,49 +109,95 @@ public class addCustomPlant extends AppCompatActivity {
         latitude = lastKnownLocation.getLatitude();
         longitude = lastKnownLocation.getLongitude();
 
+        int ID_drop_down = 659;
+        dropDownMenus.setId(ID_drop_down);
+
+        int ID_text_sunlight = 670;
+        sunlightParamaters.setId(ID_text_sunlight);
+        sunlightParamaters.setText("How many hours of Light will the plant get?");
+
+        GlobalConstants current;
+
+        //Then we will want to check some other additional paramaters
+        //Create the drop down for spinner
+
+        dropDownMenus.setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT));
+
+        //We also
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                R.layout.brand_dropdown, R.id.whatchgoood, GlobalConstants.DROPDOWNCHOICES);
+        adapter.setDropDownViewResource(R.layout.brand_dropdown);
+
+
+        dropDownMenus.setAdapter(adapter);
+
         indoorPlant = (CheckBox) findViewById(R.id.checkBox2);
+
+        dropDownMenus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() { //Listening to see if there are any changes to the clicked drop down
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                String selectedItem = parent.getItemAtPosition(position).toString(); //this is your selected item
+                if (selectedItem == GlobalConstants.DROPDOWNCHOICES[1]){
+                    //Then this means that they have chosen to put the plant inside a room
+                    layout.addView(sunlightParamaters); //Add the sunlight paramaters
+
+                    layout_constraint = new ConstraintSet();
+                    layout_constraint.clone(layout);
+
+                    sunlightParamaters.getLayoutParams().width = convertDipToPixels(view.getContext(), 358);
+
+                    sunlightParamaters.setTextColor(Color.parseColor("#FF3952F3"));
+
+                    layout_constraint.connect(sunlightParamaters.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
+                    layout_constraint.connect(sunlightParamaters.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
+                    layout_constraint.connect(sunlightParamaters.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
+                    layout_constraint.connect(sunlightParamaters.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0);
+
+                    layout_constraint.setVerticalBias(sunlightParamaters.getId(), 0.698f);
+                    layout_constraint.setHorizontalBias(sunlightParamaters.getId(), 0.26f);
+                    layout_constraint.applyTo(layout);
+
+                    addImageButton(R.drawable.daynumber);
+
+                    //Amount of sunlight the user will need to specify
+
+                }
+                else{
+                    layout.removeView(sunlightParamaters);
+                }
+            }
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
+
         indoorPlant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 boolean checked = ((CheckBox) v).isChecked();
                 if (checked == true) {
-                    GlobalConstants current;
 
-                    //Then we will want to check some other additional paramaters
-                    //Create the drop down for spinner
-
-                    dropDownMenus.setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT));
-
-                    int some_random_id = 659;
-                    dropDownMenus.setId(some_random_id);
-                    //We also
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(v.getContext(),
-                            R.layout.brand_dropdown, R.id.whatchgoood, GlobalConstants.DROPDOWNCHOICES);
-                    adapter.setDropDownViewResource(R.layout.brand_dropdown);
-
-
-
-                    dropDownMenus.setAdapter(adapter);
                     layout.addView(dropDownMenus);
 
                     dropDownMenus.getLayoutParams().width = convertDipToPixels(v.getContext(), 200f);
-                 //   dropDownMenus.getLayoutParams().height = co;
+                    //   dropDownMenus.getLayoutParams().height = co;
                     dropDownMenus.setBackgroundResource(R.drawable.dropdown);
 
                     layout_constraint = new ConstraintSet();
-
                     layout_constraint.clone(layout);
 
 
                     layout_constraint.connect(dropDownMenus.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
-                    layout_constraint.connect(dropDownMenus.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM,0);
+                    layout_constraint.connect(dropDownMenus.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
                     layout_constraint.connect(dropDownMenus.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
                     layout_constraint.connect(dropDownMenus.getId(), ConstraintSet.TOP, indoorPlant.getId(), ConstraintSet.BOTTOM, 0);
 
                     layout_constraint.setVerticalBias(dropDownMenus.getId(), 0);
                     layout_constraint.setHorizontalBias(dropDownMenus.getId(), 0.1f);
                     layout_constraint.applyTo(layout);
+
 
                  /*   params.topMargin = convertDipToPixels(c, 8f);
                     params.bottomMargin = convertDipToPixels(c, 8f);
@@ -160,6 +213,7 @@ public class addCustomPlant extends AppCompatActivity {
                     //        layout_constraint.clone(layout);
                     //       layout_constraint.connect(dropDownMenus.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0); //To acheieve, app:layout_constraintLeft_toLeftOf="@+id/parent"
 
+
                 } else {
                     layout.removeView(dropDownMenus); //O
                 }
@@ -167,7 +221,10 @@ public class addCustomPlant extends AppCompatActivity {
             }
         });
 
-// Define a listener that responds to location updates
+    }
+
+    public void addImageButton(int id){
+        //This function will take in an input 
 
     }
 
