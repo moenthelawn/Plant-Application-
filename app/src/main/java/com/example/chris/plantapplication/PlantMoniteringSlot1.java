@@ -174,7 +174,6 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
 
                 int currentHeight_Bar = params.height;
 
-
                 // barGraphs[i].getHeight=
 
               /*
