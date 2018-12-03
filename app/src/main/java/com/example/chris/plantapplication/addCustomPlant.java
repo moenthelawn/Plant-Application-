@@ -20,11 +20,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -38,7 +43,13 @@ public class addCustomPlant extends AppCompatActivity {
     private double latitude;
     private CheckBox indoorPlant;
     private Spinner dropDownMenus;
+
     private TextView sunlightParamaters;
+    private ImageView hours_Sunlight;
+
+    private EditText sunlight_text;
+    private EditText plantName;
+    private EditText plantGrowth;
 
     private ConstraintLayout layout;
     private ConstraintSet layout_constraint;
@@ -56,8 +67,16 @@ public class addCustomPlant extends AppCompatActivity {
 
 
         dropDownMenus = new Spinner(this);
-        sunlightParamaters = new TextView(this);
+        sunlightParamaters = (TextView) findViewById(R.id.textView39);
+        hours_Sunlight = (ImageView) findViewById(R.id.imageView10);
+
+        //These are values that correspond to what the user will need to fill in
+        sunlight_text = (EditText) findViewById(R.id.editText2);
+        plantName = (EditText) findViewById(R.id.editText);
+        plantGrowth = (EditText) findViewById(R.id.editText5);
+
         layout = (ConstraintLayout) findViewById(R.id.layout1); //Current layout of constraint layout
+        layout_constraint = new ConstraintSet();
 
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
@@ -106,15 +125,13 @@ public class addCustomPlant extends AppCompatActivity {
         }
         String locationProvider = LocationManager.GPS_PROVIDER;
         Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
-        latitude = lastKnownLocation.getLatitude();
-        longitude = lastKnownLocation.getLongitude();
+        //  latitude = lastKnownLocation.getLatitude();
+        // longitude = lastKnownLocation.getLongitude();
 
         int ID_drop_down = 659;
-        dropDownMenus.setId(ID_drop_down);
+        int ID_text_sunlight_hours = 661;
 
-        int ID_text_sunlight = 670;
-        sunlightParamaters.setId(ID_text_sunlight);
-        sunlightParamaters.setText("How many hours of Light will the plant get?");
+        dropDownMenus.setId(ID_drop_down);
 
         GlobalConstants current;
 
@@ -133,41 +150,69 @@ public class addCustomPlant extends AppCompatActivity {
 
         indoorPlant = (CheckBox) findViewById(R.id.checkBox2);
 
+        setSunlightAddition(false); //default is set to false unless it is otherwise specified.
+        plantGrowth.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                checkRequiredeFields(); //We will want to check to make sure the sequence is valid
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        sunlight_text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                checkRequiredeFields(); //We will want to check to make sure the sequence is valid
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        plantName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                checkRequiredeFields(); //We will want to check to make sure the sequence is valid
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         dropDownMenus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() { //Listening to see if there are any changes to the clicked drop down
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedItem = parent.getItemAtPosition(position).toString(); //this is your selected item
-                if (selectedItem == GlobalConstants.DROPDOWNCHOICES[1]){
-                    //Then this means that they have chosen to put the plant inside a room
-                    layout.addView(sunlightParamaters); //Add the sunlight paramaters
-
-                    layout_constraint = new ConstraintSet();
-                    layout_constraint.clone(layout);
-
-                    sunlightParamaters.getLayoutParams().width = convertDipToPixels(view.getContext(), 358);
-
-                    sunlightParamaters.setTextColor(Color.parseColor("#FF3952F3"));
-
-                    layout_constraint.connect(sunlightParamaters.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
-                    layout_constraint.connect(sunlightParamaters.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
-                    layout_constraint.connect(sunlightParamaters.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
-                    layout_constraint.connect(sunlightParamaters.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0);
-
-                    layout_constraint.setVerticalBias(sunlightParamaters.getId(), 0.698f);
-                    layout_constraint.setHorizontalBias(sunlightParamaters.getId(), 0.26f);
-                    layout_constraint.applyTo(layout);
-
-                    addImageButton(R.drawable.daynumber);
-
-                    //Amount of sunlight the user will need to specify
-
-                }
-                else{
-                    layout.removeView(sunlightParamaters);
+                if (selectedItem == GlobalConstants.DROPDOWNCHOICES[1] && indoorPlant.isChecked() == true) {
+                    setSunlightAddition(true);
+                } else {
+                    setSunlightAddition(false);
                 }
             }
-            public void onNothingSelected(AdapterView<?> parent)
-            {
+
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
@@ -185,7 +230,6 @@ public class addCustomPlant extends AppCompatActivity {
                     //   dropDownMenus.getLayoutParams().height = co;
                     dropDownMenus.setBackgroundResource(R.drawable.dropdown);
 
-                    layout_constraint = new ConstraintSet();
                     layout_constraint.clone(layout);
 
 
@@ -198,22 +242,6 @@ public class addCustomPlant extends AppCompatActivity {
                     layout_constraint.setHorizontalBias(dropDownMenus.getId(), 0.1f);
                     layout_constraint.applyTo(layout);
 
-
-                 /*   params.topMargin = convertDipToPixels(c, 8f);
-                    params.bottomMargin = convertDipToPixels(c, 8f);
-                    params.horizontalBias = 0;
-                    params.verticalBias = 1;
-                    params.bottomToBottom = layout.getId();
-                    params.endToEnd = layout.getId(); //Parent ID
-                    params.topToBottom = indoorPlant.getId();
-                    params.startToStart = layout.getId(); // Parent ID
-                    params.constrainedHeight = true;
-                    */
-                    //      layout_constraint = new ConstraintSet();
-                    //        layout_constraint.clone(layout);
-                    //       layout_constraint.connect(dropDownMenus.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0); //To acheieve, app:layout_constraintLeft_toLeftOf="@+id/parent"
-
-
                 } else {
                     layout.removeView(dropDownMenus); //O
                 }
@@ -223,10 +251,43 @@ public class addCustomPlant extends AppCompatActivity {
 
     }
 
-    public void addImageButton(int id){
-        //This function will take in an input 
+
+    public void checkRequiredeFields() {
+//This function will take in the char sequence and determine if the sequence has been validated
+        //Scenario 1, we have all our entries entered, and the growing indoors button is unchecked
+        if (plantGrowth.getText().toString().isEmpty() != true
+                && sunlight_text.getText().toString().isEmpty() != true
+                && plantName.getText().toString().isEmpty() != true
+                && GlobalConstants.DROPDOWNCHOICES[1] == dropDownMenus.getSelectedItem().toString()) {
+//If this is is the case, then we have all of our paramaters checked
+            //Enable the button
+        } else if (plantGrowth.getText().toString().isEmpty() != true
+                && plantName.getText().toString().isEmpty() != true
+                && GlobalConstants.DROPDOWNCHOICES[0] == dropDownMenus.getSelectedItem().toString()
+                ) {
+            //Then we will set the enable button
+
+        }
+        else{
+            //Otherwise it will be turned off
+
+        }
+
 
     }
+
+    public void setSunlightAddition(boolean visibility) { //This function will set the visibility of the ability to add paramaters
+        if (visibility == true) {
+            sunlightParamaters.setVisibility(sunlightParamaters.VISIBLE);
+            hours_Sunlight.setVisibility(hours_Sunlight.VISIBLE);
+            sunlight_text.setVisibility(sunlight_text.VISIBLE);
+        } else {
+            sunlightParamaters.setVisibility(sunlightParamaters.INVISIBLE);
+            hours_Sunlight.setVisibility(hours_Sunlight.INVISIBLE);
+            sunlight_text.setVisibility(sunlight_text.INVISIBLE);
+        }
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
