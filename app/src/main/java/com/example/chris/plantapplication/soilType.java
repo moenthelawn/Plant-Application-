@@ -16,6 +16,8 @@ public class soilType extends AppCompatActivity {
     private ImageButton claysoil;
     private ImageButton peatysoil;
 
+    private plantDataBase plantH;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +29,9 @@ public class soilType extends AppCompatActivity {
         loamysoil = (ImageButton) findViewById(R.id.imageButton);
         claysoil = (ImageButton) findViewById(R.id.imageButton15);
         peatysoil = (ImageButton) findViewById(R.id.imageButton14);
+
+
+        plantH = plantDataBase.getInstance();
 
         siltysoil.setOnClickListener(new View.OnClickListener() {
             @Override

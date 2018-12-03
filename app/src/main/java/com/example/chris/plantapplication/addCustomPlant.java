@@ -52,6 +52,8 @@ public class addCustomPlant extends AppCompatActivity {
     private EditText plantName;
     private EditText plantGrowth;
 
+    private Plant plantAdded;
+
     private Button next;
 
     private ConstraintLayout layout;
@@ -72,6 +74,7 @@ public class addCustomPlant extends AppCompatActivity {
         dropDownMenus = new Spinner(this);
         sunlightParamaters = (TextView) findViewById(R.id.textView39);
         hours_Sunlight = (ImageView) findViewById(R.id.imageView10);
+
 
         //These are values that correspond to what the user will need to fill in
         sunlight_text = (EditText) findViewById(R.id.editText2);
@@ -149,7 +152,6 @@ public class addCustomPlant extends AppCompatActivity {
                 R.layout.brand_dropdown, R.id.whatchgoood, GlobalConstants.DROPDOWNCHOICES);
         adapter.setDropDownViewResource(R.layout.brand_dropdown);
 
-
         dropDownMenus.setAdapter(adapter);
 
         indoorPlant = (CheckBox) findViewById(R.id.checkBox2);
@@ -226,6 +228,21 @@ public class addCustomPlant extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //We will go to the next screen
+
+                // we can also add of the data paramaters
+                Intent activityThatCalled = getIntent();
+
+                int buttonID = activityThatCalled.getIntExtra("Button ID", 0); //get the button session ID so we can modify its .xml paramaters
+                int slotNumber = activityThatCalled.getIntExtra("Slot Number", 0); //get the button session ID so we can modify its .xml paramaters
+
+                int growthPeriod = Integer.parseInt(plantGrowth.getText().toString());
+                String plantNamed = plantName.getText().toString();
+                int[] harvestPeriod = {growthPeriod};
+                double[][] cropCoefficients = {{0}}; //For now the crop coefficients we will be set to zero until we figure this out
+
+
+                plantDataBase.getInstance().addPlant(plantNamed, buttonID, slotNumber, harvestPeriod, cropCoefficients, 0.2f, 3, growthPeriod);
+
                 Intent intent = new Intent(v.getContext(), soilType.class);
                 startActivity(intent);
             }
@@ -254,7 +271,7 @@ public class addCustomPlant extends AppCompatActivity {
                     layout_constraint.setVerticalBias(dropDownMenus.getId(), 0);
                     layout_constraint.setHorizontalBias(dropDownMenus.getId(), 0.1f);
                     layout_constraint.applyTo(layout);
-                    if (GlobalConstants.DROPDOWNCHOICES[1] == dropDownMenus.getSelectedItem().toString()){
+                    if (GlobalConstants.DROPDOWNCHOICES[1] == dropDownMenus.getSelectedItem().toString()) {
                         setSunlightAddition(true); //Definitely want to check this to false
                     }
 
@@ -268,14 +285,15 @@ public class addCustomPlant extends AppCompatActivity {
 
     }
 
-    public void displayNextButton(boolean display){
-        if (display == true){
+    public void displayNextButton(boolean display) {
+        if (display == true) {
             next.setVisibility(next.VISIBLE);
 
-        }else{
+        } else {
             next.setVisibility(next.INVISIBLE);
         }
     }
+
     public void checkRequiredeFields() {
 //This function will take in the char sequence and determine if the sequence has been validated
         //Scenario 1, we have all our entries entered, and the growing indoors button is unchecked
@@ -292,8 +310,7 @@ public class addCustomPlant extends AppCompatActivity {
                 ) {
             //Then we will set the enable button
             displayNextButton(true);
-        }
-        else{
+        } else {
             //Otherwise it will be turned off
             displayNextButton(false);
         }

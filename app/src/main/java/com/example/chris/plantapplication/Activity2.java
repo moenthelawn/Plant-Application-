@@ -45,7 +45,15 @@ public class Activity2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //We want to move to activity addCustomPlant
+                Intent activityThatCalled = getIntent();
+
+                int buttonID = activityThatCalled.getIntExtra("Button ID", 0); //get the button session ID so we can modify its .xml paramaters
+                int slotNumber = activityThatCalled.getIntExtra("Slot Number", 0); //get the button session ID so we can modify its .xml paramaters
+
                 Intent inten1 = new Intent(v.getContext() , addCustomPlant.class);
+                inten1.putExtra("Button ID",buttonID);
+                inten1.putExtra("Slot Number",slotNumber);
+
                 startActivity(inten1);
             }
         });
