@@ -2,6 +2,7 @@ package com.example.chris.plantapplication;
 
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
 import org.w3c.dom.Text;
 
 public class PlantMoniteringSlot1 extends AppCompatActivity {
@@ -19,6 +24,8 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
     private ImageButton backButton;
     int buttonID_Called;
     int slot_ID_Called;
+    private LineGraphSeries<DataPoint> series;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +33,18 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plant_monitering_slot1);
         //We want to grab an instance of the plant data base that will be used for this slot
+
+
+        double x = 0;
+        double y = 0;
+        GraphView graph = (GraphView) findViewById(R.id.graph_plants);
+        series = new LineGraphSeries<DataPoint>();
+      //  for(int i =0;i < 500;i++){
+        //    x = x + 0.1;
+        //    y = Math.sin(x);
+       //     series.appendData(new DataPoint(x,y),true,500);
+      //  }
+        graph.addSeries(series);
 
         plantH = plantDataBase.getInstance();
 
@@ -123,80 +142,8 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
     }
 
     public void updatePlantGrowth(int dayNumber, float[] growth_EachDay) {
-        //This function will take in the current plant's growth height statistics for each day, and adjust the graph
-        //based on each height value
-
-        //First Bar on Graph
-        ImageView firstBar = (ImageView) findViewById(R.id.imageView28);
-        TextView firstBar_Text = (TextView) findViewById(R.id.textView18);
-
-        //Second Bar on Graph
-        ImageView secondBar = (ImageView) findViewById(R.id.imageView27);
-        TextView secondBar_Text = (TextView) findViewById(R.id.textView17);
-
-        //Third Bar on Graph
-        ImageView thirdBar = (ImageView) findViewById(R.id.imageView30);
-        TextView thirdBar_Text = (TextView) findViewById(R.id.textView19);
-
-        //Fourth Bar on Graph
-        ImageView fourthBar = (ImageView) findViewById(R.id.imageView31);
-        TextView fourthBar_Text = (TextView) findViewById(R.id.textView20);
-
-        //Fith Bar on Graph
-        ImageView fithBar = (ImageView) findViewById(R.id.imageView32);
-        TextView fithBar_Text = (TextView) findViewById(R.id.textView21);
-
-        //6th Bar on Graph
-        ImageView sixthBar = (ImageView) findViewById(R.id.imageView29);
-        TextView sixthBar_Text = (TextView) findViewById(R.id.textView22);
-
-        //7th Bar on Graph
-        ImageView seventhBar = (ImageView) findViewById(R.id.imageView33);
-        TextView seventhBar_Text = (TextView) findViewById(R.id.textView23);
-
-        ImageView[] barGraphs = {firstBar,secondBar,thirdBar,fourthBar,fithBar,sixthBar,seventhBar};
-        TextView[] textGraphs = {firstBar_Text,secondBar_Text,thirdBar_Text,fourthBar_Text,fithBar_Text,sixthBar_Text,seventhBar_Text};
-
-        //Before we start updating eve
-        int MAXBARHEIGHT = 152; //dP
-        int length_BarGraphs = barGraphs.length;
-        int length_Weeks = (dayNumber / 7);
-        for (int i = 0; i < length_BarGraphs; i++){
-            if (i <= length_Weeks){
-                float currentH = growth_EachDay[i];
-                String currentHeight = Float.toString(currentH);
-                textGraphs[i].setText(currentHeight + " cm"); // we want set the text of the bar graphs
-
-                ViewGroup.LayoutParams params = barGraphs[i].getLayoutParams();
-
-                //The max height each one can go is about 152 dP
 
 
-                int currentHeight_Bar = params.height;
-
-                // barGraphs[i].getHeight=
-
-              /*
-                ValueAnimator animator = ValueAnimator.ofInt(currentProg, growthPercentage);
-                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        int currentValue = (int) animation.getAnimatedValue();
-                        currentProgress.setProgress(currentValue);
-                    }
-                });
-                animator.setDuration(1000);
-                animator.start();
-                */
-            }
-            else{
-                //Otherwise we will set all of the other paramaters to 0
-                float zeroedHeight = 0;
-                String currentHeight = Float.toString(zeroedHeight);
-                textGraphs[i].setText(currentHeight + " cm");
-            }
-        }
     }
 
 

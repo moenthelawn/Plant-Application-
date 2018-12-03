@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-feature android:name="android.hardware.location.gps" />
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
@@ -28,7 +29,8 @@
         </activity>
         <activity android:name=".Activity2" />
         <activity android:name=".PlantMoniteringSlot1" />
-        <activity android:name=".addCustomPlant"></activity>
+        <activity android:name=".addCustomPlant" />
+        <activity android:name=".soilType"></activity>
     </application>
 
 </manifest>

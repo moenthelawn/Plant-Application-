@@ -3,6 +3,7 @@ package com.example.chris.plantapplication;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Sensor;
@@ -51,6 +52,8 @@ public class addCustomPlant extends AppCompatActivity {
     private EditText plantName;
     private EditText plantGrowth;
 
+    private Button next;
+
     private ConstraintLayout layout;
     private ConstraintSet layout_constraint;
 
@@ -74,6 +77,7 @@ public class addCustomPlant extends AppCompatActivity {
         sunlight_text = (EditText) findViewById(R.id.editText2);
         plantName = (EditText) findViewById(R.id.editText);
         plantGrowth = (EditText) findViewById(R.id.editText5);
+        next = (Button) findViewById(R.id.button);
 
         layout = (ConstraintLayout) findViewById(R.id.layout1); //Current layout of constraint layout
         layout_constraint = new ConstraintSet();
@@ -151,6 +155,8 @@ public class addCustomPlant extends AppCompatActivity {
         indoorPlant = (CheckBox) findViewById(R.id.checkBox2);
 
         setSunlightAddition(false); //default is set to false unless it is otherwise specified.
+        displayNextButton(false);
+
         plantGrowth.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -216,7 +222,14 @@ public class addCustomPlant extends AppCompatActivity {
 
             }
         });
-
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //We will go to the next screen
+                Intent intent = new Intent(v.getContext(), soilType.class);
+                startActivity(intent);
+            }
+        });
         indoorPlant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -241,9 +254,13 @@ public class addCustomPlant extends AppCompatActivity {
                     layout_constraint.setVerticalBias(dropDownMenus.getId(), 0);
                     layout_constraint.setHorizontalBias(dropDownMenus.getId(), 0.1f);
                     layout_constraint.applyTo(layout);
+                    if (GlobalConstants.DROPDOWNCHOICES[1] == dropDownMenus.getSelectedItem().toString()){
+                        setSunlightAddition(true); //Definitely want to check this to false
+                    }
 
                 } else {
-                    layout.removeView(dropDownMenus); //O
+                    layout.removeView(dropDownMenus); //
+                    setSunlightAddition(false); //Definitely want to check this to false
                 }
 
             }
@@ -251,7 +268,14 @@ public class addCustomPlant extends AppCompatActivity {
 
     }
 
+    public void displayNextButton(boolean display){
+        if (display == true){
+            next.setVisibility(next.VISIBLE);
 
+        }else{
+            next.setVisibility(next.INVISIBLE);
+        }
+    }
     public void checkRequiredeFields() {
 //This function will take in the char sequence and determine if the sequence has been validated
         //Scenario 1, we have all our entries entered, and the growing indoors button is unchecked
@@ -260,17 +284,18 @@ public class addCustomPlant extends AppCompatActivity {
                 && plantName.getText().toString().isEmpty() != true
                 && GlobalConstants.DROPDOWNCHOICES[1] == dropDownMenus.getSelectedItem().toString()) {
 //If this is is the case, then we have all of our paramaters checked
+            displayNextButton(true);
             //Enable the button
         } else if (plantGrowth.getText().toString().isEmpty() != true
                 && plantName.getText().toString().isEmpty() != true
                 && GlobalConstants.DROPDOWNCHOICES[0] == dropDownMenus.getSelectedItem().toString()
                 ) {
             //Then we will set the enable button
-
+            displayNextButton(true);
         }
         else{
             //Otherwise it will be turned off
-
+            displayNextButton(false);
         }
 
 
