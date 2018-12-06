@@ -89,8 +89,13 @@ public class Activity2 extends AppCompatActivity {
                 //     basilPlant.setMeanTemperature(22.5);
 
                 allPlants.addPlant("Basil", buttonID, slotNumber, harvestPeriod_days, cropCoefficients, 0.25f, 22.5f,maxGrowthDays);
+//We want to move to activity addCustomPlant
 
-                openMainActivity("Basil");
+                Intent inten1 = new Intent(v.getContext() , soilType.class);
+                inten1.putExtra("Button ID",buttonID);
+                inten1.putExtra("Slot Number",slotNumber);
+                startActivity(inten1);
+                //openMainActivity("Basil");
             }
         });
 

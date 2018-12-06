@@ -267,38 +267,34 @@
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="170dp"
-        android:layout_height="96dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView15"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/divider"
-        app:srcCompat="@drawable/gaugechart" />
-
-    <ImageView
-        android:id="@+id/imageView6"
-        android:layout_width="37dp"
-        android:layout_height="72dp"
+        android:layout_width="122dp"
+        android:layout_height="101dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-        app:layout_constraintEnd_toEndOf="@+id/imageView3"
-        app:layout_constraintHorizontal_bias="0.55"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toTopOf="@+id/imageView34"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/divider"
-        app:layout_constraintTop_toTopOf="@+id/imageView3"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/gaugeneedle" />
+        app:layout_constraintTop_toBottomOf="@+id/textView27"
+        app:srcCompat="@drawable/gaugechart" />
 
+    <com.example.chris.plantapplication.Needle
+        android:id="@+id/myNeedle"
+        android:layout_width="130dp"
+        android:layout_height="105dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:rotation="150"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintEnd_toEndOf="@+id/imageView15"
+        app:layout_constraintHorizontal_bias="0.08"
+        app:layout_constraintStart_toEndOf="@+id/divider"
+        app:layout_constraintTop_toTopOf="@+id/imageView15"
+        app:layout_constraintVertical_bias="0.891" />
     <TextView
         android:id="@+id/textView30"
         android:layout_width="wrap_content"
@@ -324,17 +320,20 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
         android:text="Plant Growing Conditions"
-        app:layout_constraintBottom_toTopOf="@+id/imageView3"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imageView15"
-        app:layout_constraintStart_toEndOf="@+id/divider" />
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toEndOf="@+id/divider"
+        app:layout_constraintTop_toTopOf="@+id/imageView15"
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.jjoe64.graphview.GraphView
         android:id="@+id/graph_plants"
-        android:layout_width="354dp"
+        android:layout_width="340dp"
         android:layout_height="199dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -344,8 +343,10 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/imageView15"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.6"
         tools:ignore="MissingConstraints"></com.jjoe64.graphview.GraphView>
 
 

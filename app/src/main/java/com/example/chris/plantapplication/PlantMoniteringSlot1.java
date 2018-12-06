@@ -2,6 +2,7 @@ package com.example.chris.plantapplication;
 
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.graphics.Matrix;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,20 +26,26 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
     int buttonID_Called;
     int slot_ID_Called;
     private LineGraphSeries<DataPoint> series;
-
+    /*private ImageView needle;*/
+    private Needle needle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        needle = new Needle(this);
+        needle = findViewById(R.id.myNeedle);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plant_monitering_slot1);
         //We want to grab an instance of the plant data base that will be used for this slot
+        //needle = findViewById(R.id.imageView6); //The image of the needle
 
 
         double x = 0;
         double y = 0;
+
         GraphView graph = (GraphView) findViewById(R.id.graph_plants);
         series = new LineGraphSeries<DataPoint>();
+
       //  for(int i =0;i < 500;i++){
         //    x = x + 0.1;
         //    y = Math.sin(x);
@@ -54,6 +61,8 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
 
         Log.i("Passed Value", "Button " + Integer.toString(buttonID_Called) + "passed to PlanMoniteringSlot1.java");
         displayPlantData(slot_ID_Called);
+
+        /*needle.onDraw();*/
 
         backButton = (ImageButton) findViewById(R.id.imageButton3);
 
@@ -77,6 +86,15 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         //Intent intent = new Intent(this, MainActivity.class);
         //        startActivity(intent);
     }
+
+   /* public void rotateNeedle(float angle){
+        //This function will rotate the needle. As seen in the picture, the needle is bounded by -180 degrees to 180 degrees
+
+        Matrix matrix = new Matrix();
+        needle.setScaleType(ImageView.ScaleType.MATRIX);
+        matrix.postRotate((float) angle);
+        needle.setImageMatrix(matrix);
+    }*/
 
     public void updateRoomTemperature(float roomTemperature) {
         TextView roomTemp = (TextView) findViewById(R.id.textView32); //to be able to set the room temperature to the correct value
