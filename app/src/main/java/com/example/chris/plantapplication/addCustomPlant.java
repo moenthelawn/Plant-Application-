@@ -46,6 +46,7 @@ public class addCustomPlant extends AppCompatActivity {
     private Spinner dropDownMenus;
 
     private TextView sunlightParamaters;
+    private TextView lightHours;
     private ImageView hours_Sunlight;
 
     private EditText sunlight_text;
@@ -70,10 +71,11 @@ public class addCustomPlant extends AppCompatActivity {
 
         setContentView(R.layout.activity_add_custom_plant2);
 
-
         dropDownMenus = new Spinner(this);
         sunlightParamaters = (TextView) findViewById(R.id.textView39);
         hours_Sunlight = (ImageView) findViewById(R.id.imageView10);
+        lightHours = (TextView) findViewById(R.id.textView18);
+        lightHours.setVisibility(lightHours.INVISIBLE);
 
 
         //These are values that correspond to what the user will need to fill in
@@ -184,14 +186,31 @@ public class addCustomPlant extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
                 checkRequiredeFields(); //We will want to check to make sure the sequence is valid
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                String sequence = s.toString();
+                float sequenceNumbers;
+                try {
+                    sequenceNumbers = Float.parseFloat(sequence);
+                } catch (NumberFormatException ex) {
+                    sequenceNumbers = 0;
+                }
+                /*float sequenceNumbers = Float.parseFloat(sequence);*/
+                if (sequenceNumbers > 24) {
+                    //if their entered text is greater than 24 hours, then we will present them an error
+                    //we will display the plant light error text
+                    lightHours.setVisibility(lightHours.VISIBLE);
+                } else {
+                    lightHours.setVisibility(lightHours.INVISIBLE);
+                }
 
             }
         });
+
 
         plantName.addTextChangedListener(new TextWatcher() {
             @Override
@@ -314,8 +333,6 @@ public class addCustomPlant extends AppCompatActivity {
             //Otherwise it will be turned off
             displayNextButton(false);
         }
-
-
     }
 
     public void setSunlightAddition(boolean visibility) { //This function will set the visibility of the ability to add paramaters

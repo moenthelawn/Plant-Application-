@@ -333,8 +333,8 @@
 
     <com.jjoe64.graphview.GraphView
         android:id="@+id/graph_plants"
-        android:layout_width="340dp"
-        android:layout_height="199dp"
+        android:layout_width="366dp"
+        android:layout_height="196dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
