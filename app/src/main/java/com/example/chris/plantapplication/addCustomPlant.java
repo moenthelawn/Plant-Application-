@@ -259,7 +259,6 @@ public class addCustomPlant extends AppCompatActivity {
                 int[] harvestPeriod = {growthPeriod};
                 double[][] cropCoefficients = {{0}}; //For now the crop coefficients we will be set to zero until we figure this out
 
-
                 plantDataBase.getInstance().addPlant(plantNamed, buttonID, slotNumber, harvestPeriod, cropCoefficients, 0.2f, 3, growthPeriod);
 
                 Intent intent = new Intent(v.getContext(), soilType.class);
@@ -319,14 +318,15 @@ public class addCustomPlant extends AppCompatActivity {
         if (plantGrowth.getText().toString().isEmpty() != true
                 && sunlight_text.getText().toString().isEmpty() != true
                 && plantName.getText().toString().isEmpty() != true
-                && GlobalConstants.DROPDOWNCHOICES[1] == dropDownMenus.getSelectedItem().toString()) {
+                && GlobalConstants.DROPDOWNCHOICES[1] == dropDownMenus.getSelectedItem().toString()
+                && lightHours.getVisibility() == View.INVISIBLE) {
 //If this is is the case, then we have all of our paramaters checked
             displayNextButton(true);
             //Enable the button
         } else if (plantGrowth.getText().toString().isEmpty() != true
                 && plantName.getText().toString().isEmpty() != true
                 && GlobalConstants.DROPDOWNCHOICES[0] == dropDownMenus.getSelectedItem().toString()
-                ) {
+                && lightHours.getVisibility() == View.INVISIBLE) {
             //Then we will set the enable button
             displayNextButton(true);
         } else {

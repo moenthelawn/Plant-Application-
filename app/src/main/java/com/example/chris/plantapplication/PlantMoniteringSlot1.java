@@ -39,7 +39,6 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         //We want to grab an instance of the plant data base that will be used for this slot
         //needle = findViewById(R.id.imageView6); //The image of the needle
 
-
         double x = 0;
         double y = 0;
 
@@ -75,7 +74,6 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
                 openMainActivity(currentPlant_Slot.getName());
             }
         });
-
     }
 
     public void openMainActivity(String PlantName) { //We want to open that activity and navigate over to the specific class
@@ -129,7 +127,6 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         });
         animator.setDuration(1000);
         animator.start();
-
     }
 
     public void updateHarvestTime(int remainingDays, int totalElapsedDays) {
