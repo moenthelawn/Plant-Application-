@@ -140,14 +140,14 @@ public class addCustomPlant extends AppCompatActivity {
         int ID_drop_down = 659;
         int ID_text_sunlight_hours = 661;
 
-        dropDownMenus.setId(ID_drop_down);
+     /*   dropDownMenus.setId(ID_drop_down);*/
 
         GlobalConstants current;
 
         //Then we will want to check some other additional paramaters
         //Create the drop down for spinner
 
-        dropDownMenus.setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT));
+       /* dropDownMenus.setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT));
 
         //We also
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -155,10 +155,9 @@ public class addCustomPlant extends AppCompatActivity {
         adapter.setDropDownViewResource(R.layout.brand_dropdown);
 
         dropDownMenus.setAdapter(adapter);
-
+*//*
         indoorPlant = (CheckBox) findViewById(R.id.checkBox2);
-
-        setSunlightAddition(false); //default is set to false unless it is otherwise specified.
+*/
         displayNextButton(false);
 
         plantGrowth.addTextChangedListener(new TextWatcher() {
@@ -211,7 +210,6 @@ public class addCustomPlant extends AppCompatActivity {
             }
         });
 
-
         plantName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -229,7 +227,7 @@ public class addCustomPlant extends AppCompatActivity {
             }
         });
 
-        dropDownMenus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() { //Listening to see if there are any changes to the clicked drop down
+    /*    dropDownMenus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() { //Listening to see if there are any changes to the clicked drop down
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedItem = parent.getItemAtPosition(position).toString(); //this is your selected item
                 if (selectedItem == GlobalConstants.DROPDOWNCHOICES[1] && indoorPlant.isChecked() == true) {
@@ -242,7 +240,7 @@ public class addCustomPlant extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
-        });
+        });*/
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -265,42 +263,6 @@ public class addCustomPlant extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        indoorPlant.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                boolean checked = ((CheckBox) v).isChecked();
-                if (checked == true) {
-
-                    layout.addView(dropDownMenus);
-
-                    dropDownMenus.getLayoutParams().width = convertDipToPixels(v.getContext(), 200f);
-                    //   dropDownMenus.getLayoutParams().height = co;
-                    dropDownMenus.setBackgroundResource(R.drawable.dropdown);
-
-                    layout_constraint.clone(layout);
-
-
-                    layout_constraint.connect(dropDownMenus.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
-                    layout_constraint.connect(dropDownMenus.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
-                    layout_constraint.connect(dropDownMenus.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
-                    layout_constraint.connect(dropDownMenus.getId(), ConstraintSet.TOP, indoorPlant.getId(), ConstraintSet.BOTTOM, 0);
-
-                    layout_constraint.setVerticalBias(dropDownMenus.getId(), 0);
-                    layout_constraint.setHorizontalBias(dropDownMenus.getId(), 0.1f);
-                    layout_constraint.applyTo(layout);
-                    if (GlobalConstants.DROPDOWNCHOICES[1] == dropDownMenus.getSelectedItem().toString()) {
-                        setSunlightAddition(true); //Definitely want to check this to false
-                    }
-
-                } else {
-                    layout.removeView(dropDownMenus); //
-                    setSunlightAddition(false); //Definitely want to check this to false
-                }
-
-            }
-        });
-
     }
 
     public void displayNextButton(boolean display) {
@@ -317,18 +279,10 @@ public class addCustomPlant extends AppCompatActivity {
         //Scenario 1, we have all our entries entered, and the growing indoors button is unchecked
         if (plantGrowth.getText().toString().isEmpty() != true
                 && sunlight_text.getText().toString().isEmpty() != true
-                && plantName.getText().toString().isEmpty() != true
-                && GlobalConstants.DROPDOWNCHOICES[1] == dropDownMenus.getSelectedItem().toString()
-                && lightHours.getVisibility() == View.INVISIBLE) {
+                && plantName.getText().toString().isEmpty() != true) {
 //If this is is the case, then we have all of our paramaters checked
             displayNextButton(true);
             //Enable the button
-        } else if (plantGrowth.getText().toString().isEmpty() != true
-                && plantName.getText().toString().isEmpty() != true
-                && GlobalConstants.DROPDOWNCHOICES[0] == dropDownMenus.getSelectedItem().toString()
-                && lightHours.getVisibility() == View.INVISIBLE) {
-            //Then we will set the enable button
-            displayNextButton(true);
         } else {
             //Otherwise it will be turned off
             displayNextButton(false);

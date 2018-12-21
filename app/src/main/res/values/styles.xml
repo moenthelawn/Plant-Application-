@@ -6,6 +6,12 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
     </style>
 
+    <style name="MySeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressBackgroundTint">#b1dcff</item>
+        <item name="android:progressTint">#70bf5e</item>
+        <item name="android:colorControlActivated">#c51162</item>
+    </style>
 </resources>

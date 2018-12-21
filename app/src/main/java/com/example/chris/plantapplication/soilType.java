@@ -1,5 +1,7 @@
 package com.example.chris.plantapplication;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,45 +38,61 @@ public class soilType extends AppCompatActivity {
         siltysoil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MainActivity.class);
+
+                Intent activityThatCalled = getIntent();
+
+                int buttonID = activityThatCalled.getIntExtra("Button ID", 0); //get the button session ID so we can modify its .xml paramaters
+                int slotNumber = activityThatCalled.getIntExtra("Slot Number", 0); //get the button session ID so we can modify its .xml paramaters
+
+                Intent intent = new Intent(v.getContext(), MainActivity.class); //Off to let the user chose their soil
+                intent.putExtra("Button ID", buttonID); //Add the button ID as extra such that we can monitor the plant's graph
+                intent.putExtra("Slot Number", slotNumber);
                 startActivity(intent);
             }
         });
         chalkkysoil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MainActivity.class);
-                startActivity(intent);
+                callIntent(v.getContext(),MainActivity.class);
+
             }
         });
         sandysoil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MainActivity.class);
-                startActivity(intent);
+                callIntent(v.getContext(),MainActivity.class);
             }
         });
         loamysoil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MainActivity.class);
-                startActivity(intent);
+                callIntent(v.getContext(),MainActivity.class);
             }
         });
         claysoil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MainActivity.class);
-                startActivity(intent);
+                callIntent(v.getContext(),MainActivity.class);
             }
         });
         peatysoil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MainActivity.class);
-                startActivity(intent);
+                callIntent(v.getContext(),MainActivity.class);
             }
         });
-    }
 
+    }
+    public void callIntent(Context c, Class destination){
+
+        Intent activityThatCalled = getIntent();
+
+        int buttonID = activityThatCalled.getIntExtra("Button ID", 0); //get the button session ID so we can modify its .xml paramaters
+        int slotNumber = activityThatCalled.getIntExtra("Slot Number", 0); //get the button session ID so we can modify its .xml paramaters
+
+        Intent intent = new Intent(c, destination); //Off to let the user chose their soil
+        intent.putExtra("Button ID", buttonID); //Add the button ID as extra such that we can monitor the plant's graph
+        intent.putExtra("Slot Number", slotNumber);
+        startActivity(intent);
+    }
 }

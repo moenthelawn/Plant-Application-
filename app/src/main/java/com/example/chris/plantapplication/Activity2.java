@@ -44,17 +44,8 @@ public class Activity2 extends AppCompatActivity {
         customPlant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //We want to move to activity addCustomPlant
-                Intent activityThatCalled = getIntent();
+                callIntent(v.getContext(),chooseParamaterType.class);
 
-                int buttonID = activityThatCalled.getIntExtra("Button ID", 0); //get the button session ID so we can modify its .xml paramaters
-                int slotNumber = activityThatCalled.getIntExtra("Slot Number", 0); //get the button session ID so we can modify its .xml paramaters
-
-                Intent inten1 = new Intent(v.getContext() , addCustomPlant.class);
-                inten1.putExtra("Button ID",buttonID);
-                inten1.putExtra("Slot Number",slotNumber);
-
-                startActivity(inten1);
             }
         });
 
@@ -90,17 +81,24 @@ public class Activity2 extends AppCompatActivity {
 
                 allPlants.addPlant("Basil", buttonID, slotNumber, harvestPeriod_days, cropCoefficients, 0.25f, 22.5f,maxGrowthDays);
 //We want to move to activity addCustomPlant
-
-                Intent inten1 = new Intent(v.getContext() , soilType.class);
-                inten1.putExtra("Button ID",buttonID);
-                inten1.putExtra("Slot Number",slotNumber);
-                startActivity(inten1);
+                callIntent(v.getContext(),soilType.class);
                 //openMainActivity("Basil");
             }
         });
 
     }
+    public void callIntent(Context c, Class destination){
 
+        Intent activityThatCalled = getIntent();
+
+        int buttonID = activityThatCalled.getIntExtra("Button ID", 0); //get the button session ID so we can modify its .xml paramaters
+        int slotNumber = activityThatCalled.getIntExtra("Slot Number", 0); //get the button session ID so we can modify its .xml paramaters
+
+        Intent intent = new Intent(c, destination); //Off to let the user chose their soil
+        intent.putExtra("Button ID", buttonID); //Add the button ID as extra such that we can monitor the plant's graph
+        intent.putExtra("Slot Number", slotNumber);
+        startActivity(intent);
+    }
     public void openMainActivity(String PlantName) { //We want to open that activity and navigate over to the specific class
         Intent activityThatCalled = getIntent();
 
