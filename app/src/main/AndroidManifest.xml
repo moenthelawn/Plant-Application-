@@ -33,7 +33,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".chooseParamaterType" />
-        <activity android:name=".chooseTiming"></activity>
+        <activity android:name=".chooseTiming" />
+        <activity android:name=".PlantDepth"></activity>
     </application>
 
 </manifest>
