@@ -27,7 +27,7 @@ public class plantDataBase<E> {
 
         int empty1[] = {-1};
         double empty3[][] = {{-1}};
-        Plant empty = new Plant("", -1, -1, empty1, empty3, -1f, -1f,0);
+        Plant empty = new Plant("", -1, -1, empty1, empty3, -1f, -1f, 0,"");
         return empty; //otherwise we return empty
     }
 
@@ -56,6 +56,10 @@ public class plantDataBase<E> {
             }
         }
         return false;
+    }
+
+    public void setSoilType(int slotNumber,String soilType){
+        allPlants[slotNumber - 1].SoilType = soilType;
     }
 
     //public void setPlantByString(String Name, int buttonID, int slotNumberID) {
@@ -100,16 +104,19 @@ public class plantDataBase<E> {
     }
 
     public void addPlant(String PlantName, int buttonID, int slotNumber,
-                         int[] harvestPeriod_days, double[][] cropCoefficients, float p, float temp,int totalNumberDays) {
+                         int[] harvestPeriod_days, double[][] cropCoefficients, float p, float temp, int totalNumberDays,String plantType) {
 
-        allPlants[slotNumber - 1] = new Plant(PlantName, buttonID, slotNumber, harvestPeriod_days, cropCoefficients, p, temp,totalNumberDays);
+        allPlants[slotNumber - 1] = new Plant(PlantName, buttonID, slotNumber, harvestPeriod_days, cropCoefficients, p, temp, totalNumberDays,plantType);
         added = true;
     }
 
+    public void addPlant_SlotNumber(int slotNumber, Plant plant) {
+        allPlants[slotNumber - 1] = plant;
+        added = true;
+    }
 
     public Plant getPlant(String Name, int slotNumber) {
         return allPlants[slotNumber - 1];
-
     }
 
     public boolean isAdded() {

@@ -257,14 +257,27 @@ public class addCustomPlant extends AppCompatActivity {
                 int[] harvestPeriod = {growthPeriod};
                 double[][] cropCoefficients = {{0}}; //For now the crop coefficients we will be set to zero until we figure this out
 
-                plantDataBase.getInstance().addPlant(plantNamed, buttonID, slotNumber, harvestPeriod, cropCoefficients, 0.2f, 3, growthPeriod);
+                plantDataBase.getInstance().addPlant(plantNamed, buttonID, slotNumber, harvestPeriod, cropCoefficients, 0.2f, 3, growthPeriod,"Calculated");
 
                 Intent intent = new Intent(v.getContext(), soilType.class);
+                intent.putExtra("Button ID", buttonID); //Add the button ID as extra such that we can monitor the plant's graph
+                intent.putExtra("Slot Number", slotNumber);
                 startActivity(intent);
             }
         });
     }
+    public void callIntent(Context c, Class destination){
 
+        Intent activityThatCalled = getIntent();
+
+        int buttonID = activityThatCalled.getIntExtra("Button ID", 0); //get the button session ID so we can modify its .xml paramaters
+        int slotNumber = activityThatCalled.getIntExtra("Slot Number", 0); //get the button session ID so we can modify its .xml paramaters
+
+        Intent intent = new Intent(c, destination); //Off to let the user chose their soil
+        intent.putExtra("Button ID", buttonID); //Add the button ID as extra such that we can monitor the plant's graph
+        intent.putExtra("Slot Number", slotNumber);
+        startActivity(intent);
+    }
     public void displayNextButton(boolean display) {
         if (display == true) {
             next.setVisibility(next.VISIBLE);
@@ -313,4 +326,5 @@ public class addCustomPlant extends AppCompatActivity {
     }
     //lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
 }
+
 

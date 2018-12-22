@@ -79,7 +79,7 @@ public class Activity2 extends AppCompatActivity {
                 // basilPlant.setpFactor(0.25); //Hardcoded value for the plant database
                 //     basilPlant.setMeanTemperature(22.5);
 
-                allPlants.addPlant("Basil", buttonID, slotNumber, harvestPeriod_days, cropCoefficients, 0.25f, 22.5f,maxGrowthDays);
+                allPlants.addPlant("Basil", buttonID, slotNumber, harvestPeriod_days, cropCoefficients, 0.25f, 22.5f,maxGrowthDays,"Predetermined");
 //We want to move to activity addCustomPlant
                 callIntent(v.getContext(),soilType.class);
                 //openMainActivity("Basil");

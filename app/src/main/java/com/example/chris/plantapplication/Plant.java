@@ -23,24 +23,30 @@ public class Plant {
     private float growth_EachDay[];
     private float RoomTemperature;
     private float airHumidity;
+    String plantType;
+
+    String SoilType;
 
     private double pFactor; //Represents the percentage of sunlight received
     private double MeanTemperature; //As determined from Ed's database
 
 
-    public Plant(String Name, int buttonID, int slotNumber, int[] harvestPeriod_days, double[][] cropCoefficient, double p, float temperature, int totalNumberDays) {
+    public Plant(String Name, int buttonID, int slotNumber, int[] harvestPeriod_days, double[][] cropCoefficient, double p, float temperature, int totalNumberDays,String plantType) {
         this.slotNumber = slotNumber;
         this.Name = Name; //We haven't named it yet
         this.buttonNumber = buttonID;
         this.HarvestDayLength = harvestPeriod_days;
         this.cropCoefficients = cropCoefficient;
         this.pFactor = p;
+        this.plantType = plantType;
+
         this.RoomTemperature = temperature;
         this.totalNumberDays = totalNumberDays;
 
         this.growth_EachDay = new float[totalNumberDays]; //Declaring a double array to hold the amount of days we have in our
         initializeGrowth_Each_Day();
 
+        this.SoilType = ""; //set the soil type to a non value
 
         this.currentDayNumber = 1; //start the day counter
         growthStage = 1; //automatic default set to one
@@ -100,6 +106,7 @@ public class Plant {
     public float[] getDayGrowth() {
         return this.growth_EachDay;
     }
+
 
     public int getTotalGrowthPeriodDays(int dayNumber) {
         //This function will take in the day number, and find the corresponding harvest period
