@@ -46,7 +46,8 @@ public class chooseTiming extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callIntent(v.getContext(),soilType.class);
+
+                callIntent(v.getContext(),MainActivity.class);
 
             }
         });
