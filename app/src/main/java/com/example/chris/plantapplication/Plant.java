@@ -29,9 +29,9 @@ public class Plant {
 
     private double pFactor; //Represents the percentage of sunlight received
     private double MeanTemperature; //As determined from Ed's database
+    float plantDepth;
 
-
-    public Plant(String Name, int buttonID, int slotNumber, int[] harvestPeriod_days, double[][] cropCoefficient, double p, float temperature, int totalNumberDays,String plantType) {
+    public Plant(String Name, int buttonID, int slotNumber, int[] harvestPeriod_days, double[][] cropCoefficient, double p, float temperature, int totalNumberDays, String plantType) {
         this.slotNumber = slotNumber;
         this.Name = Name; //We haven't named it yet
         this.buttonNumber = buttonID;
@@ -50,6 +50,7 @@ public class Plant {
 
         this.currentDayNumber = 1; //start the day counter
         growthStage = 1; //automatic default set to one
+        plantDepth = 0;
     }
 
     private void initializeGrowth_Each_Day() {
@@ -73,6 +74,10 @@ public class Plant {
 
     public int getButtonNumber() {
         return buttonNumber;
+    }
+
+    public void setPlantDepth(float depth){
+        this.plantDepth = depth;
     }
 
     public int pastIndices(int past) {

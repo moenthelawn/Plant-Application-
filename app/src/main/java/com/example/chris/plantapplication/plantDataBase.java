@@ -62,6 +62,9 @@ public class plantDataBase<E> {
         allPlants[slotNumber - 1].SoilType = soilType;
     }
 
+    public void setPlantGrowingDepth(int slotNumber,float depth){
+
+    }
     //public void setPlantByString(String Name, int buttonID, int slotNumberID) {
 
 

@@ -60,13 +60,15 @@ public class PlantDepth extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                float plantDepth = Float.parseFloat(plantDepthsText.getText().toString());
+                plantH.setPlantGrowingDepth(slotNumber, plantDepth);
                 callIntent(v.getContext(), MainActivity.class);
             }
         });
     }
 
     public void callIntent(Context c, Class destination) {
-
         Intent intent = new Intent(c, destination); //Off to let the user chose their soil
         intent.putExtra("Button ID", buttonID); //Add the button ID as extra such that we can monitor the plant's graph
         intent.putExtra("Slot Number", slotNumber);
