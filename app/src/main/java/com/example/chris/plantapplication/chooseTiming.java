@@ -63,8 +63,9 @@ public class chooseTiming extends AppCompatActivity {
                 int slotNumber = getActivityThatCalled.getIntExtra("Slot Number", 0); //get the button session ID so we can modify its .xml paramaters
                 float cropCoefficient = -1;
                 Plant plant = new Plant(name, buttonID,slotNumber, HarvestDays,cropCoefficient, -1,-1,"Manual");
-                plantDataBase.getInstance().addPlant_SlotNumber(slotNumber, plant);
 
+                //Add the plant to the database
+                plantDataBase.getInstance().addPlant_SlotNumber(slotNumber, plant);
                 plant.setWaterRequirement_Manual(waterAmount);
                 callIntent(v.getContext(),MainActivity.class);
             }

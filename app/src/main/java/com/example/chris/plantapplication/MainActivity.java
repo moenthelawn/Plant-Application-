@@ -97,6 +97,44 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+    public int getGrowthStage(int harvestDayLength, int currentDayNumber){
+        float fraction = currentDayNumber / harvestDayLength;
+        if (fraction >= 0f && fraction < 0.25f){
+            return 1;
+        }
+        else if(fraction >= 0.25f && fraction < 0.50f){
+            return 2;
+        }
+        else if (fraction >= 0.5f && fraction < 0.75f){
+            return 3;
+        }
+        else {
+            return 4;
+        }
+
+
+    }
+    private void setGrowthStage(Plant plant){
+        int slotNumber = plant.getSlotNumber();
+        int currentDayNumber = plant.getCurrentDayNumber();
+        /*int totalDays = plant.geg*/
+        int harvestDayLength = plant.getHarvestDayLength();
+        int growthStage = getGrowthStage(harvestDayLength, currentDayNumber);
+
+        if (slotNumber == 1){
+            ImageView harvest = findViewById(R.id.imageView13);
+            setGrowthStageImage(harvest, growthStage);
+        }
+        else if (slotNumber == 2){
+            ImageView harvest = findViewById(R.id.imageView16);
+            setGrowthStageImage(harvest, growthStage);
+        }
+        else{
+            ImageView harvest = findViewById(R.id.imageView12);
+            setGrowthStageImage(harvest, growthStage);
+        }
+
+    }
 
     private void setGrowthStageImage(ImageView harvest, int growthStage) {
         //Sets the current growth stage of the plant
@@ -141,13 +179,51 @@ public class MainActivity extends AppCompatActivity {
                         ImageButton changingButton = (ImageButton) findViewById(currentButtonID);
                         changingButton.setImageResource(R.drawable.planteye);//Update it to the eye symbol so that we know it is already in plac
 
+                        setGrowthStage(currentPlant);
                         //   threeButtons.setButtonNumberToSlot(currentButtonID, slotNumber); //Set the current slots number
                         //   threeButtons.setPlant(currentButtonID, allPlants[i], slotNumber);
                         updateButtonText(slotNumber, allPlants[i].getName(), allPlants[i]);
                     }
                 }
+                else if (currentPlant == null){
+                    //If the plant is null then we will remove that plant from the diagram
+                    removePlant(i + 1);
+                }
             }
         }
+    }
+    public void removePlant(int slotNumber){
+        ImageView harvestSlot1 = findViewById(R.id.imageView13); //Corresponding image button attached to it
+        ImageView harvestSlot2 = findViewById(R.id.imageView16); //Corresponding image button attached to it
+        ImageView harvestSlot3 = findViewById(R.id.imageView12); //Corresponding image button attached to it
+
+        ImageButton addPlantSlot1 = findViewById(R.id.imageButton4);
+        ImageButton addPlantSlot2 = findViewById(R.id.imageButton6);
+        ImageButton addPlantSlot3 = findViewById(R.id.imageButton7);
+
+        TextView plantTextSlot1 = findViewById(R.id.textView4);
+        TextView plantTextSlot2 = findViewById(R.id.textView12);
+        TextView plantTextSlot3 = findViewById(R.id.textView13);
+
+        //For each slot, we will remove the image and put back the image of the empty icon
+        if (slotNumber == 1){
+            harvestSlot1.setVisibility(harvestSlot1.INVISIBLE);
+            addPlantSlot1.setImageResource(R.drawable.plantstaff);
+            plantTextSlot1.setText("Plant 1");
+
+        }
+        else if (slotNumber == 2){
+            harvestSlot2.setVisibility(harvestSlot2.INVISIBLE);
+            addPlantSlot2.setImageResource(R.drawable.plantstaff);
+            plantTextSlot2.setText("Plant 2");
+        }
+        else{
+            harvestSlot3.setVisibility(harvestSlot3.INVISIBLE);
+            addPlantSlot3.setImageResource(R.drawable.plantstaff);
+            plantTextSlot3.setText("Plant 3");
+
+        }
+
     }
 
     public static int convertDipToPixels(Context context, float dips) {
@@ -187,7 +263,6 @@ public class MainActivity extends AppCompatActivity {
             //Now we want to submit all the data to the corresponding plant
             CurrentPlant.setRoomTemperature(airTemperature);
             CurrentPlant.setAirHumidity(airHumidity);
-            CurrentPlant.setCurrentDayNumber(numberDay);
             CurrentPlant.setDayGrowth_Number(numberDay - 1, height);
 
             //Send the correct watering amount to the server database
@@ -208,8 +283,6 @@ public class MainActivity extends AppCompatActivity {
         //Now we need to update the entire UI of the system
         updateWaterTankLevels(waterTank); //This will update the level of the water tank based on the image provided
         updatePlantDataBase(plantSlot, airTemperature, airHumidity, numberDay, height);
-
-
     }
 
     private void addPlants() {
@@ -247,7 +320,6 @@ public class MainActivity extends AppCompatActivity {
                 //If this button is clicked, then we will open activity2
                 moveWateringHeightMeter(2); //Move the watering meter which corresponds to the seoncd position in the plant vase
                 openActivity2(button1.getId(), 2);
-
             }
 
         });
@@ -258,7 +330,6 @@ public class MainActivity extends AppCompatActivity {
                 moveWateringHeightMeter(3);
                 openActivity2(button2.getId(), 3);
             }
-
         });
     }
 

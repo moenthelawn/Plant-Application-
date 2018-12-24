@@ -22,7 +22,10 @@ import org.w3c.dom.Text;
 
 public class PlantMoniteringSlot1 extends AppCompatActivity {
     private plantDataBase plantH; //Plant Database
+    private Plant currentPlant;
+
     private ImageButton backButton;
+    private ImageButton HarvestButton;
     int buttonID_Called;
     int slot_ID_Called;
     private LineGraphSeries<DataPoint> series;
@@ -33,23 +36,26 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         needle = new Needle(this);
-        needle = findViewById(R.id.myNeedle);
+        needle = (Needle) findViewById(R.id.myNeedle);
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plant_monitering_slot1);
         //We want to grab an instance of the plant data base that will be used for this slot
         //needle = findViewById(R.id.imageView6); //The image of the needle
 
+        HarvestButton = (ImageButton) findViewById(R.id.imageButton5);
         double x = 0;
         double y = 0;
 
         GraphView graph = (GraphView) findViewById(R.id.graph_plants);
         series = new LineGraphSeries<DataPoint>();
 
-      //  for(int i =0;i < 500;i++){
+        //  for(int i =0;i < 500;i++){
         //    x = x + 0.1;
         //    y = Math.sin(x);
-       //     series.appendData(new DataPoint(x,y),true,500);
-      //  }
+        //     series.appendData(new DataPoint(x,y),true,500);
+        //  }
         graph.addSeries(series);
 
         plantH = plantDataBase.getInstance();
@@ -58,6 +64,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         buttonID_Called = activityThatCalled.getIntExtra("Button ID", 0); //get the button session ID so we can modify its .xml paramaters
         slot_ID_Called = activityThatCalled.getIntExtra("Slot Number", 0);
 
+        currentPlant = plantH.getPlantBySlot(slot_ID_Called);
         Log.i("Passed Value", "Button " + Integer.toString(buttonID_Called) + "passed to PlanMoniteringSlot1.java");
         displayPlantData(slot_ID_Called);
 
@@ -70,13 +77,14 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
             public void onClick(View v) {
                 //If this button is clicked, we also need to change the previous button pressed from the other screen
                 //If this button is clicked, then we will open activity2
-                Plant currentPlant_Slot = plantH.getPlantByButtonNumber(buttonID_Called);
-                openMainActivity(currentPlant_Slot.getName());
+
+                openMainActivity();
             }
         });
+
     }
 
-    public void openMainActivity(String PlantName) { //We want to open that activity and navigate over to the specific class
+    public void openMainActivity() { //We want to open that activity and navigate over to the specific class
 
         finish();
         //         Intent intent = new Intent(this, MainActivity.class);
@@ -111,8 +119,8 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
     public void animateHarvestTimeProgress(int dayNumber, int totalElapsedDays) {
         final ProgressBar currentProgress = findViewById(R.id.progressBar);
         int currentProg = currentProgress.getProgress();
-        double growthP = ((double) dayNumber / (double) totalElapsedDays);
-        double growthP_inverse = 1 - growthP;
+        double growthP = ((double) totalElapsedDays / (double) dayNumber);
+        double growthP_inverse = growthP;
 
         int growthPercentage = (int) (100 * growthP_inverse);
 
@@ -143,8 +151,16 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         if (remainingDays <= 0) {
             //Then we need to add a button that says we should harvest the plant
             harvestButton.setVisibility(harvestButton.VISIBLE); //This will control the visibility for the Harvest button
+            HarvestButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Once we do this, we will delete the plant from the database since it is no longer needed to harvest
+                    plantH.deletePlant(currentPlant);
+                }
+            });
             harvestName.setVisibility(harvestName.VISIBLE);// This will control the visibility for the text that overlays the harvest button
             timeTillHarvest.setVisibility(timeTillHarvest.INVISIBLE);
+            animateHarvestTimeProgress(remainingDays, remainingDays); //We want to animate the change in the progress bar
 
         } else {
             harvestButton.setVisibility(harvestButton.INVISIBLE); //If we have time remaining in the slot, then there is no point in displaying it
@@ -157,7 +173,6 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
     }
 
     public void updatePlantGrowth(int dayNumber, float[] growth_EachDay) {
-
 
     }
 

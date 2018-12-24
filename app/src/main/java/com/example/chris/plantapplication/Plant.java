@@ -4,9 +4,9 @@ import android.provider.Settings;
 import android.widget.Button;
 
 
-
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import static java.lang.StrictMath.pow;
 
@@ -24,11 +24,11 @@ public class Plant {
     private float humiditySensor; //Relative humidity sensor as a percentage
     private int HarvestDayLength; // Array of the days allocated over each individual harvest period
     private float cropCoefficients; //Represents the coefficients for the crop coefficients that will be used to calculate the amount of water the plant will need as a function of the number of days
-    private int currentDayNumber;
     private float growth_EachDay[];
     private float RoomTemperature;
     private float airHumidity;
     private String plantType;
+    private Boolean hasBeenWatered;
 
     private String SoilType;
 
@@ -40,7 +40,7 @@ public class Plant {
 
     public Plant(String Name, int buttonID, int slotNumber, int harvestPeriod_days, float cropCoefficient, float p, float temperature, String plantType) {
         this.slotNumber = slotNumber;
-        this.Name = Name; //We hagven't named it yet
+        this.Name = Name; //We haven't named it yet
         this.buttonNumber = buttonID;
         this.HarvestDayLength = harvestPeriod_days;
         this.cropCoefficients = cropCoefficient;
@@ -50,17 +50,28 @@ public class Plant {
         this.RoomTemperature = temperature;
         this.waterRequirement_Manual = -1; //Default is set to -1 in that we haven't started using it yet unless it is specified as a manual inputted plant
         this.SoilType = ""; //set the soil type to a non value
-        this.currentDayNumber = 1; //start the day counter
         this.plantDepth = 0;
         this.startDate = Calendar.getInstance();
         this.growth_EachDay = new float[harvestPeriod_days]; //Declaring a double array to hold the amount of days we have in our
 
         initializeGrowth_Each_Day();
     }
-    public int getRemainingDays_Harvest(){
-        int remaining = HarvestDayLength - currentDayNumber;
+    public int getHarvestDayLength(){
+        return this.HarvestDayLength;
+    }
+    public int getCurrentDayNumber(){
+        long msDiff = Calendar.getInstance().getTimeInMillis() - startDate.getTimeInMillis();
+        long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
+        int difference = (int) daysDiff;
+        return difference; //The difference between the current date and the start date will give us our current day number
+    }
+
+    public int getRemainingDays_Harvest() {
+        int remaining = HarvestDayLength - getCurrentDayNumber();
+
         return remaining;
     }
+
     private void initializeGrowth_Each_Day() {
         for (int i = 0; i < growth_EachDay.length; i++) {
             growth_EachDay[i] = 0.00f; //We want to initialize all paramaters to zero for the default plant height growth
@@ -172,7 +183,6 @@ public class Plant {
             }
         }
         return growth_EachDay.length;
-
     }
 
     public float[] getWeek_days(int weeks) {
@@ -239,7 +249,6 @@ public class Plant {
         }
     }
 
-
     public void setpFactor(float pFactor) {
         this.pFactor = pFactor;
     }
@@ -265,13 +274,7 @@ public class Plant {
         this.airHumidity = airHumidity;
     }
 
-    public int getCurrentDayNumber() {
-        return currentDayNumber;
-    }
 
-    public void setCurrentDayNumber(int currentDayNumber) {
-        this.currentDayNumber = currentDayNumber;
-    }
 
     public float getHumiditySensor() {
         return humiditySensor;
@@ -317,4 +320,23 @@ public class Plant {
         this.water_remaining_current_day = water_remaining_current_day;
     }
 
+    public void setMeanTemperature(float meanTemperature) {
+        MeanTemperature = meanTemperature;
+    }
+
+    public int getCurrentPlantHeight() {
+        return currentPlantHeight;
+    }
+
+    public void setCurrentPlantHeight(int currentPlantHeight) {
+        this.currentPlantHeight = currentPlantHeight;
+    }
+
+    public int[] getPlantHeightDays() {
+        return plantHeightDays;
+    }
+
+    public void setPlantHeightDays(int[] plantHeightDays) {
+        this.plantHeightDays = plantHeightDays;
+    }
 }
