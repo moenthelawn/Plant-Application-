@@ -80,21 +80,18 @@ public class MainActivity extends AppCompatActivity {
             //Update it to say the plants name
             TextView plantText = (TextView) findViewById(R.id.textView4);
             plantText.setText(Text);
-            setGrowthStageImage(harvest, currentPlant.getGrowthStage());
 
         } else if (slotNumber == (2)) { //slot 2
             //Update it to say the plants name
             ImageView harvest = findViewById(R.id.imageView16);//Corresponding image button attached to it
 
             TextView plantText = (TextView) findViewById(R.id.textView12);
-            setGrowthStageImage(harvest, currentPlant.getGrowthStage());
             plantText.setText(Text);
         } else if (slotNumber == (3)) { //slot 3
             //Update it to say the plants name
             ImageView harvest = findViewById(R.id.imageView12);//Corresponding image button attached to it
 
             TextView plantText = (TextView) findViewById(R.id.textView13);
-            setGrowthStageImage(harvest, currentPlant.getGrowthStage());
 
             plantText.setText(Text);
         }
@@ -106,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
 
         //We have all of our image views corresponding to each image
         //Slot 3
-
         if (growthStage == 0){
             harvest.setImageResource(R.drawable.growthstage1);
             harvest.setVisibility(harvest.INVISIBLE);
@@ -192,7 +188,6 @@ public class MainActivity extends AppCompatActivity {
             CurrentPlant.setRoomTemperature(airTemperature);
             CurrentPlant.setAirHumidity(airHumidity);
             CurrentPlant.setCurrentDayNumber(numberDay);
-            CurrentPlant.setGrowthStage_DayNumber(numberDay);
             CurrentPlant.setDayGrowth_Number(numberDay - 1, height);
 
             //Send the correct watering amount to the server database

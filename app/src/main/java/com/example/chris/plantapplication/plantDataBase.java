@@ -11,6 +11,7 @@ public class plantDataBase<E> {
     private Plant[] allPlants;
     private boolean added;
     private Plant plant;
+    private static SoilStorage soilData;
 
     public Plant getPlantByButtonNumber(int buttonNumber) {
         //Here we will want to grab the plants data based on the inputted button number
@@ -25,9 +26,9 @@ public class plantDataBase<E> {
             }
         }
 
-        int empty1[] = {-1};
-        double empty3[][] = {{-1}};
-        Plant empty = new Plant("", -1, -1, empty1, empty3, -1f, -1f, 0,"");
+        int empty1 = -1;
+        float empty3 = -1;
+        Plant empty = new Plant("", -1, -1, empty1, -1f, -1f, -1, "");
         return empty; //otherwise we return empty
     }
 
@@ -58,12 +59,44 @@ public class plantDataBase<E> {
         return false;
     }
 
-    public void setSoilType(int slotNumber,String soilType){
-        allPlants[slotNumber - 1].SoilType = soilType;
+    public void setSoilType(int slotNumber, String soilType) {
+        allPlants[slotNumber - 1].setSoilType(soilType);
     }
 
-    public void setPlantGrowingDepth(int slotNumber,float depth){
+    public void setPlantGrowingDepth(int slotNumber, float depth) {
+        allPlants[slotNumber - 1].setPlantDepth(depth);
+    }
 
+    public float getWaterAmount_Interrupt(int slotNumber) {
+        //This function will be called when there is a timer interrupt to determine how much water a plant should get after a certain amount of time
+        Plant currentPlant = allPlants[slotNumber - 1];
+        float maxWaterAmount = soilData.getMaxWaterAmount(currentPlant.getPlantDepth(), currentPlant.getSoilType()); //Current plant depth
+        // if (maxWaterAmount > currentPlant.get)
+
+        float water_plant_remaining = currentPlant.getWater_remaining_current_day();
+        if (water_plant_remaining == 0) {
+            if (currentPlant.getPlantType() == GlobalConstants.Predetermined) {
+                //Then we wil execute the predetermined watering amount calculation which is based on the crop factor etc
+                float waterRequirement_Predetermined = currentPlant.calculateWater_PreDetermined();
+
+                if (waterRequirement_Predetermined <= maxWaterAmount) {
+                    //Send the water off
+                    return waterRequirement_Predetermined;
+                } else {
+                    //set the leftover water amount
+                    float leftOver = waterRequirement_Predetermined - maxWaterAmount;
+                    currentPlant.setWater_remaining_current_day(leftOver);
+                }
+
+            } else if (currentPlant.getPlantType() == GlobalConstants.Manual) {
+                //   double currentPlantWaterAmount = currentPlant.get
+                float currentPlantWaterAmount_Manual = currentPlant.getWaterRequirement_Manual();//There is no need to compute the maximum amount of water that could be sent at a given time since the user specifies how much they would like to get at any given point in time
+                return currentPlantWaterAmount_Manual;
+            }
+        } else {
+            return water_plant_remaining;
+        }
+        return maxWaterAmount;
     }
     //public void setPlantByString(String Name, int buttonID, int slotNumberID) {
 
@@ -107,9 +140,9 @@ public class plantDataBase<E> {
     }
 
     public void addPlant(String PlantName, int buttonID, int slotNumber,
-                         int[] harvestPeriod_days, double[][] cropCoefficients, float p, float temp, int totalNumberDays,String plantType) {
+                         int harvestPeriod_days, float cropCoefficient, float p, float temp, String plantType) {
 
-        allPlants[slotNumber - 1] = new Plant(PlantName, buttonID, slotNumber, harvestPeriod_days, cropCoefficients, p, temp, totalNumberDays,plantType);
+        allPlants[slotNumber - 1] = new Plant(PlantName, buttonID, slotNumber, harvestPeriod_days, cropCoefficient, p, temp, plantType);
         added = true;
     }
 

@@ -27,16 +27,6 @@ public class Activity2 extends AppCompatActivity {
 
     }
 
-    private int determineMaxGrowthDays(int growthPeriods[]) {
-        //This function will determine the maximum amount of growing days based on the harvest days
-        int daySum = 0;
-        for (int i = 0; i < growthPeriods.length; i++) {
-            daySum += growthPeriods[i];
-        }
-        return daySum;
-    }
-
-
     private void addPlants() { //we monitor the plants
 
         basil = (ImageButton) findViewById(R.id.imageButton8);
@@ -44,7 +34,7 @@ public class Activity2 extends AppCompatActivity {
         customPlant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callIntent(v.getContext(),chooseParamaterType.class);
+                callIntent(v.getContext(),chooseTiming.class);
 
             }
         });
@@ -68,10 +58,8 @@ public class Activity2 extends AppCompatActivity {
                 allPlants = plantDataBase.getInstance();
 
 
-                int harvestPeriod_days[] = {18, 51, 30, 30, 24, 0}; //The harvest is spanned over the length of the plant's duration
-
-                int maxGrowthDays = determineMaxGrowthDays(harvestPeriod_days);
-                double cropCoefficients[][] = {{0.72}, {0.292, 0.0236}, {-0.86, 0.0236}, {-1.17, 0.0236}, {-1.7364, 0.0236}, {1.5}};
+                int harvestPeriod_days = 153;//The harvest is spanned over the length of the plant's duration
+                float cropCoefficient = 0.73f;
 
 
                 //  basilPlant.setHarvestDayLength(harvestPeriod_days); //set the number of days
@@ -79,7 +67,7 @@ public class Activity2 extends AppCompatActivity {
                 // basilPlant.setpFactor(0.25); //Hardcoded value for the plant database
                 //     basilPlant.setMeanTemperature(22.5);
 
-                allPlants.addPlant("Basil", buttonID, slotNumber, harvestPeriod_days, cropCoefficients, 0.25f, 22.5f,maxGrowthDays,"Predetermined");
+                allPlants.addPlant("Basil", buttonID, slotNumber, harvestPeriod_days, cropCoefficient, 0.25f, 22.5f,"Predetermined");
 //We want to move to activity addCustomPlant
                 callIntent(v.getContext(),soilType.class);
                 //openMainActivity("Basil");

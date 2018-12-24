@@ -129,7 +129,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         animator.start();
     }
 
-    public void updateHarvestTime(int remainingDays, int totalElapsedDays) {
+    public void updateHarvestTime(int remainingDays, int currentDayNumber) {
         //The harvest day length will be updated with the correct day number. Once it reached the final growth stage,
         //Then we will update the plant
 
@@ -140,7 +140,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         ImageButton harvestButton = (ImageButton) findViewById(R.id.imageButton5);
         String HarvestTime = Integer.toString(remainingDays);
 
-        if (remainingDays == 0) {
+        if (remainingDays <= 0) {
             //Then we need to add a button that says we should harvest the plant
             harvestButton.setVisibility(harvestButton.VISIBLE); //This will control the visibility for the Harvest button
             harvestName.setVisibility(harvestName.VISIBLE);// This will control the visibility for the text that overlays the harvest button
@@ -152,7 +152,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
             timeTillHarvest.setVisibility(timeTillHarvest.VISIBLE);
 
             HarvestDay.setText(HarvestTime);
-            animateHarvestTimeProgress(remainingDays, totalElapsedDays); //We want to animate the change in the progress bar
+            animateHarvestTimeProgress(remainingDays, currentDayNumber); //We want to animate the change in the progress bar
         }
     }
 
@@ -171,15 +171,14 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         float humidity = requiredPlant.getAirHumidity();
         int dayNumber = requiredPlant.getCurrentDayNumber();
 
-        int remainingDays = requiredPlant.getRemainingDaysToHarvest(dayNumber);
-        int totalElapsedDays = requiredPlant.getTotalGrowthPeriodDays(dayNumber);
+        int remainingDays = requiredPlant.getRemainingDays_Harvest();
         //float growth_EachDay = requiredPlant.getGrowthStage()
         float growth_EachWeek[] = requiredPlant.getWeek_days((dayNumber / 7)); //getting the total number of days from the entire period
 
         //Update various paramaters for our plant statistics
         updateRoomTemperature(roomTemperature);
         updateHumidity(humidity);
-        updateHarvestTime(remainingDays, totalElapsedDays);
+        updateHarvestTime(remainingDays, dayNumber);
         updatePlantGrowth(dayNumber, growth_EachWeek);
 
         Log.i("Plant", requiredPlant.getName() + " added to PlantMoniteringSlot1");

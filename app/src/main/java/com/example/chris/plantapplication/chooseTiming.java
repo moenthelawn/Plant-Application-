@@ -29,8 +29,6 @@ public class chooseTiming extends AppCompatActivity {
         waterPlantName = (EditText) findViewById(R.id.editText4);
         plantGrowthDays = (EditText)findViewById(R.id.editText8);
 
-
-
         next = (Button) findViewById(R.id.button3);
         waterAmountText.setVisibility(waterAmountText.INVISIBLE);
 
@@ -58,15 +56,17 @@ public class chooseTiming extends AppCompatActivity {
                 //Now we want to create the plant and input it in with the correct paramaters
                 String name = waterPlantName.getText().toString();
                 float waterAmount = Float.parseFloat(waterAmountText.getText().toString());
-                int HarvestDays[] = {Integer.parseInt(plantGrowthDays.getText().toString())};
+                int HarvestDays = Integer.parseInt(plantGrowthDays.getText().toString());
 
                 Intent getActivityThatCalled = getIntent();
                 int buttonID = getActivityThatCalled.getIntExtra("Button ID", 0); //get the button session ID so we can modify its .xml paramaters
                 int slotNumber = getActivityThatCalled.getIntExtra("Slot Number", 0); //get the button session ID so we can modify its .xml paramaters
-                double CropCoefficients[][] = {{-1}};
-                Plant plant = new Plant(name, buttonID,slotNumber, HarvestDays,CropCoefficients, -1,-1,HarvestDays[0],"Manual");
-                callIntent(v.getContext(),MainActivity.class);
+                float cropCoefficient = -1;
+                Plant plant = new Plant(name, buttonID,slotNumber, HarvestDays,cropCoefficient, -1,-1,"Manual");
+                plantDataBase.getInstance().addPlant_SlotNumber(slotNumber, plant);
 
+                plant.setWaterRequirement_Manual(waterAmount);
+                callIntent(v.getContext(),MainActivity.class);
             }
         });
 

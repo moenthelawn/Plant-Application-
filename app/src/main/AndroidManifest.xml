@@ -23,7 +23,6 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".Activity2" />
         <activity android:name=".PlantMoniteringSlot1" />
-        <activity android:name=".addCustomPlant" />
         <activity android:name=".soilType" />
         <activity android:name=".Login">
             <intent-filter>
@@ -32,7 +31,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".chooseParamaterType" />
         <activity android:name=".chooseTiming" />
         <activity android:name=".PlantDepth"></activity>
     </application>
