@@ -66,20 +66,36 @@ public class plantDataBase<E> {
     public void setPlantGrowingDepth(int slotNumber, float depth) {
         allPlants[slotNumber - 1].setPlantDepth(depth);
     }
-    public void deletePlant(Plant currentPlant){
-     int slotNumber = currentPlant.getSlotNumber();
-     allPlants[slotNumber - 1] = null;
-     /*allPlants[slotNumber -1 ]*/
+
+    public void deletePlant(Plant currentPlant) {
+        int slotNumber = currentPlant.getSlotNumber();
+        allPlants[slotNumber - 1] = null;
+        /*allPlants[slotNumber -1 ]*/
     }
 
     public float getWaterAmount_Interrupt(int slotNumber) {
         //This function will be called when there is a timer interrupt to determine how much water a plant should get after a certain amount of time
         Plant currentPlant = allPlants[slotNumber - 1];
         float maxWaterAmount = soilData.getMaxWaterAmount(currentPlant.getPlantDepth(), currentPlant.getSoilType()); //Current plant depth
+
         // if (maxWaterAmount > currentPlant.get)
         float humiditySensor = currentPlant.getHumiditySensor();
         float water_plant_remaining = currentPlant.getWater_remaining_current_day();
 
+        /*
+        Sudo Code
+        if (the plant water needs exceed the maximum amount of water and the humidity soil sensor is at the minimum required amount ){
+            * Then we will send the maximum portion of the water
+            * Store the leftover portion and save that for the next time around
+        }
+        else if (the plant water needs do not exceed the amount of water and the humidity sensor is at the minmium required amount){
+             * Then we will send the amount of water that is needed
+
+        }
+
+
+         */
+        //This is if there is no more water remaining to be be fse
         if (water_plant_remaining == 0) {
             if (currentPlant.getPlantType() == GlobalConstants.Predetermined) {
                 //Then we wil execute the predetermined watering amount calculation which is based on the crop factor etc

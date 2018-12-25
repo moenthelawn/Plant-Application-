@@ -11,6 +11,8 @@ public class SoilStorage {
     private float loam;
     private float peaty;
 
+    private individualSoil[] allSoil;
+
     public SoilStorage() {
         //Pair<float, String> soilTypes = new Pair< <"Clay", 200>, <"Silt",>
         this.clay = 200; //The units are mm water/ m soil
@@ -19,9 +21,49 @@ public class SoilStorage {
         this.sand = 83;
         this.peaty = 80;
         this.chalk = 208;
+
+        individualSoil Clay = new individualSoil("Clay", 34f, 200f);
+        individualSoil Silt = new individualSoil("Silt", 30f, 208f);
+        individualSoil Loam = new individualSoil("Loam", 34f, 200f);
+        individualSoil Sand = new individualSoil("Sand", 11f, 83f);
+        individualSoil Peaty = new individualSoil("Peaty", 34f, 80f);
+        individualSoil Chalk = new individualSoil("Chalk", 208f, 34f);
+
+        /*allSoil[0] = Clay; */
+        allSoil = new individualSoil[GlobalConstants.MAXSOILTYPES];
+        allSoil[0] = Clay;
+        allSoil[1] = Silt;
+        allSoil[2] = Loam;
+        allSoil[3] = Sand;
+        allSoil[4] = Peaty;
+        allSoil[5] = Chalk;
+
+        /*allSoil[0] =  new individualSoil("Clay",34f,200f); */
     }
 
-    public float getMaxWaterAmount(float plantDepth, String plantType) {
+    public float getMinimumAllowableDepletion_moisture_Percentage(String soilType_Input) {
+        //This function will take the plant depth and calculate the corrresponding Allowable Soil Water Capacity
+        int maxSoilTypes = GlobalConstants.MAXSOILTYPES;
+        for (int i = 0; i < maxSoilTypes; i++) {
+            String soilType = allSoil[i].getSoilType();
+            if (soilType == soilType_Input) {
+                return allSoil[i].getMoistureContent();
+            }
+        }
+        return -1f;
+    }
+    public float getMaxWwaterAmount(float planDepth, String soilType_Input){
+        int maxSoilTypes = GlobalConstants.MAXSOILTYPES;
+        for (int i = 0; i < maxSoilTypes; i++) {
+            String soilType = allSoil[i].getSoilType();
+            if (soilType == soilType_Input) {
+                return planDepth * allSoil[i].getStorageWaterCapacity()/2f;
+            }
+        }
+        return -1f;
+    }
+
+    /*public float getMaxWaterAmount(float plantDepth, String plantType) {
         //This function will take the plant depth and calculate the corrresponding Allowable Soil Water Capacity
         if (plantType == "Clay") {
             return (plantDepth * this.clay / 2f);
@@ -37,7 +79,7 @@ public class SoilStorage {
             return (plantDepth * this.chalk / 2f);
         }
         return 0;
-    }
+    }*/
 
     public float getClay() {
         return clay;
