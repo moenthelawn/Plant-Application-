@@ -301,7 +301,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="128dp"
-        android:text="Days Until Next Harvest"
+        android:text="Days Until Harvest"
         android:textColor="@android:color/background_light"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"

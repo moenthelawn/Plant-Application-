@@ -80,27 +80,29 @@ public class plantDataBase<E> {
 
     public int determineNumberRefills(float waterRemainding, float maxWaterAmount) {
         int numberOfRefills = 0;
-        float totalWaterAmount = maxWaterAmount;
+        float totalWaterAmount = 0;
 
         while (true) {
             //We will need to determine how many times the remaining water will need to go into the max water amount
-
-            if (waterRemainding >= totalWaterAmount) {
+            if (maxWaterAmount + totalWaterAmount > waterRemainding) {
+                numberOfRefills += 1;
+                return numberOfRefills;
+            } else if (waterRemainding >= totalWaterAmount) {
                 numberOfRefills += 1;
             } else {
                 return numberOfRefills;
             }
-            totalWaterAmount += maxWaterAmount;
+            totalWaterAmount += maxWaterAmount; // We increment based on the maximum amount that we can inpuyt
         }
     }
-    public boolean humidityDeviation(float soilBaseHumidity, float maximiumAllowableSoilDepletion){
+
+    public boolean humidityDeviation(float soilBaseHumidity, float maximiumAllowableSoilDepletion) {
         //This function will return true if the soilBaseHumidity falls close to the maximum allowable soil depletion (within the the percent range
         //Or the soilBaseHumidity falls below the maximumAllowableSoilDepletion (Which is not as good)
-        if  (deviation(GlobalConstants.MAXSOILDEVIATION, soilBaseHumidity / 100f, maximiumAllowableSoilDepletion / 100f)
-                || soilBaseHumidity / 100f <= maximiumAllowableSoilDepletion / 100f){
+        if (deviation(GlobalConstants.MAXSOILDEVIATION, soilBaseHumidity / 100f, maximiumAllowableSoilDepletion / 100f)
+                || soilBaseHumidity / 100f <= maximiumAllowableSoilDepletion / 100f) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
@@ -118,7 +120,7 @@ public class plantDataBase<E> {
         float maximumAllowableSoilDepletion = soil.getMaximumAllowableDepletion_moisture_Percentage(soilType);
 
         if (currentPlant.getPlantType() == GlobalConstants.Predetermined) {
-            if (water_plant_remaining > 0 && humidityDeviation(humiditySensor,maximumAllowableSoilDepletion)) { //if there is a need to determine more water r
+            if (water_plant_remaining > 0 && humidityDeviation(humiditySensor, maximumAllowableSoilDepletion)) { //if there is a need to determine more water r
                 //Then we will send the appropriate amount next and decreasee the appropriate amount
                 int numberOfRefills = determineNumberRefills(water_plant_remaining, maxWaterAmount);
                 //If our waterremaining is bigger than the remaining plant water, then send it
@@ -132,10 +134,10 @@ public class plantDataBase<E> {
             } else {
                 //minimumAllowableSoilDepltion / 100f is a percentage
                 //This is when the soil moisture depletion has reached a value that could correlate to more plant stress.
-                if (humidityDeviation(humiditySensor,maximumAllowableSoilDepletion)) {
+                if (humidityDeviation(humiditySensor, maximumAllowableSoilDepletion)) {
                     //Then we are safe to water the plant
-                   /* float water_predetermined = currentPlant.calculateWater_PreDetermined(); //How much water the plagiven time nt vase can get at any*/
-                    float water_predetermined = 400f;
+                    float water_predetermined = currentPlant.calculateWater_PreDetermined(); //How much water the plagiven time nt vase can get at any*/
+
                     if (water_predetermined > maxWaterAmount) {//Ie we need to do other refills
                         //Then we need to figure out how many refills we will need to satisfy the overlay
                         //Send the first water amount, and after that we will have

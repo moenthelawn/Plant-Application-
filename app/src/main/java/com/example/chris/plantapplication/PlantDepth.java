@@ -32,6 +32,7 @@ public class PlantDepth extends AppCompatActivity {
         Intent activityThatCalled = getIntent();
         PlantDepths = (SeekBar) findViewById(R.id.seekBar);
         plantDepthsText = (TextView) findViewById(R.id.textView43);
+        plantDepthsText.setText("0.0");
         next = (Button) findViewById(R.id.button6);
         buttonID = activityThatCalled.getIntExtra("Button ID", 0); //get the button session ID so we can modify its .xml paramaters
         slotNumber = activityThatCalled.getIntExtra("Slot Number", 0); //get the button session ID so we can modify its .xml paramaters
@@ -62,7 +63,11 @@ public class PlantDepth extends AppCompatActivity {
             public void onClick(View v) {
 
                 float plantDepth = Float.parseFloat(plantDepthsText.getText().toString());
-                plantH.setPlantGrowingDepth(slotNumber, plantDepth);
+                if (plantDepth >= 0) {
+                    plantH.setPlantGrowingDepth(slotNumber, plantDepth);
+                } else {
+                    plantH.setPlantGrowingDepth(slotNumber, 0.0f); //Default is set to 0
+                }
                 callIntent(v.getContext(), MainActivity.class);
             }
         });

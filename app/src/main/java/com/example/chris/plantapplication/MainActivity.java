@@ -296,18 +296,20 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //If this button is clicked, then we will open activity2
                 String message = client.message;
+/*
 
                 plantH.getPlantBySlot(1).setHumiditySensor(12);
-               /* plantH.getPlantBySlot(1).setWaterRequirement_Predetermined(500);*/
+               */
+/* plantH.getPlantBySlot(1).setWaterRequirement_Predetermined(500);*//*
+
                 float waterAmount = plantH.getWaterAmount_Interrupt(1);
-                plantH.getPlantBySlot(1).setHumiditySensor(40);
-                waterAmount = plantH.getWaterAmount_Interrupt(1);
                 plantH.getPlantBySlot(1).setHumiditySensor(1);
                 waterAmount = plantH.getWaterAmount_Interrupt(1);
                 plantH.getPlantBySlot(1).setHumiditySensor(30);
                 waterAmount = plantH.getWaterAmount_Interrupt(1);
                 plantH.getPlantBySlot(1).setHumiditySensor(25);
                 waterAmount = plantH.getWaterAmount_Interrupt(1);
+*/
 
 
                 if (message != null && !message.isEmpty()) {
