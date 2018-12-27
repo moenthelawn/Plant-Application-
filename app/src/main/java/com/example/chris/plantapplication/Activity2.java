@@ -34,7 +34,7 @@ public class Activity2 extends AppCompatActivity {
         customPlant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callIntent(v.getContext(),chooseTiming.class);
+                callIntent(v.getContext(), chooseTiming.class);
 
             }
         });
@@ -57,25 +57,24 @@ public class Activity2 extends AppCompatActivity {
 
                 allPlants = plantDataBase.getInstance();
 
-
                 int harvestPeriod_days = 153;//The harvest is spanned over the length of the plant's duration
                 float cropCoefficient = 0.73f;
-
 
                 //  basilPlant.setHarvestDayLength(harvestPeriod_days); //set the number of days
                 //  basilPlant.setCropCoefficients(cropCoefficients);
                 // basilPlant.setpFactor(0.25); //Hardcoded value for the plant database
                 //     basilPlant.setMeanTemperature(22.5);
 
-                allPlants.addPlant("Basil", buttonID, slotNumber, harvestPeriod_days, cropCoefficient, 0.25f, 22.5f,"Predetermined");
-//We want to move to activity addCustomPlant
-                callIntent(v.getContext(),soilType.class);
+                allPlants.addPlant("Basil", buttonID, slotNumber, harvestPeriod_days, cropCoefficient, 0.25f, 22.5f, "Predetermined");
+                //We want to move to activity addCustomPlant
+                callIntent(v.getContext(), soilType.class);
                 //openMainActivity("Basil");
             }
         });
 
     }
-    public void callIntent(Context c, Class destination){
+
+    public void callIntent(Context c, Class destination) {
 
         Intent activityThatCalled = getIntent();
 
@@ -87,6 +86,7 @@ public class Activity2 extends AppCompatActivity {
         intent.putExtra("Slot Number", slotNumber);
         startActivity(intent);
     }
+
     public void openMainActivity(String PlantName) { //We want to open that activity and navigate over to the specific class
         Intent activityThatCalled = getIntent();
 

@@ -28,7 +28,6 @@ public class Plant {
     private float RoomTemperature;
     private float airHumidity;
     private String plantType;
-    private Boolean hasBeenWatered;
 
     private String SoilType;
 
@@ -37,7 +36,7 @@ public class Plant {
     private float MeanTemperature; //As determined from Ed's database
     private float plantDepth;
     private float waterRequirement_Manual; //This is the amount of manual water that is required for the manual input
-
+    private float waterRequirement_Predetermined;
     public Plant(String Name, int buttonID, int slotNumber, int harvestPeriod_days, float cropCoefficient, float p, float temperature, String plantType) {
         this.slotNumber = slotNumber;
         this.Name = Name; //We haven't named it yet
@@ -53,7 +52,7 @@ public class Plant {
         this.plantDepth = 0;
         this.startDate = Calendar.getInstance();
         this.growth_EachDay = new float[harvestPeriod_days]; //Declaring a double array to hold the amount of days we have in our
-
+        this.water_remaining_current_day = 0;
         initializeGrowth_Each_Day();
     }
     public int getHarvestDayLength(){
@@ -338,5 +337,13 @@ public class Plant {
 
     public void setPlantHeightDays(int[] plantHeightDays) {
         this.plantHeightDays = plantHeightDays;
+    }
+
+    public float getWaterRequirement_Predetermined() {
+        return waterRequirement_Predetermined;
+    }
+
+    public void setWaterRequirement_Predetermined(float waterRequirement_Predetermined) {
+        this.waterRequirement_Predetermined = waterRequirement_Predetermined;
     }
 }

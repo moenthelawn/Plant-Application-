@@ -3,15 +3,9 @@ package com.example.chris.plantapplication;
 import java.util.Arrays;
 
 public class plantDataBase<E> {
-
-    int test;
-
-    private static GlobalConstants constants;
     private static plantDataBase instance;
     private Plant[] allPlants;
     private boolean added;
-    private Plant plant;
-    private static SoilStorage soilData;
 
     public Plant getPlantByButtonNumber(int buttonNumber) {
         //Here we will want to grab the plants data based on the inputted button number
@@ -73,76 +67,92 @@ public class plantDataBase<E> {
         /*allPlants[slotNumber -1 ]*/
     }
 
+    public boolean deviation(float percentageDeviation, float upper, float lower) {
+        //This function will return true if the "upper" portion is within a percent deviation of the lower portion
+        float diff = Math.abs(upper - lower);
+        float percentDiff = 100 * (diff / lower);
+        if (percentDiff <= percentageDeviation / 100f) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public int determineNumberRefills(float waterRemainding, float maxWaterAmount) {
+        int numberOfRefills = 0;
+        float totalWaterAmount = maxWaterAmount;
+
+        while (true) {
+            //We will need to determine how many times the remaining water will need to go into the max water amount
+
+            if (waterRemainding >= totalWaterAmount) {
+                numberOfRefills += 1;
+            } else {
+                return numberOfRefills;
+            }
+            totalWaterAmount += maxWaterAmount;
+        }
+    }
+    public boolean humidityDeviation(float soilBaseHumidity, float maximiumAllowableSoilDepletion){
+        //This function will return true if the soilBaseHumidity falls close to the maximum allowable soil depletion (within the the percent range
+        //Or the soilBaseHumidity falls below the maximumAllowableSoilDepletion (Which is not as good)
+        if  (deviation(GlobalConstants.MAXSOILDEVIATION, soilBaseHumidity / 100f, maximiumAllowableSoilDepletion / 100f)
+                || soilBaseHumidity / 100f <= maximiumAllowableSoilDepletion / 100f){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     public float getWaterAmount_Interrupt(int slotNumber) {
         //This function will be called when there is a timer interrupt to determine how much water a plant should get after a certain amount of time
         Plant currentPlant = allPlants[slotNumber - 1];
-        float maxWaterAmount = soilData.getMaxWaterAmount(currentPlant.getPlantDepth(), currentPlant.getSoilType()); //Current plant depth
-
-        // if (maxWaterAmount > currentPlant.get)
+        String soilType = currentPlant.getSoilType();
         float humiditySensor = currentPlant.getHumiditySensor();
         float water_plant_remaining = currentPlant.getWater_remaining_current_day();
+        SoilStorage soil;
+        soil = new SoilStorage();
 
-        /*
-        Sudo Code
-        if (the plant water needs exceed the maximum amount of water and the humidity soil sensor is at the minimum required amount ){
-            * Then we will send the maximum portion of the water
-            * Store the leftover portion and save that for the next time around
-        }
-        else if (the plant water needs do not exceed the amount of water and the humidity sensor is at the minmium required amount){
-             * Then we will send the amount of water that is needed
+        float maxWaterAmount = soil.getMaxWaterAmount(currentPlant.getPlantDepth(), soilType); //How much water the plant will need
+        float maximumAllowableSoilDepletion = soil.getMaximumAllowableDepletion_moisture_Percentage(soilType);
 
-        }
-
-
-         */
-        //This is if there is no more water remaining to be be fse
-        if (water_plant_remaining == 0) {
-            if (currentPlant.getPlantType() == GlobalConstants.Predetermined) {
-                //Then we wil execute the predetermined watering amount calculation which is based on the crop factor etc
-                float waterRequirement_Predetermined = currentPlant.calculateWater_PreDetermined();
-
-                if (waterRequirement_Predetermined <= maxWaterAmount) {
-                    //Send the water off
-                    return waterRequirement_Predetermined;
+        if (currentPlant.getPlantType() == GlobalConstants.Predetermined) {
+            if (water_plant_remaining > 0 && humidityDeviation(humiditySensor,maximumAllowableSoilDepletion)) { //if there is a need to determine more water r
+                //Then we will send the appropriate amount next and decreasee the appropriate amount
+                int numberOfRefills = determineNumberRefills(water_plant_remaining, maxWaterAmount);
+                //If our waterremaining is bigger than the remaining plant water, then send it
+                if (numberOfRefills == 1) {
+                    currentPlant.setWater_remaining_current_day(0);//set the water to 0 since we will no longer need to continue any refills
+                    return water_plant_remaining;
                 } else {
-                    //set the leftover water amount
-                    float leftOver = waterRequirement_Predetermined - maxWaterAmount;
-                    currentPlant.setWater_remaining_current_day(leftOver);
+                    currentPlant.setWater_remaining_current_day(water_plant_remaining - maxWaterAmount);
+                    return maxWaterAmount;
                 }
-
-            } else if (currentPlant.getPlantType() == GlobalConstants.Manual) {
-                //   double currentPlantWaterAmount = currentPlant.get
-                float currentPlantWaterAmount_Manual = currentPlant.getWaterRequirement_Manual();//There is no need to compute the maximum amount of water that could be sent at a given time since the user specifies how much they would like to get at any given point in time
-                return currentPlantWaterAmount_Manual;
+            } else {
+                //minimumAllowableSoilDepltion / 100f is a percentage
+                //This is when the soil moisture depletion has reached a value that could correlate to more plant stress.
+                if (humidityDeviation(humiditySensor,maximumAllowableSoilDepletion)) {
+                    //Then we are safe to water the plant
+                   /* float water_predetermined = currentPlant.calculateWater_PreDetermined(); //How much water the plagiven time nt vase can get at any*/
+                    float water_predetermined = 400f;
+                    if (water_predetermined > maxWaterAmount) {//Ie we need to do other refills
+                        //Then we need to figure out how many refills we will need to satisfy the overlay
+                        //Send the first water amount, and after that we will have
+                        currentPlant.setWater_remaining_current_day(water_predetermined - maxWaterAmount);
+                        return maxWaterAmount; //Return the max water amount since this will be broken up into
+                    } else if (water_predetermined <= maxWaterAmount) {
+                        //Then we can just send the current watering amount since we will not need any additional water refills senT
+                        return water_predetermined;
+                    }
+                }
             }
-        } else {
-            return water_plant_remaining;
+        } else if (currentPlant.getPlantType() == GlobalConstants.Manual) {
+            float water_Manual = currentPlant.getWaterRequirement_Manual();
+            return water_Manual; //We do not need to calculate the water requirements
         }
-        return maxWaterAmount;
+        return 0f;
     }
-    //public void setPlantByString(String Name, int buttonID, int slotNumberID) {
-
-
-    //}
-    //public boolean setPlantSlotByString(String Name, int buttonID, int slotNumberID) {
-    //   Plant currentPlant = allPlants[slotNumberID];
-
-
-    //   for (int i = 0; i < allPlants.length; i++) {
-    //       Plant currentPlant = allPlants[i];
-    //      if (currentPlant.getName() == Name) {
-    //         //Then we return the slot number
-    //        if (currentPlant.setPlantSlotNumber(buttonID, slotNumberID) == true) {
-    //            return true;
-    //    } else {
-    //        return false;
-    //    }
-
-    //    }
-
-    //    }
-    //      return false;
-    //  }
 
     public Plant[] getAllPlants() {
         return allPlants;
