@@ -22,12 +22,17 @@ public class Needle extends View {
     private long animationDuration = 10000;
     private long startTime;
     private float scaleFactor;
+    private float angleRotation;
+    private float deltaX;
+    private float deltaY;
 
     public Needle(Context context) {
         super(context);
         matrix = new Matrix();
         this.startTime = System.currentTimeMillis();
         this.postInvalidate();
+
+        this.angleRotation = 0f;
         init();
     }
 
@@ -49,6 +54,8 @@ public class Needle extends View {
 
     private void init() {
         scaleFactor = 1f;
+        this.deltaX = 500f;
+        this.deltaY = 425f;
 
         linePaint = new Paint();
         linePaint.setColor(Color.RED); // Set the color
@@ -58,19 +65,24 @@ public class Needle extends View {
         linePaint.setShadowLayer(8.0f, 0.1f, 0.1f, Color.GRAY); // Shadow of the needle
 
         linePath = new Path();
-        linePath.moveTo(50.0f, 50.0f);
-        linePath.lineTo(130.0f, 40.0f);
-        linePath.lineTo(600.0f, 50.0f);
-        linePath.lineTo(130.0f, 60.0f);
-        linePath.lineTo(50.0f, 50.0f);
-        linePath.addCircle(130.0f, 50.0f, 20.0f, Path.Direction.CW);
+        linePath.moveTo(50.0f + deltaX, (50.0f + deltaY));
+        linePath.lineTo(130.0f + deltaX, 40.0f + deltaY);
+        linePath.lineTo(600.0f + deltaX, 50.0f + deltaY);
+        linePath.lineTo(130.0f + deltaX, 60.0f + deltaY);
+        linePath.lineTo(50.0f + deltaX, 50.0f + deltaY);
+        linePath.addCircle(130.0f + deltaX, 50.0f + deltaY, 20.0f, Path.Direction.CW);
         linePath.close();
 
         needleScrewPaint = new Paint();
         needleScrewPaint.setColor(Color.BLACK);
         needleScrewPaint.setAntiAlias(true);
-        needleScrewPaint.setShader(new RadialGradient(130.0f, 50.0f, 10.0f,
+        needleScrewPaint.setShader(new RadialGradient(130.0f + deltaX, 50.0f + deltaY, 10.0f,
                 Color.DKGRAY, Color.BLACK, Shader.TileMode.CLAMP));
+    }
+
+    public void setRotation_Needle(float angle) {
+        this.angleRotation = angle;
+
     }
 
     @Override
@@ -79,14 +91,15 @@ public class Needle extends View {
 
         long elapsedTime = System.currentTimeMillis() - startTime;
 
-        matrix.postRotate(1.0f, 130.0f, 50.0f); // rotate 10 degree every second
-        canvas.scale(0.25f, 0.25f);
+      //  matrix.postRotate(1.0f, 130.0f + deltaX, 50.0f + deltaY); // rotate 10 degree every second
+        canvas.scale(0.3f, 0.3f);
 
         canvas.concat(matrix);
 
         canvas.drawPath(linePath, linePaint);
 
-        canvas.drawCircle(130.0f, 50.0f, 16.0f, needleScrewPaint);
+        canvas.drawCircle(130.0f + deltaX, 50.0f + deltaY, 16.0f, needleScrewPaint);
+        matrix.setRotate(this.angleRotation, 130.0f + deltaX, 50.0f + deltaY);
 
         if (elapsedTime < animationDuration) {
             this.postInvalidateDelayed(10000 / framePerSeconds);

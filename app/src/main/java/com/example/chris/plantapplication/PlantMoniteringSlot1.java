@@ -32,11 +32,9 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
     /*private ImageView needle;*/
     private Needle needle;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        needle = new Needle(this);
-        needle = (Needle) findViewById(R.id.myNeedle);
 
 
         super.onCreate(savedInstanceState);
@@ -44,7 +42,10 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         //We want to grab an instance of the plant data base that will be used for this slot
         //needle = findViewById(R.id.imageView6); //The image of the needle
 
+        needle = (Needle) findViewById(R.id.needle);
+
         HarvestButton = (ImageButton) findViewById(R.id.imageButton5);
+
         double x = 0;
         double y = 0;
 
@@ -65,6 +66,11 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         slot_ID_Called = activityThatCalled.getIntExtra("Slot Number", 0);
 
         currentPlant = plantH.getPlantBySlot(slot_ID_Called);
+
+        //Set the needle to point to the current soil moisture direction
+        currentPlant.setHumiditySensor(0);
+        setNeedleDirection(currentPlant.getHumiditySensor());
+
         Log.i("Passed Value", "Button " + Integer.toString(buttonID_Called) + "passed to PlanMoniteringSlot1.java");
         displayPlantData(slot_ID_Called);
 
@@ -93,14 +99,28 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         //        startActivity(intent);
     }
 
-   /* public void rotateNeedle(float angle){
-        //This function will rotate the needle. As seen in the picture, the needle is bounded by -180 degrees to 180 degrees
+    /* public void rotateNeedle(float angle){
+         //This function will rotate the needle. As seen in the picture, the needle is bounded by -180 degrees to 180 degrees
 
-        Matrix matrix = new Matrix();
-        needle.setScaleType(ImageView.ScaleType.MATRIX);
-        matrix.postRotate((float) angle);
-        needle.setImageMatrix(matrix);
-    }*/
+         Matrix matrix = new Matrix();
+         needle.setScaleType(ImageView.ScaleType.MATRIX);
+         matrix.postRotate((float) angle);
+         needle.setImageMatrix(matrix);
+     }*/
+    public void setNeedleDirection(float humiditySensor) {
+        //This function will set the orientation of the needle based on the humidity value
+        float maxHumiditySensor = GlobalConstants.MAXHUMIDITYVALUE;
+        float minHumidityValue = GlobalConstants.MINHUMIDITYVALUE;
+        humiditySensor = 20;
+        float percentage = (humiditySensor + minHumidityValue) / maxHumiditySensor;
+        //The angle of the rotation ranges from 90 to -90
+        float angle = percentage * 180;
+        float offset = -90 + angle;
+          needle.setRotation_Needle(offset + 180);
+       // needle.setRotation_Needle(-20);
+        //With the percentage, we can now move the meedle to the appropriate position
+        // needle.setRotationX(90);
+    }
 
     public void updateRoomTemperature(float roomTemperature) {
         TextView roomTemp = (TextView) findViewById(R.id.textView32); //to be able to set the room temperature to the correct value

@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         constants = new GlobalConstants();
 
-
         setContentView(R.layout.activity_main);
         plantH = plantDataBase.getInstance();
         setImageGrowthVisibility();
