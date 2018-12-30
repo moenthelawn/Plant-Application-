@@ -80,7 +80,8 @@ public class Needle extends View {
         long elapsedTime = System.currentTimeMillis() - startTime;
 
         matrix.postRotate(1.0f, 130.0f, 50.0f); // rotate 10 degree every second
-        canvas.scale(0.5f, 0.5f);
+        canvas.scale(0.25f, 0.25f);
+
         canvas.concat(matrix);
 
         canvas.drawPath(linePath, linePaint);

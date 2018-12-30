@@ -19,7 +19,6 @@ public class Plant {
     private Calendar startDate;
 
     private int currentPlantHeight;
-    private int plantHeightDays[];
 
     private float humiditySensor; //Relative humidity sensor as a percentage
     private int HarvestDayLength; // Array of the days allocated over each individual harvest period
@@ -28,6 +27,7 @@ public class Plant {
     private float RoomTemperature;
     private float airHumidity;
     private String plantType;
+    private float cropCoefficient_SoilEvaporation;
 
     private String SoilType;
 
@@ -37,6 +37,7 @@ public class Plant {
     private float plantDepth;
     private float waterRequirement_Manual; //This is the amount of manual water that is required for the manual input
     private float waterRequirement_Predetermined;
+
     public Plant(String Name, int buttonID, int slotNumber, int harvestPeriod_days, float cropCoefficient, float p, float temperature, String plantType) {
         this.slotNumber = slotNumber;
         this.Name = Name; //We haven't named it yet
@@ -55,10 +56,12 @@ public class Plant {
         this.water_remaining_current_day = 0;
         initializeGrowth_Each_Day();
     }
-    public int getHarvestDayLength(){
+
+    public int getHarvestDayLength() {
         return this.HarvestDayLength;
     }
-    public int getCurrentDayNumber(){
+
+    public int getCurrentDayNumber() {
         long msDiff = Calendar.getInstance().getTimeInMillis() - startDate.getTimeInMillis();
         long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
         int difference = (int) daysDiff;
@@ -67,7 +70,6 @@ public class Plant {
 
     public int getRemainingDays_Harvest() {
         int remaining = HarvestDayLength - getCurrentDayNumber();
-
         return remaining;
     }
 
@@ -79,6 +81,23 @@ public class Plant {
 
     public String getName() {
         return Name;
+    }
+
+    public float determineKcSoilEvaporation() {
+        //This function will return the kc soil evaporation based on
+        int currentDayNumber = getCurrentDayNumber();
+        float currentPlantHeight = getCurrentHeight_dayNumber(currentDayNumber);
+        float currentHumidity = getAirHumidity(); // As a percentage
+        float value0 = 0.04f;
+        float value1 = 0.004f;
+        float power =(float) Math.pow((currentPlantHeight / 3f ),0.3f);
+        return (-1f * (2f * value0) - (value1 * (currentHumidity - 45f))) * power;
+
+    }
+
+    public float getCurrentHeight_dayNumber(int dayNumber) {
+        //This function will return the current height based on the day number that we are in
+        return this.growth_EachDay[dayNumber - 1];
     }
 
     public void setName(String name) {
@@ -215,7 +234,8 @@ public class Plant {
     public float calculateWater_PreDetermined() {
 
         float evapIndex = evapotransIndex();
-        return cropCoefficients * evapIndex;
+
+        return (cropCoefficients + this.getCropCoefficient_SoilEvaporation()) * evapIndex;
        /* int totalHavestDayLengths = 0;
         for (int i = 0; i < HarvestDayLength.length; i++) {
 
@@ -274,7 +294,6 @@ public class Plant {
     }
 
 
-
     public float getHumiditySensor() {
         return humiditySensor;
     }
@@ -331,19 +350,19 @@ public class Plant {
         this.currentPlantHeight = currentPlantHeight;
     }
 
-    public int[] getPlantHeightDays() {
-        return plantHeightDays;
-    }
-
-    public void setPlantHeightDays(int[] plantHeightDays) {
-        this.plantHeightDays = plantHeightDays;
-    }
-
     public float getWaterRequirement_Predetermined() {
         return waterRequirement_Predetermined;
     }
 
     public void setWaterRequirement_Predetermined(float waterRequirement_Predetermined) {
         this.waterRequirement_Predetermined = waterRequirement_Predetermined;
+    }
+
+    public float getCropCoefficient_SoilEvaporation() {
+        return cropCoefficient_SoilEvaporation;
+    }
+
+    public void setCropCoefficient_SoilEvaporation(float cropCoefficient_SoilEvaporation) {
+        this.cropCoefficient_SoilEvaporation = cropCoefficient_SoilEvaporation;
     }
 }

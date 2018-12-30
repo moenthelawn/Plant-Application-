@@ -4,6 +4,7 @@ buildscript {
 
     repositories {
         google()
+
         // You need to add the following repository to download the
         // new plugin.
 
@@ -17,6 +18,7 @@ buildscript {
     //}
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.1'
+
         // Unit testing dependencies
       //  implementation 'com.jjoe64:graphview:4.2.2'
 

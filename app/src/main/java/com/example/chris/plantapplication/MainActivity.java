@@ -110,8 +110,6 @@ public class MainActivity extends AppCompatActivity {
         else {
             return 4;
         }
-
-
     }
     private void setGrowthStage(Plant plant){
         int slotNumber = plant.getSlotNumber();
@@ -250,7 +248,6 @@ public class MainActivity extends AppCompatActivity {
 
         params.height = convertDipToPixels(this.getApplicationContext(), requiredHeight_Pixels);
         layout.setLayoutParams(params);
-
     }
 
     private void updatePlantDataBase(int plantSlot, float airTemperature, float airHumidity, int numberDay, float height) {
