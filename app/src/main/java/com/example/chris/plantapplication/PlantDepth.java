@@ -27,7 +27,6 @@ public class PlantDepth extends AppCompatActivity {
         plantH = plantDataBase.getInstance();
 
         depthMetre = findViewById(R.id.textView44);
-        depthMetre.setVisibility(depthMetre.INVISIBLE);
 
         Intent activityThatCalled = getIntent();
         PlantDepths = (SeekBar) findViewById(R.id.seekBar);
@@ -44,7 +43,6 @@ public class PlantDepth extends AppCompatActivity {
                 float percentage = progress / 100.0f;
                 float depth = percentage * GlobalConstants.MAXHEIGHT;
 
-                depthMetre.setVisibility(depthMetre.VISIBLE);
                 plantDepthsText.setText(Float.toString(depth));
             }
 

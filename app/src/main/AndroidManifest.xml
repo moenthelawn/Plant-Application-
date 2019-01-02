@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".chooseTiming" />
-        <activity android:name=".PlantDepth"></activity>
+        <activity android:name=".PlantDepth" />
     </application>
 
 </manifest>

@@ -32,7 +32,7 @@ public class Needle extends View {
         this.startTime = System.currentTimeMillis();
         this.postInvalidate();
 
-        this.angleRotation = 0f;
+        this.angleRotation = 180f;
         init();
     }
 
@@ -82,7 +82,9 @@ public class Needle extends View {
 
     public void setRotation_Needle(float angle) {
         this.angleRotation = angle;
-
+    }
+    public float getRotation_Needle(){
+        return this.angleRotation;
     }
 
     @Override
@@ -93,7 +95,6 @@ public class Needle extends View {
 
       //  matrix.postRotate(1.0f, 130.0f + deltaX, 50.0f + deltaY); // rotate 10 degree every second
         canvas.scale(0.3f, 0.3f);
-
         canvas.concat(matrix);
 
         canvas.drawPath(linePath, linePaint);

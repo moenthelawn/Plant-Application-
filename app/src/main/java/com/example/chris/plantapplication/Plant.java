@@ -19,7 +19,7 @@ public class Plant {
     private Calendar startDate;
 
     private int currentPlantHeight;
-
+    private float previousHumiditySensor;
     private float humiditySensor; //Relative humidity sensor as a percentage
     private int HarvestDayLength; // Array of the days allocated over each individual harvest period
     private float cropCoefficients; //Represents the coefficients for the crop coefficients that will be used to calculate the amount of water the plant will need as a function of the number of days
@@ -46,7 +46,8 @@ public class Plant {
         this.cropCoefficients = cropCoefficient;
         this.pFactor = p;
         this.plantType = plantType;
-        this.humiditySensor = -1;
+        this.previousHumiditySensor = 0;
+        this.humiditySensor = 0;
         this.RoomTemperature = temperature;
         this.waterRequirement_Manual = -1; //Default is set to -1 in that we haven't started using it yet unless it is specified as a manual inputted plant
         this.SoilType = ""; //set the soil type to a non value
@@ -299,6 +300,7 @@ public class Plant {
     }
 
     public void setHumiditySensor(float humiditySensor) {
+        this.previousHumiditySensor = this.humiditySensor;
         this.humiditySensor = humiditySensor;
     }
 
@@ -364,5 +366,13 @@ public class Plant {
 
     public void setCropCoefficient_SoilEvaporation(float cropCoefficient_SoilEvaporation) {
         this.cropCoefficient_SoilEvaporation = cropCoefficient_SoilEvaporation;
+    }
+
+    public float getPreviousHumiditySensor() {
+        return previousHumiditySensor;
+    }
+
+    public void setPreviousHumiditySensor(float previousHumiditySensor) {
+        this.previousHumiditySensor = previousHumiditySensor;
     }
 }

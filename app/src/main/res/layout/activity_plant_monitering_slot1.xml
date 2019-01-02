@@ -222,23 +222,6 @@
         app:layout_constraintTop_toTopOf="@+id/imageView15" />
 
     <TextView
-        android:id="@+id/textView26"
-        android:layout_width="89dp"
-        android:layout_height="11dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="Your Plant Growth"
-        android:textColor="?android:attr/colorPrimary"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-    <TextView
         android:id="@+id/textView29"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -302,24 +285,6 @@
         app:layout_constraintTop_toTopOf="@+id/imageView15"
         app:layout_constraintVertical_bias="0.0" />
 
-    <com.jjoe64.graphview.GraphView
-        android:id="@+id/graph_plants"
-        android:layout_width="366dp"
-        android:layout_height="196dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView15"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.85"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.6"
-        tools:ignore="MissingConstraints"></com.jjoe64.graphview.GraphView>
-
 
     <ImageButton
         android:id="@+id/imageButton5"
@@ -381,5 +346,16 @@
         app:layout_constraintStart_toEndOf="@+id/divider"
         app:layout_constraintTop_toTopOf="@+id/imageView15"
         app:layout_constraintVertical_bias="1.0" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="378dp"
+        android:layout_height="225dp"
+        app:layout_constraintBottom_toTopOf="@+id/imageView15"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView">
+
+    </android.support.v4.view.ViewPager>
 
 </android.support.constraint.ConstraintLayout>
