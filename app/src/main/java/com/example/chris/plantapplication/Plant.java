@@ -28,7 +28,7 @@ public class Plant {
     private float airHumidity;
     private String plantType;
     private float cropCoefficient_SoilEvaporation;
-
+    private float[] humiditySensor_harvestPeriod;
     private String SoilType;
 
     private float water_remaining_current_day;
@@ -55,7 +55,15 @@ public class Plant {
         this.startDate = Calendar.getInstance();
         this.growth_EachDay = new float[harvestPeriod_days]; //Declaring a double array to hold the amount of days we have in our
         this.water_remaining_current_day = 0;
+        this.humiditySensor_harvestPeriod = new float[harvestPeriod_days];
         initializeGrowth_Each_Day();
+        initializeHumidity_Each_Day();
+    }
+
+    private void initializeHumidity_Each_Day() {
+        for (int i = 0; i < humiditySensor_harvestPeriod.length; i++) {
+            humiditySensor_harvestPeriod[i] = 0.00f; //We want to initialize all paramaters to zero for the default plant height growth
+        }
     }
 
     public int getHarvestDayLength() {
@@ -298,7 +306,9 @@ public class Plant {
     public float getHumiditySensor() {
         return humiditySensor;
     }
-
+    public float[] getHumititySensor_harvestPeriod(){
+        return humiditySensor_harvestPeriod;
+    }
     public void setHumiditySensor(float humiditySensor) {
         this.previousHumiditySensor = this.humiditySensor;
         this.humiditySensor = humiditySensor;
@@ -374,5 +384,9 @@ public class Plant {
 
     public void setPreviousHumiditySensor(float previousHumiditySensor) {
         this.previousHumiditySensor = previousHumiditySensor;
+    }
+
+    public void setHumiditySensor_harvestPeriod_dayNumber(float humiditySensor_Day,int dayNumber) {
+        this.humiditySensor_harvestPeriod[dayNumber - 1] = humiditySensor_Day;
     }
 }

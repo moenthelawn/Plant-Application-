@@ -191,10 +191,10 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
             switch (position) {
                 case 0: // Fragment # 0 - This will show FirstFragment
                     return fragment_chart1.newInstance(1,"Page #1");
-                case 1: // Fragment # 0 - This will show FirstFragment different title
-                    return fragment_chart1.newInstance(2,"Page#2");
+                case 1: // Fragment # 0 - This will show FirstFragsment different title
+                    return GraphHumiditySensor.newInstance(2,"Page #2");
                 case 2: // Fragment # 1 - This will show SecondFragment
-                    return fragment_chart1.newInstance(3,"Page#3");
+                    return Fragment_chart_water.newInstance(3,"Page #3");
                 default:
                     return null;
             }
@@ -205,7 +205,6 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return "Page " + position;
         }
-
     }
 
     public void updateHarvestTime(int remainingDays, int currentDayNumber) {
@@ -246,7 +245,6 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
     public void updatePlantGrowth(int dayNumber, float[] growth_EachDay) {
 
     }
-
 
     public void displayPlantData(int slotNumber) {
         //Here we want to update the graphical charts to show the type of plant that we have

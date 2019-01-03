@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Calendar;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -274,6 +275,11 @@ public class MainActivity extends AppCompatActivity {
         float waterTank = Float.parseFloat(values[4]);
         int numberDay = Integer.parseInt(values[5]);
         int plantSlot = Integer.parseInt(values[6]);
+        float humiditySensor = Float.parseFloat(values[7]);
+
+        Plant currentPlant = plantH.getPlantBySlot(plantSlot);
+        int DayNumber = currentPlant.getCurrentDayNumber();
+        currentPlant.setHumiditySensor_harvestPeriod_dayNumber(humiditySensor,DayNumber);
 
         //Now we need to update the entire UI of the system
         updateWaterTankLevels(waterTank); //This will update the level of the water tank based on the image provided
