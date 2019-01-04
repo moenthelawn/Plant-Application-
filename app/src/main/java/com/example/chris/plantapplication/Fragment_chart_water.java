@@ -75,7 +75,8 @@ public class Fragment_chart_water extends Fragment {
 
         return view;
     }
-    public void createGraphChart(float values[], View view){
+
+    public void createGraphChart(float values[], View view) {
         GraphView tvLabel = (GraphView) view.findViewById(R.id.chart2);
 
         LineChart graph = (LineChart) view.findViewById(R.id.chart2);
@@ -95,7 +96,7 @@ public class Fragment_chart_water extends Fragment {
         dataSet.setDrawValues(false);
 
         dataSet.setDrawCircles(false);
-        Drawable drawable = ContextCompat.getDrawable(view.getContext(),R.drawable.graph_fragment_3);
+        Drawable drawable = ContextCompat.getDrawable(view.getContext(), R.drawable.graph_fragment_3);
         dataSet.setFillDrawable(drawable);
         dataSet.setColor(Color.parseColor("#b9063caf"));
         //(getResources().getColor(R.color.gradient_plant_height));

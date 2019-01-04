@@ -119,16 +119,6 @@ public class GraphHumiditySensor extends android.support.v4.app.Fragment {
         graph.getDescription().setText("");
         graph.getLegend().setEnabled(true);
         graph.setExtraOffsets(7.5f, 0, 0, 0);
-
-/*      graph.getXAxis().setDrawGridLines(false);
-        graph.getXAxis().setDrawAxisLine(false);*/
-
-        /*graph.getAxisRight().setDrawGridLines(false);
-        graph.getAxisRight().setDrawAxisLine(false);
-
-        graph.getAxisLeft().setDrawGridLines(false);
-        graph.getAxisLeft().setDrawAxisLine(false);*/
-
         graph.invalidate(); // refresh
     }
 }
