@@ -29,7 +29,7 @@ public class Activity2 extends AppCompatActivity {
 
     private void addPlants() { //we monitor the plants
 
-        basil = (ImageButton) findViewById(R.id.imageButton8);
+        basil = (ImageButton) findViewById(R.id.imageButton10);
         customPlant = (ImageButton) findViewById(R.id.imageButton10);
         customPlant.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,7 +57,7 @@ public class Activity2 extends AppCompatActivity {
 
                 allPlants = plantDataBase.getInstance();
 
-                int harvestPeriod_days = 153;//The harvest is spanned over the length of the plant's duration
+                int harvestPeriod_days = 56;//The harvest is spanned over the length of the plant's duration
                 float cropCoefficient = 0.73f;
 
                 //  basilPlant.setHarvestDayLength(harvestPeriod_days); //set the number of days
