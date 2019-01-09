@@ -2,11 +2,29 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/test"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/textView31"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="240dp"
+        android:text="You have 35 days until your next refill"
+        app:layout_constraintBottom_toTopOf="@+id/imageView7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.111"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/test1"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -77,26 +95,6 @@
 
 
         <ImageView
-            android:id="@+id/imageView7"
-            android:layout_width="91dp"
-            android:layout_height="147dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            android:scaleType="centerCrop"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.971"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.591"
-            app:srcCompat="@drawable/plantwatershaft" />
-
-        <ImageView
             android:id="@+id/imageView12"
             android:layout_width="46dp"
             android:layout_height="40dp"
@@ -112,26 +110,24 @@
             app:layout_constraintHorizontal_bias="0.65"
             app:layout_constraintStart_toStartOf="@+id/imageButton7"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.854"
+            app:layout_constraintVertical_bias="0.88"
             app:srcCompat="@drawable/growthstage1" />
 
         <ImageView
             android:id="@+id/imageView13"
             android:layout_width="46dp"
             android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginLeft="36dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/imageButton4"
-            app:layout_constraintEnd_toStartOf="@+id/imageButton6"
-            app:layout_constraintHorizontal_bias="0.185"
+            app:layout_constraintEnd_toEndOf="@+id/imageButton18"
+            app:layout_constraintHorizontal_bias="0.71"
             app:layout_constraintStart_toStartOf="@+id/imageButton4"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.857"
+            app:layout_constraintVertical_bias="0.88"
             app:srcCompat="@drawable/growthstage1" />
 
         <ImageView
@@ -142,10 +138,10 @@
             android:layout_marginBottom="8dp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/imageButton6"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/imageButton6"
+            app:layout_constraintStart_toStartOf="@+id/imageButton6"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.86"
+            app:layout_constraintVertical_bias="0.88"
             app:srcCompat="@drawable/growthstage1" />
 
         <TextView
@@ -157,13 +153,12 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:gravity="center"
-            android:text="Plant 3"
+            android:text="Vase 3"
             android:textColor="#2699fb"
             android:textSize="28sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/imageButton7"
-            app:layout_constraintHorizontal_bias="0.49"
             app:layout_constraintStart_toStartOf="@+id/imageButton7"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.779" />
@@ -177,7 +172,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:gravity="center"
-            android:text="Plant 2"
+            android:text="Vase 2"
             android:textColor="#2699fb"
             android:textSize="28sp"
             android:textStyle="bold"
@@ -196,7 +191,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:gravity="center"
-            android:text="Plant 1"
+            android:text="Vase 1"
             android:textColor="#2699fb"
             android:textSize="28sp"
             android:textStyle="bold"
@@ -206,77 +201,36 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.779" />
 
-        <TextView
-            android:id="@+id/textView31"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="240dp"
-            android:text="You have 35 days until your next refill"
-            app:layout_constraintBottom_toTopOf="@+id/imageView7"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.111"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <ImageButton
-            android:id="@+id/imageButton4"
-            android:layout_width="84dp"
-            android:layout_height="75dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="11dp"
-            android:layout_marginRight="11dp"
-            android:backgroundTint="#00000000"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toTopOf="@+id/textView4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            app:srcCompat="@drawable/plantstaff" />
-
         <ImageButton
             android:id="@+id/imageButton6"
-            android:layout_width="84dp"
-            android:layout_height="75dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_width="117dp"
+            android:layout_height="64dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
             android:backgroundTint="#00000000"
             android:scaleType="centerCrop"
-            app:layout_constraintBottom_toTopOf="@+id/textView12"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imageButton7"
             app:layout_constraintStart_toEndOf="@+id/imageButton4"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            app:srcCompat="@drawable/plantstaff" />
+            app:layout_constraintVertical_bias="0.69"
+            app:srcCompat="@drawable/buttonaddplant" />
 
         <ImageButton
             android:id="@+id/imageButton7"
-            android:layout_width="84dp"
-            android:layout_height="75dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_width="117dp"
+            android:layout_height="64dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
             android:backgroundTint="#00000000"
             android:scaleType="centerCrop"
-            app:layout_constraintBottom_toTopOf="@+id/textView13"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.985"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            app:srcCompat="@drawable/plantstaff" />
+            app:layout_constraintVertical_bias="0.69"
+            app:srcCompat="@drawable/buttonaddplant" />
 
         <ImageButton
             android:id="@+id/imageButton2"
@@ -329,6 +283,26 @@
             app:layout_constraintStart_toStartOf="@+id/imageView4"
             app:layout_constraintTop_toTopOf="@+id/imageView4"
             app:srcCompat="@drawable/plantslotter_waterer" />
+
+        <ImageButton
+            android:id="@+id/imageButton4"
+            android:layout_width="117dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="#00000000"
+            android:scaleType="centerCrop"
+            android:src="@drawable/buttonaddplant"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.69" />
 
     </android.support.constraint.ConstraintLayout>
 

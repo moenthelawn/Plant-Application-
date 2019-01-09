@@ -38,17 +38,17 @@ public class Plant {
     private float waterRequirement_Manual; //This is the amount of manual water that is required for the manual input
     private float waterRequirement_Predetermined;
 
-    public Plant(String Name, int buttonID, int slotNumber, int harvestPeriod_days, float cropCoefficient, float p, float temperature, String plantType) {
+    public Plant(String Name, int buttonID, int slotNumber, int harvestPeriod_days, String plantType) {
         this.slotNumber = slotNumber;
         this.Name = Name; //We haven't named it yet
         this.buttonNumber = buttonID;
         this.HarvestDayLength = harvestPeriod_days;
-        this.cropCoefficients = cropCoefficient;
-        this.pFactor = p;
+        /*this.cropCoefficients = cropCoefficient;*/
+        /*this.pFactor = p;*/
         this.plantType = plantType;
         this.previousHumiditySensor = 0;
         this.humiditySensor = 0;
-        this.RoomTemperature = temperature;
+        /*this.RoomTemperature = temperature;*/
         this.waterRequirement_Manual = -1; //Default is set to -1 in that we haven't started using it yet unless it is specified as a manual inputted plant
         this.SoilType = ""; //set the soil type to a non value
         this.plantDepth = 0;
@@ -73,7 +73,7 @@ public class Plant {
     public int getCurrentDayNumber() {
         long msDiff = Calendar.getInstance().getTimeInMillis() - startDate.getTimeInMillis();
         long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
-        int difference = (int) daysDiff;
+        int difference = (int) daysDiff + 1; //plus one since this indexes from zero
         return difference; //The difference between the current date and the start date will give us our current day number
     }
 
@@ -99,7 +99,7 @@ public class Plant {
         float currentHumidity = getAirHumidity(); // As a percentage
         float value0 = 0.04f;
         float value1 = 0.004f;
-        float power =(float) Math.pow((currentPlantHeight / 3f ),0.3f);
+        float power = (float) Math.pow((currentPlantHeight / 3f), 0.3f);
         return (-1f * (2f * value0) - (value1 * (currentHumidity - 45f))) * power;
 
     }
@@ -149,8 +149,8 @@ public class Plant {
         return 0;
     }*/
 
-    public void setDayGrowth_Number(int index, float Growth) {
-        this.growth_EachDay[index] = Growth;
+    public void setDayGrowth_Number(float Growth,int Day) {
+        this.growth_EachDay[Day - 1] = Growth;
     }
 
     public float[] getDayGrowth() {
@@ -306,9 +306,11 @@ public class Plant {
     public float getHumiditySensor() {
         return humiditySensor;
     }
-    public float[] getHumititySensor_harvestPeriod(){
+
+    public float[] getHumititySensor_harvestPeriod() {
         return humiditySensor_harvestPeriod;
     }
+
     public void setHumiditySensor(float humiditySensor) {
         this.previousHumiditySensor = this.humiditySensor;
         this.humiditySensor = humiditySensor;
@@ -386,7 +388,7 @@ public class Plant {
         this.previousHumiditySensor = previousHumiditySensor;
     }
 
-    public void setHumiditySensor_harvestPeriod_dayNumber(float humiditySensor_Day,int dayNumber) {
+    public void setHumiditySensor_harvestPeriod_dayNumber(float humiditySensor_Day, int dayNumber) {
         this.humiditySensor_harvestPeriod[dayNumber - 1] = humiditySensor_Day;
     }
 }

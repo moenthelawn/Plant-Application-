@@ -14,29 +14,20 @@ public class SoilStorage {
     private individualSoil[] allSoil;
 
     public SoilStorage() {
-        //Pair<float, String> soilTypes = new Pair< <"Clay", 200>, <"Silt",>
-        this.clay = 200; //The units are mm water/ m soil
-        this.silt = 208;
-        this.loam = 175;
-        this.sand = 83;
-        this.peaty = 80;
-        this.chalk = 208;
 
-        individualSoil Clay = new individualSoil("Clay", 34f, 200f);
-        individualSoil Silt = new individualSoil("Silty", 30f, 208f);
-        individualSoil Loam = new individualSoil("Loamy", 34f, 200f);
-        individualSoil Sand = new individualSoil("Sandy", 11f, 83f);
-        individualSoil Peaty = new individualSoil("Peaty", 34f, 80f);
-        individualSoil Chalk = new individualSoil("Chalky", 208f, 34f);
-
+        individualSoil Clay = new individualSoil("Clay", 40f,34f, 20f);
+        individualSoil Loam = new individualSoil("Loam", 25f, 17.5f,16f);
+        individualSoil Sandy = new individualSoil("Sandy", 15f,11f,8f);
+        individualSoil SandyLoam = new individualSoil("Sandy Loam", 18f,14f,18.33f);
+        individualSoil ClayLoam = new individualSoil("Clay Loam", 40f,32.5f,18.33f);
         /*allSoil[0] = Clay; */
+
         allSoil = new individualSoil[GlobalConstants.MAXSOILTYPES];
         allSoil[0] = Clay;
-        allSoil[1] = Silt;
+        allSoil[1] = Sandy;
         allSoil[2] = Loam;
-        allSoil[3] = Sand;
-        allSoil[4] = Peaty;
-        allSoil[5] = Chalk;
+        allSoil[3] = SandyLoam;
+        allSoil[4] = ClayLoam;
 
         /*allSoil[0] =  new individualSoil("Clay",34f,200f); */
     }
@@ -47,7 +38,7 @@ public class SoilStorage {
         for (int i = 0; i < maxSoilTypes; i++) {
             String soilType = allSoil[i].getSoilType();
             if (soilType == soilType_Input) {
-                return allSoil[i].getMoistureContent();
+                return allSoil[i].getMoistureContent_MAD();
             }
         }
         return -1f;
@@ -81,51 +72,5 @@ public class SoilStorage {
         return 0;
     }*/
 
-    public float getClay() {
-        return clay;
-    }
 
-    public void setClay(float clay) {
-        this.clay = clay;
-    }
-
-    public float getSilt() {
-        return silt;
-    }
-
-    public void setSilt(float silt) {
-        this.silt = silt;
-    }
-
-    public float getChalk() {
-        return chalk;
-    }
-
-    public void setChalk(float chalk) {
-        this.chalk = chalk;
-    }
-
-    public float getSand() {
-        return sand;
-    }
-
-    public void setSand(float sand) {
-        this.sand = sand;
-    }
-
-    public float getLoam() {
-        return loam;
-    }
-
-    public void setLoam(float loam) {
-        this.loam = loam;
-    }
-
-    public float getPeaty() {
-        return peaty;
-    }
-
-    public void setPeaty(float peaty) {
-        this.peaty = peaty;
-    }
 }

@@ -22,7 +22,7 @@ public class plantDataBase<E> {
 
         int empty1 = -1;
         float empty3 = -1;
-        Plant empty = new Plant("", -1, -1, empty1, -1f, -1f, -1, "");
+        Plant empty = new Plant("", -1, -1,0,"");
         return empty; //otherwise we return empty
     }
 
@@ -174,9 +174,9 @@ public class plantDataBase<E> {
     }
 
     public void addPlant(String PlantName, int buttonID, int slotNumber,
-                         int harvestPeriod_days, float cropCoefficient, float p, float temp, String plantType) {
+                         int harvestPeriod_days, String plantType) {
 
-        allPlants[slotNumber - 1] = new Plant(PlantName, buttonID, slotNumber, harvestPeriod_days, cropCoefficient, p, temp, plantType);
+        allPlants[slotNumber - 1] = new Plant(PlantName, buttonID, slotNumber, harvestPeriod_days, plantType);
         added = true;
     }
 

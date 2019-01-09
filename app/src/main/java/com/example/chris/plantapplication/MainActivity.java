@@ -1,10 +1,16 @@
 package com.example.chris.plantapplication;
 
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -34,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton button2;
     private ImageButton button_updates;
     Thread myThread;
-    TcpClient client;
 
     private GlobalConstants constants;
     private plantDataBase plantH;
@@ -48,18 +53,45 @@ public class MainActivity extends AppCompatActivity {
         plantH = plantDataBase.getInstance();
         setImageGrowthVisibility();
 
-        client = new TcpClient(this.getApplicationContext());
-        myThread = new Thread(client); //Creating the new TCP thread
-        myThread.start();
+        TextView plantText = findViewById(R.id.textView31);
 
+        TcpClient client = new TcpClient(MainActivity.this);
+        new Thread(client).start();
+
+        /* myThread = new Thread(client); //Creating the new TCP thread
+        myThread.start();*/
+       /* Runnable_thread runnable = new Runnable_thread(this);
+        new Thread(runnable).start();*/
+
+   /*    new Thread(new Runnable() {
+           @Override
+           public void run() {
+
+               TcpClient client = new TcpClient(MainActivity.this, mainHandler);
+           }
+       }).start();
+*/
         addPlants();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        contentUpdate();
         //updateButtonText();
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+        String value = preferences.getString("Message", "");
+        if (value != "") {
+            UIData uiData = new UIData(value);
+            updateWaterTankLevels(uiData.getWaterTank());
+        }
+
+       /* SharedPreferences prefs = getPreferences(MODE)
+      //  SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String message = preferences.getString("SlotNumber", null);
+*/
+        contentUpdate();
+
     }
 
     private void setImageGrowthVisibility() {//Set all the harvest image views to invisible
@@ -96,37 +128,34 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    public int getGrowthStage(int harvestDayLength, int currentDayNumber){
+
+    public int getGrowthStage(int harvestDayLength, int currentDayNumber) {
         float fraction = currentDayNumber / harvestDayLength;
-        if (fraction >= 0f && fraction < 0.25f){
+        if (fraction >= 0f && fraction < 0.25f) {
             return 1;
-        }
-        else if(fraction >= 0.25f && fraction < 0.50f){
+        } else if (fraction >= 0.25f && fraction < 0.50f) {
             return 2;
-        }
-        else if (fraction >= 0.5f && fraction < 0.75f){
+        } else if (fraction >= 0.5f && fraction < 0.75f) {
             return 3;
-        }
-        else {
+        } else {
             return 4;
         }
     }
-    private void setGrowthStage(Plant plant){
+
+    private void setGrowthStage(Plant plant) {
         int slotNumber = plant.getSlotNumber();
         int currentDayNumber = plant.getCurrentDayNumber();
         /*int totalDays = plant.geg*/
         int harvestDayLength = plant.getHarvestDayLength();
         int growthStage = getGrowthStage(harvestDayLength, currentDayNumber);
 
-        if (slotNumber == 1){
+        if (slotNumber == 1) {
             ImageView harvest = findViewById(R.id.imageView13);
             setGrowthStageImage(harvest, growthStage);
-        }
-        else if (slotNumber == 2){
+        } else if (slotNumber == 2) {
             ImageView harvest = findViewById(R.id.imageView16);
             setGrowthStageImage(harvest, growthStage);
-        }
-        else{
+        } else {
             ImageView harvest = findViewById(R.id.imageView12);
             setGrowthStageImage(harvest, growthStage);
         }
@@ -138,24 +167,20 @@ public class MainActivity extends AppCompatActivity {
 
         //We have all of our image views corresponding to each image
         //Slot 3
-        if (growthStage == 0){
+        if (growthStage == 0) {
             harvest.setImageResource(R.drawable.growthstage1);
             harvest.setVisibility(harvest.INVISIBLE);
-        }
-        else if (growthStage == 1) {
+        } else if (growthStage == 1) {
             //Then we update the plant with the first imag e
             harvest.setImageResource(R.drawable.growthstage1);
             harvest.setVisibility(harvest.VISIBLE);
-        }
-        else if(growthStage == 2){
+        } else if (growthStage == 2) {
             harvest.setImageResource(R.drawable.growthstage2);
             harvest.setVisibility(harvest.VISIBLE);
-        }
-        else if(growthStage == 3){
+        } else if (growthStage == 3) {
             harvest.setImageResource(R.drawable.growthstage3);
             harvest.setVisibility(harvest.VISIBLE);
-        }
-        else if(growthStage == 4){
+        } else if (growthStage == 4) {
             harvest.setImageResource(R.drawable.growthstage4);
             harvest.setVisibility(harvest.VISIBLE);
         }
@@ -174,22 +199,47 @@ public class MainActivity extends AppCompatActivity {
                     int slotNumber = currentPlant.getSlotNumber();
                     if (currentButtonID != -1) {
                         ImageButton changingButton = (ImageButton) findViewById(currentButtonID);
-                        changingButton.setImageResource(R.drawable.planteye);//Update it to the eye symbol so that we know it is already in plac
+                        changingButton.setImageResource(R.drawable.addplantmonitor);//Update it to the eye symbol so that we know it is already in plac
 
                         setGrowthStage(currentPlant);
                         //   threeButtons.setButtonNumberToSlot(currentButtonID, slotNumber); //Set the current slots number
                         //   threeButtons.setPlant(currentButtonID, allPlants[i], slotNumber);
                         updateButtonText(slotNumber, allPlants[i].getName(), allPlants[i]);
                     }
-                }
-                else if (currentPlant == null){
+                } else if (currentPlant == null) {
                     //If the plant is null then we will remove that plant from the diagram
                     removePlant(i + 1);
                 }
             }
         }
     }
-    public void removePlant(int slotNumber){
+
+    private void updateWaterTankLevels(float waterTank) {
+        ImageView layout = (ImageView) findViewById(R.id.imageView5);
+        TextView WaterTankLevel = (TextView) findViewById(R.id.textView2);
+
+        //The MAXWATERTANKSIZE is the maximum height of the image such that it will reach the top portion of the water tank
+        int MAXWATERTANKSIZE_IMAGE_HEIGHT = 157;
+        int MAXWATERTANKSIZE_IMAGE_WIDTH = 172;
+
+        float waterPercentage = waterTank / GlobalConstants.MAX_WATERTANK;
+
+        int waterHeight_Adjustable = (int) (100 * waterPercentage);
+        float requiredHeight_Pixels = (waterPercentage * MAXWATERTANKSIZE_IMAGE_HEIGHT);
+
+        // Gets the layout params that will allow you to resize the layout
+        ViewGroup.LayoutParams params = layout.getLayoutParams();
+
+        String TankLevel = Float.toString(waterHeight_Adjustable) + " %";
+        WaterTankLevel.setText(TankLevel); //Also we need to set the percentage of the water tank to the value of the percentage left
+
+        params.height = convertDipToPixels(this, requiredHeight_Pixels);
+        layout.setLayoutParams(params);
+        //setWaterTankNotification(waterPercentage);
+    }
+
+
+    public void removePlant(int slotNumber) {
         ImageView harvestSlot1 = findViewById(R.id.imageView13); //Corresponding image button attached to it
         ImageView harvestSlot2 = findViewById(R.id.imageView16); //Corresponding image button attached to it
         ImageView harvestSlot3 = findViewById(R.id.imageView12); //Corresponding image button attached to it
@@ -203,20 +253,18 @@ public class MainActivity extends AppCompatActivity {
         TextView plantTextSlot3 = findViewById(R.id.textView13);
 
         //For each slot, we will remove the image and put back the image of the empty icon
-        if (slotNumber == 1){
+        if (slotNumber == 1) {
             harvestSlot1.setVisibility(harvestSlot1.INVISIBLE);
-            addPlantSlot1.setImageResource(R.drawable.plantstaff);
+            addPlantSlot1.setImageResource(R.drawable.buttonaddplant);
             plantTextSlot1.setText("Plant 1");
 
-        }
-        else if (slotNumber == 2){
+        } else if (slotNumber == 2) {
             harvestSlot2.setVisibility(harvestSlot2.INVISIBLE);
-            addPlantSlot2.setImageResource(R.drawable.plantstaff);
+            addPlantSlot2.setImageResource(R.drawable.buttonaddplant);
             plantTextSlot2.setText("Plant 2");
-        }
-        else{
+        } else {
             harvestSlot3.setVisibility(harvestSlot3.INVISIBLE);
-            addPlantSlot3.setImageResource(R.drawable.plantstaff);
+            addPlantSlot3.setImageResource(R.drawable.buttonaddplant);
             plantTextSlot3.setText("Plant 3");
 
         }
@@ -227,64 +275,6 @@ public class MainActivity extends AppCompatActivity {
         return (int) (dips * context.getResources().getDisplayMetrics().density + 0.5f);
     }
 
-    private void updateWaterTankLevels(float waterTank) {
-        //grab the image view portion of it
-        ImageView layout = findViewById(R.id.imageView5);
-        TextView WaterTankLevel = findViewById(R.id.textView2);
-
-        //The MAXWATERTANKSIZE is the maximum height of the image such that it will reach the top portion of the water tank
-        int MAXWATERTANKSIZE_IMAGE_HEIGHT = 157;
-        int MAXWATERTANKSIZE_IMAGE_WIDTH = 172;
-        float waterPercentage = waterTank / constants.MAX_WATERTANK;
-
-        int waterHeight_Adjustable = (int) (100 * waterPercentage);
-        float requiredHeight_Pixels = (waterPercentage * MAXWATERTANKSIZE_IMAGE_HEIGHT);
-
-        // Gets the layout params that will allow you to resize the layout
-        ViewGroup.LayoutParams params = layout.getLayoutParams();
-
-        String TankLevel = Float.toString(waterHeight_Adjustable) + " %";
-        WaterTankLevel.setText(TankLevel); //Also we need to set the percentage of the water tank to the value of the percentage left
-
-        params.height = convertDipToPixels(this.getApplicationContext(), requiredHeight_Pixels);
-        layout.setLayoutParams(params);
-    }
-
-    private void updatePlantDataBase(int plantSlot, float airTemperature, float airHumidity, int numberDay, float height) {
-        //int buttonNumber = threeButtons.getButtonNumber(plantSlot);
-        plantH = plantDataBase.getInstance();
-        if (plantH.isSlotExists(plantSlot) == true) {
-            Plant CurrentPlant = plantH.getPlantBySlot(plantSlot);
-
-            //Now we want to submit all the data to the corresponding plant
-            CurrentPlant.setRoomTemperature(airTemperature);
-            CurrentPlant.setAirHumidity(airHumidity);
-            CurrentPlant.setDayGrowth_Number(numberDay - 1, height);
-
-            //Send the correct watering amount to the server database
-           // double waterAmount = CurrentPlant.getDailyWaterAmount_millimetres(numberDay);
-        }
-    }
-
-    private void updateIU_PacketUpdate(String message) {
-        String[] values = message.split(";"); //Split the message into each component
-        float airHumidity = Float.parseFloat(values[0]); //Air Humidity as a percentage
-        float height = Float.parseFloat(values[1]);
-        float Angle = Float.parseFloat(values[2]);
-        float airTemperature = Float.parseFloat(values[3]);
-        float waterTank = Float.parseFloat(values[4]);
-        int numberDay = Integer.parseInt(values[5]);
-        int plantSlot = Integer.parseInt(values[6]);
-        float humiditySensor = Float.parseFloat(values[7]);
-
-        Plant currentPlant = plantH.getPlantBySlot(plantSlot);
-        int DayNumber = currentPlant.getCurrentDayNumber();
-        currentPlant.setHumiditySensor_harvestPeriod_dayNumber(humiditySensor,DayNumber);
-
-        //Now we need to update the entire UI of the system
-        updateWaterTankLevels(waterTank); //This will update the level of the water tank based on the image provided
-        updatePlantDataBase(plantSlot, airTemperature, airHumidity, numberDay, height);
-    }
 
     private void addPlants() {
 
@@ -297,12 +287,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //If this button is clicked, then we will open activity2
-                String message = client.message;
-/*
+                //String message = client.message;
 
-                plantH.getPlantBySlot(1).setHumiditySensor(12);
-               */
-/* plantH.getPlantBySlot(1).setWaterRequirement_Predetermined(500);*//*
+
+                /*  plantH.getPlantBySlot(1).setHumiditySensor(12);
+                 */
+                /* plantH.getPlantBySlot(1).setWaterRequirement_Predetermined(500);*//*
 
                 float waterAmount = plantH.getWaterAmount_Interrupt(1);
                 plantH.getPlantBySlot(1).setHumiditySensor(1);
@@ -313,12 +303,12 @@ public class MainActivity extends AppCompatActivity {
                 waterAmount = plantH.getWaterAmount_Interrupt(1);
 */
 
-
+/*
                 if (message != null && !message.isEmpty()) {
                     //This is a test so that we can determine how well the water amount works
 
                     updateIU_PacketUpdate(message);
-                }
+                }*/
                 //client.run();
                 // //frame.execute(e1.getTest)
             }
@@ -378,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (plantH.buttonExists(buttonID) == false) {
             //The button does not exist as a slot and therefore we can go to the next screen to the add plant section
-            Intent intent = new Intent(this, Activity2.class);
+            Intent intent = new Intent(this, ChooseMoniteringType.class);
 
             intent.putExtra("Button ID", buttonID);
             intent.putExtra("Slot Number", position_slot);
@@ -394,5 +384,17 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
+   /* class Runnable_thread implements Runnable{
+        Activity _activity;
+        TcpClient client;
+        public Runnable_thread(Activity _activity){
+            this._activity = _activity;
+        }
+
+        @Override
+        public void run() {
+            client = new TcpClient( _activity, mainHandler);
+        }
+    }*/
 }
 

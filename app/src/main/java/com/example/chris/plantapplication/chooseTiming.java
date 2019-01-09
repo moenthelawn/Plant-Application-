@@ -35,7 +35,7 @@ public class chooseTiming extends AppCompatActivity {
         waterAmounts.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    waterAmountText.setVisibility(waterAmountText.VISIBLE);
+                waterAmountText.setVisibility(waterAmountText.VISIBLE);
                 waterAmountText.setText(Integer.toString(progress), TextView.BufferType.EDITABLE);
             }
 
@@ -62,7 +62,7 @@ public class chooseTiming extends AppCompatActivity {
                 int buttonID = getActivityThatCalled.getIntExtra("Button ID", 0); //get the button session ID so we can modify its .xml paramaters
                 int slotNumber = getActivityThatCalled.getIntExtra("Slot Number", 0); //get the button session ID so we can modify its .xml paramaters
                 float cropCoefficient = -1;
-                Plant plant = new Plant(name, buttonID,slotNumber, HarvestDays,cropCoefficient, -1,-1,"Manual");
+                Plant plant = new Plant(name, buttonID,slotNumber, HarvestDays,"Manual");
 
                 //Add the plant to the database
                 plantDataBase.getInstance().addPlant_SlotNumber(slotNumber, plant);

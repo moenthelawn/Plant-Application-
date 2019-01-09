@@ -40,7 +40,6 @@ public class soilType extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         plantH = plantDataBase.getInstance();
 
-
         Intent activityThatCalled = getIntent();
 
         buttonID = activityThatCalled.getIntExtra("Button ID", 0); //get the button session ID so we can modify its .xml paramaters
@@ -142,8 +141,6 @@ public class soilType extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
     public void setEditText() {
@@ -161,12 +158,12 @@ public class soilType extends AppCompatActivity {
         else if (loamysoil_check.isChecked() == false && claysoil_check.isChecked() == false
                 && sandysoil_check.isChecked() == true){
             //If only clay soil is checked
-            soilText.setText("Sandy Soil");
+            soilText.setText("Sandy");
         }
         else if (loamysoil_check.isChecked() == true && claysoil_check.isChecked() == false
                 && sandysoil_check.isChecked() == true){
             //If only clay soil is checked
-            soilText.setText("Loamy Sand");
+            soilText.setText("Sandy Loam");
         }
         else if (loamysoil_check.isChecked() == true && claysoil_check.isChecked() == true
                 && sandysoil_check.isChecked() == false){

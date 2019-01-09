@@ -67,6 +67,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         Intent activityThatCalled = getIntent();
         buttonID_Called = activityThatCalled.getIntExtra("Button ID", 0); //get the button session ID so we can modify its .xml paramaters
         slot_ID_Called = activityThatCalled.getIntExtra("Slot Number", 0);
+
         createSharedPreferences(slot_ID_Called); //Create the shared preferences so that the fragments can access it
         currentPlant = plantH.getPlantBySlot(slot_ID_Called);
 
