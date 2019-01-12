@@ -22,21 +22,31 @@ public class plantDataBase<E> {
 
         int empty1 = -1;
         float empty3 = -1;
-        Plant empty = new Plant("", -1, -1,0,"");
+        Plant empty = new Plant("", -1, -1, 0, "");
         return empty; //otherwise we return empty
     }
 
     public Plant getPlantBySlot(int slotNumber) {
-        return allPlants[slotNumber - 1];
+        if (isSlotExists(slotNumber)) {
+
+            return allPlants[slotNumber - 1];
+        } else {
+            return null;
+        }
 
     }
 
     public boolean isSlotExists(int slotNumber) {
+        //Check first if the slot number is in range
+        if (slotNumber < 1 && slotNumber > 3) {
+            return false;
+        }
         if (allPlants[slotNumber - 1] == null) {
             return false;
         } else {
             return true; //the plant does exist in the datbase
         }
+
     }
 
     public boolean buttonExists(int buttonNumber) {

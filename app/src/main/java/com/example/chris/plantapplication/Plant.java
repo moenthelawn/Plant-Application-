@@ -17,7 +17,7 @@ public class Plant {
 
     private String Name;
     private Calendar startDate;
-
+    private int currentDayNumber;
     private int currentPlantHeight;
     private float previousHumiditySensor;
     private float humiditySensor; //Relative humidity sensor as a percentage
@@ -56,6 +56,7 @@ public class Plant {
         this.growth_EachDay = new float[harvestPeriod_days]; //Declaring a double array to hold the amount of days we have in our
         this.water_remaining_current_day = 0;
         this.humiditySensor_harvestPeriod = new float[harvestPeriod_days];
+        currentDayNumber = 1;
         initializeGrowth_Each_Day();
         initializeHumidity_Each_Day();
     }
@@ -71,10 +72,10 @@ public class Plant {
     }
 
     public int getCurrentDayNumber() {
-        long msDiff = Calendar.getInstance().getTimeInMillis() - startDate.getTimeInMillis();
-        long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
-        int difference = (int) daysDiff + 1; //plus one since this indexes from zero
-        return difference; //The difference between the current date and the start date will give us our current day number
+        //long msDiff = Calendar.getInstance().getTimeInMillis() - startDate.getTimeInMillis();
+      //  long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
+      //  int difference = (int) daysDiff + 1; //plus one since this indexes from zero
+        return currentDayNumber; //The difference between the current date and the start date will give us our current day number
     }
 
     public int getRemainingDays_Harvest() {
@@ -86,6 +87,18 @@ public class Plant {
         for (int i = 0; i < growth_EachDay.length; i++) {
             growth_EachDay[i] = 0.00f; //We want to initialize all paramaters to zero for the default plant height growth
         }
+    }
+
+    public float getCurrentDayGrowth() {
+        if (getCurrentDayNumber() < HarvestDayLength) {
+            return growth_EachDay[getCurrentDayNumber() - 1];
+        } else {
+            return 0f;
+        }
+    }
+
+    public void setCurrentDayNumber(int dayNumber) {
+        this.currentDayNumber = dayNumber;
     }
 
     public String getName() {
@@ -149,8 +162,10 @@ public class Plant {
         return 0;
     }*/
 
-    public void setDayGrowth_Number(float Growth,int Day) {
-        this.growth_EachDay[Day - 1] = Growth;
+    public void setDayGrowth_Number(float Growth, int Day) {
+        if (Day < HarvestDayLength) {
+            this.growth_EachDay[Day - 1] = Growth;
+        }
     }
 
     public float[] getDayGrowth() {
@@ -389,6 +404,8 @@ public class Plant {
     }
 
     public void setHumiditySensor_harvestPeriod_dayNumber(float humiditySensor_Day, int dayNumber) {
-        this.humiditySensor_harvestPeriod[dayNumber - 1] = humiditySensor_Day;
+        if (dayNumber < getHarvestDayLength()) {
+            this.humiditySensor_harvestPeriod[dayNumber - 1] = humiditySensor_Day;
+        }
     }
 }

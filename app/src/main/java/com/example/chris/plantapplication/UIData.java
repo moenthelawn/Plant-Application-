@@ -6,8 +6,8 @@ public class UIData {
     private float angle;
     private float airTemperature;
     private  float waterTank;
-    private float numberDay;
-    private  float plantSlot;
+    private int numberDay;
+    private  int plantSlot;
     private  float soilHumidity;
 
 
@@ -64,19 +64,19 @@ public class UIData {
         this.waterTank = waterTank;
     }
 
-    public float getNumberDay() {
+    public int getNumberDay() {
         return numberDay;
     }
 
-    public void setNumberDay(float numberDay) {
+    public void setNumberDay(int numberDay) {
         this.numberDay = numberDay;
     }
 
-    public float getPlantSlot() {
+    public int getPlantSlot() {
         return plantSlot;
     }
 
-    public void setPlantSlot(float plantSlot) {
+    public void setPlantSlot(int plantSlot) {
         this.plantSlot = plantSlot;
     }
 

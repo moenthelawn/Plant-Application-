@@ -75,11 +75,13 @@ public class fragment_chart1 extends Fragment {
 
         LineChart graph = (LineChart) view.findViewById(R.id.chart);
         List<Entry> entries = new ArrayList<Entry>();
+/*
 
         float test[] = {0, 2, 3, 5, 6, 7, 8, 9, 10, 3, 6, 19, 20, 0};
+*/
 
-        for (int i = 0; i < test.length; i++) {
-            float y = test[i]; //Set the values of the chart to the points of the dat chart
+        for (int i = 0; i < values.length; i++) {
+            float y = values[i]; //Set the values of the chart to the points of the dat chart
             entries.add(new Entry((float) i, y));
         }
 

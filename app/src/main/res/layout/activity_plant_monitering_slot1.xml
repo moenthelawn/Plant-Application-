@@ -144,8 +144,8 @@
 
     <TextView
         android:id="@+id/textView25"
-        android:layout_width="67dp"
-        android:layout_height="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="13 cm"

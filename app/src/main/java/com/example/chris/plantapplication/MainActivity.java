@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         plantH = plantDataBase.getInstance();
         setImageGrowthVisibility();
 
-        TextView plantText = findViewById(R.id.textView31);
+     //   TextView plantText = findViewById(R.id.textView31);
 
         TcpClient client = new TcpClient(MainActivity.this);
         new Thread(client).start();
@@ -83,7 +83,10 @@ public class MainActivity extends AppCompatActivity {
         String value = preferences.getString("Message", "");
         if (value != "") {
             UIData uiData = new UIData(value);
+
+            //Update the level of the water tank and also the plant data base paramaters for the slot number sent
             updateWaterTankLevels(uiData.getWaterTank());
+
         }
 
        /* SharedPreferences prefs = getPreferences(MODE)
@@ -233,8 +236,14 @@ public class MainActivity extends AppCompatActivity {
         String TankLevel = Float.toString(waterHeight_Adjustable) + " %";
         WaterTankLevel.setText(TankLevel); //Also we need to set the percentage of the water tank to the value of the percentage left
 
-        params.height = convertDipToPixels(this, requiredHeight_Pixels);
-        layout.setLayoutParams(params);
+        if ((waterPercentage*100) > 1) {
+            params.height = convertDipToPixels(this, requiredHeight_Pixels);
+            layout.setLayoutParams(params);
+        }
+        else{
+            params.height = convertDipToPixels(this, 1);
+            layout.setLayoutParams(params);
+        }
         //setWaterTankNotification(waterPercentage);
     }
 
@@ -256,16 +265,16 @@ public class MainActivity extends AppCompatActivity {
         if (slotNumber == 1) {
             harvestSlot1.setVisibility(harvestSlot1.INVISIBLE);
             addPlantSlot1.setImageResource(R.drawable.buttonaddplant);
-            plantTextSlot1.setText("Plant 1");
+            plantTextSlot1.setText("Vase 1");
 
         } else if (slotNumber == 2) {
             harvestSlot2.setVisibility(harvestSlot2.INVISIBLE);
             addPlantSlot2.setImageResource(R.drawable.buttonaddplant);
-            plantTextSlot2.setText("Plant 2");
+            plantTextSlot2.setText("Vase 2");
         } else {
             harvestSlot3.setVisibility(harvestSlot3.INVISIBLE);
             addPlantSlot3.setImageResource(R.drawable.buttonaddplant);
-            plantTextSlot3.setText("Plant 3");
+            plantTextSlot3.setText("Vase 3");
 
         }
 

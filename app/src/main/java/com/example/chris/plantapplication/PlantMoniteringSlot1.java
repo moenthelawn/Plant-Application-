@@ -44,6 +44,8 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
     private plantDataBase plantH; //Plant Database
     private Plant currentPlant;
 
+    private TextView growth_day;
+
     private ImageButton HarvestButton;
     int buttonID_Called;
     int slot_ID_Called;
@@ -61,6 +63,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
 
         needle = (Needle) findViewById(R.id.needle);
         HarvestButton = (ImageButton) findViewById(R.id.imageButton5);
+        growth_day = (TextView) findViewById(R.id.textView25);
 
         plantH = plantDataBase.getInstance();
 
@@ -243,8 +246,9 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         }
     }
 
-    public void updatePlantGrowth(int dayNumber, float[] growth_EachDay) {
-
+    public void updatePlantGrowth(float growth_currentDay) {
+        String total = growth_currentDay + " cm";
+        growth_day.setText(total);
     }
 
     public void displayPlantData(int slotNumber) {
@@ -258,13 +262,14 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
 
         int remainingDays = requiredPlant.getRemainingDays_Harvest();
         //float growth_EachDay = requiredPlant.getGrowthStage()
-        float growth_EachWeek[] = requiredPlant.getWeek_days((dayNumber / 7)); //getting the total number of days from the entire period
+       // float growth_EachWeek[] = requiredPlant.getWeek_days((dayNumber / 7)); //getting the total number of days from the entire period
+        float growth_currentDay = requiredPlant.getCurrentDayGrowth();
 
         //Update various paramaters for our plant statistics
         updateRoomTemperature(roomTemperature);
         updateHumidity(humidity);
         updateHarvestTime(remainingDays, dayNumber);
-        updatePlantGrowth(dayNumber, growth_EachWeek);
+        updatePlantGrowth(growth_currentDay);
 
         Log.i("Plant", requiredPlant.getName() + " added to PlantMoniteringSlot1");
 

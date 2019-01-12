@@ -44,6 +44,7 @@ public class TcpClient implements Runnable {
 
     public TcpClient(Activity _activity) {
         this.activity = _activity;
+        planth = plantDataBase.getInstance();
     }
 
     @Override
@@ -55,16 +56,20 @@ public class TcpClient implements Runnable {
                 s = ss.accept();
                 isr = new InputStreamReader(s.getInputStream());
                 bufferedReader = new BufferedReader(isr);
+
                 message = bufferedReader.readLine();
+                while (message != null) {
 
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("Message",message);
-                editor.apply();
-                UIData uiData = new UIData(message);
-                setWaterTankNotification(uiData.getWaterTank());
-                //updateUI(message);
-
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("Message", message);
+                    editor.apply();
+                    UIData uiData = new UIData(message);
+                    setWaterTankNotification(uiData.getWaterTank() / GlobalConstants.MAX_WATERTANK);
+                    updatePlantDataBase(uiData.getPlantSlot(), uiData.getAirTemperature(), uiData.getAirHumidity(), uiData.getNumberDay(), uiData.getHeight(), uiData.getSoilHumidity());
+                    message = bufferedReader.readLine();
+                    //updateUI(message);
+                }
 
            /*     //we want to update the UI
                 if (message != null) {
@@ -85,41 +90,18 @@ public class TcpClient implements Runnable {
         }
 
     }
-    public void createSharedPreferences(String message){
+
+    public void createSharedPreferences(String message) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("Message",message);
+        editor.putString("Message", message);
         editor.apply();
     }
 
-    private void updateUI(final String message) {
-        planth = plantDataBase.getInstance();
-
-        final String[] values = message.split(";"); //Split the message into each component
-        float airHumidity = Float.parseFloat(values[0]); //Air Humidity as a percentage
-        float height = Float.parseFloat(values[1]);
-        float Angle = Float.parseFloat(values[2]);
-        float airTemperature = Float.parseFloat(values[3]);
-        float waterTank = Float.parseFloat(values[4]);
-        int numberDay = Integer.parseInt(values[5]);
-        int plantSlot = Integer.parseInt(values[6]);
-        float soilHumidity = Float.parseFloat(values[7]);
-
-        Plant currentPlant = planth.getPlantBySlot(plantSlot);
-        int DayNumber = currentPlant.getCurrentDayNumber();
-        //
-
-
-        //Now we need to update the entire UI of the system
-        //updateWaterTankLevels(waterTank); //This will update the level of the water tank based on the image provided
-        //updatePlantDataBase(plantSlot, airTemperature, airHumidity, numberDay, height, soilHumidity);
-    }
-
-
     private void updatePlantDataBase(int plantSlot, float airTemperature, float airHumidity,
                                      int numberDay, float height, float soilHumidity) {
-        //int buttonNumber = threeButtons.getButtonNumber(plantSlot);
 
+        //int buttonNumber = threeButtons.getButtonNumber(plantSlot);
         if (planth.isSlotExists(plantSlot) == true) {
             Plant CurrentPlant = planth.getPlantBySlot(plantSlot);
 
@@ -128,9 +110,11 @@ public class TcpClient implements Runnable {
             CurrentPlant.setAirHumidity(airHumidity);
 
             int DayNumber = CurrentPlant.getCurrentDayNumber();
-            CurrentPlant.setHumiditySensor_harvestPeriod_dayNumber(soilHumidity, DayNumber); //height
-            CurrentPlant.setDayGrowth_Number(height, DayNumber);
 
+            CurrentPlant.setHumiditySensor_harvestPeriod_dayNumber(soilHumidity, numberDay); //height
+            CurrentPlant.setDayGrowth_Number(height, numberDay);
+            CurrentPlant.setHumiditySensor(soilHumidity);
+            CurrentPlant.setCurrentDayNumber(numberDay);
             //Send the correct watering amount to the server database
             // double waterAmount = CurrentPlant.getDailyWaterAmount_millimetres(numberDay);
         }
@@ -142,20 +126,25 @@ public class TcpClient implements Runnable {
 
     private void setWaterTankNotification(float waterTankPercentage) {
         //This will be used to display a notification if it is needed
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(activity.getApplicationContext(), "CHANNEL_ID")
                 .setSmallIcon(R.drawable.tankerror)
+
                 .setContentTitle("Low water!")
                 .setContentText("Please refill your water tank")
                 .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
                 .setPriority(NotificationCompat.PRIORITY_MAX);
         int notificationID = 1;
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(activity.getApplicationContext());
-        if (waterTankPercentage <= 20) {
+
+        if ((waterTankPercentage * 100.00f) == 0){
+            mBuilder.setContentTitle("Water tank is empty!");
+        }
+
+
+        if ((waterTankPercentage * 100.00f) <= 20) {
             // notificationId is a unique int for each notification that you must define
             notificationManager.notify(notificationID, mBuilder.build());
-        } else {
-            //Then we can reset the notification
-            notificationManager.cancel(notificationID);
         }
     }
 }
