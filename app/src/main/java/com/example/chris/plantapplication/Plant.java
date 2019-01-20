@@ -29,6 +29,7 @@ public class Plant {
     private String plantType;
     private float cropCoefficient_SoilEvaporation;
     private float[] humiditySensor_harvestPeriod;
+    private float[] waterDistribution;
     private String SoilType;
 
     private float water_remaining_current_day;
@@ -53,19 +54,24 @@ public class Plant {
         this.SoilType = ""; //set the soil type to a non value
         this.plantDepth = 0;
         this.startDate = Calendar.getInstance();
+
         this.growth_EachDay = new float[harvestPeriod_days]; //Declaring a double array to hold the amount of days we have in our
+        this.waterDistribution = new float[harvestPeriod_days];
+
         this.water_remaining_current_day = 0;
         this.humiditySensor_harvestPeriod = new float[harvestPeriod_days];
         currentDayNumber = 1;
-        initializeGrowth_Each_Day();
-        initializeHumidity_Each_Day();
-    }
 
-    private void initializeHumidity_Each_Day() {
-        for (int i = 0; i < humiditySensor_harvestPeriod.length; i++) {
-            humiditySensor_harvestPeriod[i] = 0.00f; //We want to initialize all paramaters to zero for the default plant height growth
+        initializeGraphs(waterDistribution);
+        initializeGraphs(growth_EachDay);
+        initializeGraphs(humiditySensor_harvestPeriod);
+    }
+    private void initializeGraphs(float graph[]){
+        for (int i = 0; i < graph.length; i++) {
+            graph[i] = 0.00f; //We want to initialize all paramaters to zero for the default plant height growth
         }
     }
+
 
     public int getHarvestDayLength() {
         return this.HarvestDayLength;
@@ -83,11 +89,6 @@ public class Plant {
         return remaining;
     }
 
-    private void initializeGrowth_Each_Day() {
-        for (int i = 0; i < growth_EachDay.length; i++) {
-            growth_EachDay[i] = 0.00f; //We want to initialize all paramaters to zero for the default plant height growth
-        }
-    }
 
     public float getCurrentDayGrowth() {
         if (getCurrentDayNumber() < HarvestDayLength) {
@@ -407,5 +408,13 @@ public class Plant {
         if (dayNumber < getHarvestDayLength()) {
             this.humiditySensor_harvestPeriod[dayNumber - 1] = humiditySensor_Day;
         }
+    }
+    public void setWaterDistribution_harvestPeriod_dayNumber(float waterDistribution, int dayNumber) {
+        if (dayNumber < getHarvestDayLength()) {
+            this.waterDistribution[dayNumber - 1] = waterDistribution;
+        }
+    }
+    public float[] getWaterDistribution(){
+        return this.waterDistribution;
     }
 }

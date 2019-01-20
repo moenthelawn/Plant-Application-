@@ -9,6 +9,7 @@ public class UIData {
     private int numberDay;
     private  int plantSlot;
     private  float soilHumidity;
+    private float waterDistribution;
 
 
     public UIData(String message) {
@@ -22,6 +23,7 @@ public class UIData {
         this.numberDay = Integer.parseInt(values[5]);
         this.plantSlot = Integer.parseInt(values[6]);
         this.soilHumidity = Float.parseFloat(values[7]);
+        this.waterDistribution = Float.parseFloat(values[8]);
     }
 
     public float getAirHumidity() {
@@ -86,5 +88,13 @@ public class UIData {
 
     public void setSoilHumidity(float soilHumidity) {
         this.soilHumidity = soilHumidity;
+    }
+
+    public float getWaterDistribution() {
+        return waterDistribution;
+    }
+
+    public void setWaterDistribution(float waterDistribution) {
+        this.waterDistribution = waterDistribution;
     }
 }

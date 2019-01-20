@@ -30,6 +30,7 @@ public class PlantDepth extends AppCompatActivity {
 
         Intent activityThatCalled = getIntent();
         PlantDepths = (SeekBar) findViewById(R.id.seekBar);
+
         plantDepthsText = (TextView) findViewById(R.id.textView43);
         plantDepthsText.setText("0.0");
         next = (Button) findViewById(R.id.button6);

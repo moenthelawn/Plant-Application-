@@ -66,7 +66,8 @@ public class TcpClient implements Runnable {
                     editor.apply();
                     UIData uiData = new UIData(message);
                     setWaterTankNotification(uiData.getWaterTank() / GlobalConstants.MAX_WATERTANK);
-                    updatePlantDataBase(uiData.getPlantSlot(), uiData.getAirTemperature(), uiData.getAirHumidity(), uiData.getNumberDay(), uiData.getHeight(), uiData.getSoilHumidity());
+                    updatePlantDataBase(uiData.getPlantSlot(), uiData.getAirTemperature(), uiData.getAirHumidity(),
+                            uiData.getNumberDay(), uiData.getHeight(), uiData.getSoilHumidity(),uiData.getWaterDistribution());
                     message = bufferedReader.readLine();
                     //updateUI(message);
                 }
@@ -99,7 +100,7 @@ public class TcpClient implements Runnable {
     }
 
     private void updatePlantDataBase(int plantSlot, float airTemperature, float airHumidity,
-                                     int numberDay, float height, float soilHumidity) {
+                                     int numberDay, float height, float soilHumidity,float waterDistribution) {
 
         //int buttonNumber = threeButtons.getButtonNumber(plantSlot);
         if (planth.isSlotExists(plantSlot) == true) {
@@ -115,6 +116,7 @@ public class TcpClient implements Runnable {
             CurrentPlant.setDayGrowth_Number(height, numberDay);
             CurrentPlant.setHumiditySensor(soilHumidity);
             CurrentPlant.setCurrentDayNumber(numberDay);
+            CurrentPlant.setWaterDistribution_harvestPeriod_dayNumber(waterDistribution,numberDay);
             //Send the correct watering amount to the server database
             // double waterAmount = CurrentPlant.getDailyWaterAmount_millimetres(numberDay);
         }

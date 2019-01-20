@@ -6,14 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".PlantDepth">
 
+    <SeekBar
+        android:id="@+id/seekBar"
+        style="@android:style/Widget.DeviceDefault.Light.SeekBar"
+        android:layout_width="138dp"
+        android:layout_height="479dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="7dp"
+        android:max="10"
+        android:progress="3"
+        android:rotation="90"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.57" />
+
     <Button
         android:id="@+id/button6"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="273dp"
         android:layout_height="63dp"
         android:layout_marginTop="8dp"
         android:backgroundTint="#70bf5e"
-        android:outlineAmbientShadowColor="@color/colorPrimaryDark"
         android:text="Next"
         android:textColor="@android:color/background_light"
         android:textSize="18sp"
@@ -34,7 +50,6 @@
         android:text="Specify your plant growing depth"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/tableLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.463"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,31 +73,18 @@
         android:id="@+id/frameLayout"
         android:layout_width="98dp"
         android:layout_height="338dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="127dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView18"
+        app:layout_constraintHorizontal_bias="0.84"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.26999998">
 
-        <SeekBar
-            android:id="@+id/seekBar"
-            style="@style/MySeekBar"
-            android:layout_width="216dp"
-            android:layout_height="299dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layerType="hardware"
-
-            android:rotation="90"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.551" />
     </FrameLayout>
+
+
 
     <TextView
         android:id="@+id/textView43"

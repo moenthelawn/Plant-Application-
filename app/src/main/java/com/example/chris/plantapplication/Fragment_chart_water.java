@@ -71,7 +71,7 @@ public class Fragment_chart_water extends Fragment {
         int slotNumber = preferences.getInt("SlotNumber", 0);
 
         Plant currentPlant = plantDataBase.getInstance().getPlantBySlot(slotNumber);
-        createGraphChart(currentPlant.getHumititySensor_harvestPeriod(), view);
+        createGraphChart(currentPlant.getWaterDistribution(), view);
 
         return view;
     }

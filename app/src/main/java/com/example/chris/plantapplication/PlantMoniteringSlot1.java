@@ -45,7 +45,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
     private Plant currentPlant;
 
     private TextView growth_day;
-
+    private TextView plantName;
     private ImageButton HarvestButton;
     int buttonID_Called;
     int slot_ID_Called;
@@ -64,6 +64,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         needle = (Needle) findViewById(R.id.needle);
         HarvestButton = (ImageButton) findViewById(R.id.imageButton5);
         growth_day = (TextView) findViewById(R.id.textView25);
+        plantName = (TextView) findViewById(R.id.textView16);
 
         plantH = plantDataBase.getInstance();
 
@@ -73,7 +74,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
 
         createSharedPreferences(slot_ID_Called); //Create the shared preferences so that the fragments can access it
         currentPlant = plantH.getPlantBySlot(slot_ID_Called);
-
+        plantName.setText(currentPlant.getName());
         //Set the needle to point to the current soil moisture direction
         setNeedleDirection(currentPlant.getHumiditySensor(), currentPlant.getPreviousHumiditySensor());
 
@@ -155,10 +156,10 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         humidityBut.setText(temp);
     }
 
-    public void animateHarvestTimeProgress(int dayNumber, int totalElapsedDays) {
+    public void animateHarvestTimeProgress(int remainingDays, int totalHarvestPeriod) {
         final ProgressBar currentProgress = findViewById(R.id.progressBar);
         int currentProg = currentProgress.getProgress();
-        double growthP = ((double) totalElapsedDays / (double) dayNumber);
+        double growthP = ((double) remainingDays / (double) totalHarvestPeriod);
         double growthP_inverse = growthP;
 
         int growthPercentage = (int) (100 * growthP_inverse);
@@ -211,7 +212,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         }
     }
 
-    public void updateHarvestTime(int remainingDays, int currentDayNumber) {
+    public void updateHarvestTime(int remainingDays, int totalHarvestPeriod) {
         //The harvest day length will be updated with the correct day number. Once it reached the final growth stage,
         //Then we will update the plant
 
@@ -242,7 +243,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
             timeTillHarvest.setVisibility(timeTillHarvest.VISIBLE);
 
             HarvestDay.setText(HarvestTime);
-            animateHarvestTimeProgress(remainingDays, currentDayNumber); //We want to animate the change in the progress bar
+            animateHarvestTimeProgress(remainingDays, totalHarvestPeriod); //We want to animate the change in the progress bar
         }
     }
 
@@ -259,16 +260,15 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         float roomTemperature = requiredPlant.getRoomTemperature();
         float humidity = requiredPlant.getAirHumidity();
         int dayNumber = requiredPlant.getCurrentDayNumber();
-
+        int totalHarvestPeriod = requiredPlant.getHarvestDayLength();
         int remainingDays = requiredPlant.getRemainingDays_Harvest();
         //float growth_EachDay = requiredPlant.getGrowthStage()
        // float growth_EachWeek[] = requiredPlant.getWeek_days((dayNumber / 7)); //getting the total number of days from the entire period
-        float growth_currentDay = requiredPlant.getCurrentDayGrowth();
-
+        float growth_currentDay = Math.round((requiredPlant.getCurrentDayGrowth()*100)/100);
         //Update various paramaters for our plant statistics
         updateRoomTemperature(roomTemperature);
         updateHumidity(humidity);
-        updateHarvestTime(remainingDays, dayNumber);
+        updateHarvestTime(remainingDays, totalHarvestPeriod);
         updatePlantGrowth(growth_currentDay);
 
         Log.i("Plant", requiredPlant.getName() + " added to PlantMoniteringSlot1");

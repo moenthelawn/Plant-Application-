@@ -17,14 +17,15 @@ buildscript {
 
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
-        // Unit testing dependencies
+        classpath 'com.android.tools.build:gradle:3.3.0'
+
+    }
         //  implementation 'com.jjoe64:graphview:4.2.2'
 
         // more stuff, e.g., Mockitohey belong
         //        // in the individual module build.gradle files
         // NOTE: Do not place your application dependencies here; t
-    }
+
 }
 
 allprojects {
