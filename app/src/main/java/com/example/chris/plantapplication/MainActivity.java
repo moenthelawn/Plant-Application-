@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
                 if (currentPlant != null) {
                     int currentButtonID = currentPlant.getButtonNumber();
                     int slotNumber = currentPlant.getSlotNumber();
-                    if (currentButtonID != -1) {
+                    if (slotNumber != -1) {
                         ImageButton changingButton = (ImageButton) findViewById(currentButtonID);
                         changingButton.setImageResource(R.drawable.addplantmonitor);//Update it to the eye symbol so that we know it is already in plac
 

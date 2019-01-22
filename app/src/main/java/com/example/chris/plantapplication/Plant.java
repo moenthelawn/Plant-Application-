@@ -4,6 +4,8 @@ import android.provider.Settings;
 import android.widget.Button;
 
 
+import com.firebase.client.Firebase;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -72,7 +74,33 @@ public class Plant {
         }
     }
 
+    public void updateServerDataBase() {
+        //Set the dummy credentials
+        Firebase mRef;
+        if (this.slotNumber == 1) {
+            mRef = new Firebase("https://plantsystem-9ff68.firebaseio.com/Plant Vases/Plant Vase 1");
+            setChilds(mRef);
+        }
+        else if (slotNumber == 2){
+            mRef = new Firebase("https://plantsystem-9ff68.firebaseio.com/Plant Vases/Plant Vase 2");
+            setChilds(mRef);
+        }
+        else if (slotNumber == 3){
+            mRef = new Firebase("https://plantsystem-9ff68.firebaseio.com/Plant Vases/Plant Vase 3");
+           setChilds(mRef);
+        }
+        else {
+            return;
+        }
 
+    }
+    public void setChilds(Firebase mRef){
+        mRef.child("Plant Name").setValue(this.Name);
+        mRef.child("Soil Type").setValue(this.SoilType);
+        mRef.child("Harvest Period").setValue(this.HarvestDayLength);
+        mRef.child("Plant Type").setValue(this.plantType);
+        mRef.child("Button ID").setValue(this.buttonNumber);
+    }
     public int getHarvestDayLength() {
         return this.HarvestDayLength;
     }
@@ -91,11 +119,10 @@ public class Plant {
 
 
     public float getCurrentDayGrowth() {
-        if (getCurrentDayNumber() < HarvestDayLength) {
-            return growth_EachDay.get(getCurrentDayNumber() - 1);
-        } else {
-            return 0f;
+        if (this.growth_EachDay.size() > 0) {
+            return this.growth_EachDay.get(this.growth_EachDay.size() - 1);
         }
+        return 0;
     }
 
     public void setCurrentDayNumber(int dayNumber) {
@@ -120,7 +147,10 @@ public class Plant {
 
     public float getCurrentHeight_dayNumber(int dayNumber) {
         //This function will return the current height based on the day number that we are in
-        return this.growth_EachDay.get(dayNumber - 1);
+        if (this.growth_EachDay.size() <= getCurrentDayNumber()) {
+            return this.growth_EachDay.get(dayNumber - 1);
+        }
+        return 0;
     }
 
     public void setName(String name) {
@@ -164,8 +194,8 @@ public class Plant {
     }*/
 
     public void setDayGrowth_Number(float Growth, int Day) {
-        if (Day < HarvestDayLength) {
-            this.growth_EachDay.set(Day - 1,Growth);
+        if (this.growth_EachDay.size() <= getCurrentDayNumber()) {
+            this.growth_EachDay.set(Day - 1, Growth);
         }
     }
 

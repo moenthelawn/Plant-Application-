@@ -50,27 +50,35 @@ public class WebServer implements Runnable {
 
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(_activity);
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putFloat("Water Tank", currentWaterLevels );
+                editor.putFloat("Water Tank", currentWaterLevels);
                 editor.apply();
-
+                int slotNumber = 1;
                 for (DataSnapshot eachVase : dataSnapshot.child("Plant Vases").getChildren()) {
                     String currentPlantName = eachVase.child("Plant Name").getValue(String.class);
 
                     if (currentPlantName != "" && currentPlantName != null) {
-                        Plant currentPlant = plantH.getPlantBySlot(i);
-                        ArrayList<Float> soilHumidity = getArray(eachVase.child("Soil Humidity"));
-                        ArrayList<Float> waterDistribution = getArray(eachVase.child("Water Distribution"));
-                        ArrayList<Float> plantHeight = getArray(eachVase.child("Plant Height"));
+                        if (plantH.getPlantBySlot(slotNumber) == null) {
+                            int harvestPeriod = eachVase.child("Harvest Period").getValue(int.class);
+                            String plantType = eachVase.child("Plant Type").getValue(String.class);
+                            int buttonID = eachVase.child("Button ID").getValue(int.class);
+                            plantH.addPlant(currentPlantName, buttonID, slotNumber, harvestPeriod, plantType);
+
+                        }
+                            Plant currentPlant = plantH.getPlantBySlot(slotNumber);
+
+                            ArrayList<Float> soilHumidity = getArray(eachVase.child("Soil Humidity"));
+                            ArrayList<Float> waterDistribution = getArray(eachVase.child("Water Distribution"));
+                            ArrayList<Float> plantHeight = getArray(eachVase.child("Plant Height"));
 
 
+                            currentPlant.setGrowth_EachDay(plantHeight);
+                            currentPlant.setHumiditySensor_harvestPeriod(soilHumidity);
+                            currentPlant.setWaterDistribution(waterDistribution);
+                            int dayNumber = (int) eachVase.child("Soil Humidity").getChildrenCount();
 
-                        currentPlant.setGrowth_EachDay(plantHeight);
-                        currentPlant.setHumiditySensor_harvestPeriod(soilHumidity);
-                        currentPlant.setWaterDistribution(waterDistribution);
-                        int dayNumber = (int) eachVase.child("Soil Humidity").getChildrenCount();
                     }
 
-                    i += 1;
+                    slotNumber += 1;
                 }
             }
 
@@ -94,11 +102,13 @@ public class WebServer implements Runnable {
 
         });
 
-    } public void setWaterTankNotification(float waterTankPercentage) {
+    }
+
+    public void setWaterTankNotification(float waterTankPercentage) {
         //This will be used to display a notification if it is needed
 
 
-      NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(_activity,"default")
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(_activity, "default")
                 .setSmallIcon(R.drawable.tankerror)
                 .setContentTitle("Low water!")
                 .setContentText("Please refill your water tank")
@@ -111,7 +121,7 @@ public class WebServer implements Runnable {
                 "Channel name",
                 NotificationManager.IMPORTANCE_DEFAULT);
         mNotificationManager.createNotificationChannel(channel);
-      //  NotificationChannel channel = new NotificationChannel("CHANNEL_ID", name, importance);
+        //  NotificationChannel channel = new NotificationChannel("CHANNEL_ID", name, importance);
         // Since android Oreo notification channel is needed.
      /*   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("CHANNEL_ID",
@@ -130,7 +140,6 @@ public class WebServer implements Runnable {
             mNotificationManager.notify(notificationID, mBuilder.build());
         }
     }
-
 
 
 }

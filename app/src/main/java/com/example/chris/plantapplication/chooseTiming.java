@@ -29,7 +29,7 @@ public class chooseTiming extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_timing);
 
-        waterAmounts = (SeekBar) findViewById(R.id.seekBar);
+        waterAmounts = (SeekBar) findViewById(R.id.test);
         waterPlantName = (EditText) findViewById(R.id.editText4);
         plantGrowthDays = (EditText) findViewById(R.id.editText8);
         waterAmountText = (EditText) findViewById(R.id.editText6);
