@@ -117,54 +117,7 @@ public class plantDataBase<E> {
         }
     }
 
-    public float getWaterAmount_Interrupt(int slotNumber) {
-        //This function will be called when there is a timer interrupt to determine how much water a plant should get after a certain amount of time
-        Plant currentPlant = allPlants[slotNumber - 1];
-        String soilType = currentPlant.getSoilType();
-        float humiditySensor = currentPlant.getHumiditySensor();
-        float water_plant_remaining = currentPlant.getWater_remaining_current_day();
-        SoilStorage soil;
-        soil = new SoilStorage();
 
-        float maxWaterAmount = soil.getMaxWaterAmount(currentPlant.getPlantDepth(), soilType); //How much water the plant will need
-        float maximumAllowableSoilDepletion = soil.getMaximumAllowableDepletion_moisture_Percentage(soilType);
-
-        if (currentPlant.getPlantType() == GlobalConstants.Predetermined) {
-            if (water_plant_remaining > 0 && humidityDeviation(humiditySensor, maximumAllowableSoilDepletion)) { //if there is a need to determine more water r
-                //Then we will send the appropriate amount next and decreasee the appropriate amount
-                int numberOfRefills = determineNumberRefills(water_plant_remaining, maxWaterAmount);
-                //If our waterremaining is bigger than the remaining plant water, then send it
-                if (numberOfRefills == 1) {
-                    currentPlant.setWater_remaining_current_day(0);//set the water to 0 since we will no longer need to continue any refills
-                    return water_plant_remaining;
-                } else {
-                    currentPlant.setWater_remaining_current_day(water_plant_remaining - maxWaterAmount);
-                    return maxWaterAmount;
-                }
-            } else {
-                //minimumAllowableSoilDepltion / 100f is a percentage
-                //This is when the soil moisture depletion has reached a value that could correlate to more plant stress.
-                if (humidityDeviation(humiditySensor, maximumAllowableSoilDepletion)) {
-                    //Then we are safe to water the plant
-                    float water_predetermined = currentPlant.calculateWater_PreDetermined(); //How much water the plagiven time nt vase can get at any*/
-
-                    if (water_predetermined > maxWaterAmount) {//Ie we need to do other refills
-                        //Then we need to figure out how many refills we will need to satisfy the overlay
-                        //Send the first water amount, and after that we will have
-                        currentPlant.setWater_remaining_current_day(water_predetermined - maxWaterAmount);
-                        return maxWaterAmount; //Return the max water amount since this will be broken up into
-                    } else if (water_predetermined <= maxWaterAmount) {
-                        //Then we can just send the current watering amount since we will not need any additional water refills senT
-                        return water_predetermined;
-                    }
-                }
-            }
-        } else if (currentPlant.getPlantType() == GlobalConstants.Manual) {
-            float water_Manual = currentPlant.getWaterRequirement_Manual();
-            return water_Manual; //We do not need to calculate the water requirements
-        }
-        return 0f;
-    }
 
     public Plant[] getAllPlants() {
         return allPlants;

@@ -69,14 +69,14 @@ public class GraphHumiditySensor extends android.support.v4.app.Fragment {
 
         return view;
     }
-    public void createGraphChart(float values[], View view){
+    public void createGraphChart(ArrayList<Float> values, View view){
         GraphView tvLabel = (GraphView) view.findViewById(R.id.chart1);
 
         LineChart graph = (LineChart) view.findViewById(R.id.chart1);
         List<Entry> entries = new ArrayList<Entry>();
 
-        for (int i = 0; i < values.length; i++) {
-            float y = values[i]; //Set the values of the chart to the points of the dat chart
+        for (int i = 0; i < values.size(); i++) {
+            float y = values.get(i); //Set the values of the chart to the points of the dat chart
             entries.add(new Entry((float) i, y));
         }
 

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "161561955748",
+    "firebase_url": "https://plantsystem-9ff68.firebaseio.com",
+    "project_id": "plantsystem-9ff68",
+    "storage_bucket": "plantsystem-9ff68.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:161561955748:android:59961a7e197229f7",
+        "android_client_info": {
+          "package_name": "com.example.chris.plantapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "161561955748-94dqk5smakc81atjqmet5dkeikh71jh9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCxSiDO20Sqmj5urLi9Qt6Pu98HRNa6xY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

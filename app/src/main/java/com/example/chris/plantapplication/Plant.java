@@ -4,6 +4,8 @@ import android.provider.Settings;
 import android.widget.Button;
 
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -22,14 +24,15 @@ public class Plant {
     private float previousHumiditySensor;
     private float humiditySensor; //Relative humidity sensor as a percentage
     private int HarvestDayLength; // Array of the days allocated over each individual harvest period
-    private float cropCoefficients; //Represents the coefficients for the crop coefficients that will be used to calculate the amount of water the plant will need as a function of the number of days
-    private float growth_EachDay[];
+
+    private ArrayList<Float> growth_EachDay;
+    private ArrayList<Float> humiditySensor_harvestPeriod;
+    private ArrayList<Float> waterDistribution;
+
     private float RoomTemperature;
     private float airHumidity;
     private String plantType;
     private float cropCoefficient_SoilEvaporation;
-    private float[] humiditySensor_harvestPeriod;
-    private float[] waterDistribution;
     private String SoilType;
 
     private float water_remaining_current_day;
@@ -44,29 +47,26 @@ public class Plant {
         this.Name = Name; //We haven't named it yet
         this.buttonNumber = buttonID;
         this.HarvestDayLength = harvestPeriod_days;
-        /*this.cropCoefficients = cropCoefficient;*/
-        /*this.pFactor = p;*/
+
         this.plantType = plantType;
         this.previousHumiditySensor = 0;
         this.humiditySensor = 0;
-        /*this.RoomTemperature = temperature;*/
+
         this.waterRequirement_Manual = -1; //Default is set to -1 in that we haven't started using it yet unless it is specified as a manual inputted plant
         this.SoilType = ""; //set the soil type to a non value
         this.plantDepth = 0;
         this.startDate = Calendar.getInstance();
 
-        this.growth_EachDay = new float[harvestPeriod_days]; //Declaring a double array to hold the amount of days we have in our
-        this.waterDistribution = new float[harvestPeriod_days];
+        this.growth_EachDay = new ArrayList<>();
+        this.humiditySensor_harvestPeriod = new ArrayList<>();
+        this.waterDistribution = new ArrayList<>();
 
         this.water_remaining_current_day = 0;
-        this.humiditySensor_harvestPeriod = new float[harvestPeriod_days];
         currentDayNumber = 1;
 
-        initializeGraphs(waterDistribution);
-        initializeGraphs(growth_EachDay);
-        initializeGraphs(humiditySensor_harvestPeriod);
     }
-    private void initializeGraphs(float graph[]){
+
+    private void initializeGraphs(float graph[]) {
         for (int i = 0; i < graph.length; i++) {
             graph[i] = 0.00f; //We want to initialize all paramaters to zero for the default plant height growth
         }
@@ -79,8 +79,8 @@ public class Plant {
 
     public int getCurrentDayNumber() {
         //long msDiff = Calendar.getInstance().getTimeInMillis() - startDate.getTimeInMillis();
-      //  long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
-      //  int difference = (int) daysDiff + 1; //plus one since this indexes from zero
+        //  long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
+        //  int difference = (int) daysDiff + 1; //plus one since this indexes from zero
         return currentDayNumber; //The difference between the current date and the start date will give us our current day number
     }
 
@@ -92,7 +92,7 @@ public class Plant {
 
     public float getCurrentDayGrowth() {
         if (getCurrentDayNumber() < HarvestDayLength) {
-            return growth_EachDay[getCurrentDayNumber() - 1];
+            return growth_EachDay.get(getCurrentDayNumber() - 1);
         } else {
             return 0f;
         }
@@ -120,7 +120,7 @@ public class Plant {
 
     public float getCurrentHeight_dayNumber(int dayNumber) {
         //This function will return the current height based on the day number that we are in
-        return this.growth_EachDay[dayNumber - 1];
+        return this.growth_EachDay.get(dayNumber - 1);
     }
 
     public void setName(String name) {
@@ -165,11 +165,11 @@ public class Plant {
 
     public void setDayGrowth_Number(float Growth, int Day) {
         if (Day < HarvestDayLength) {
-            this.growth_EachDay[Day - 1] = Growth;
+            this.growth_EachDay.set(Day - 1,Growth);
         }
     }
 
-    public float[] getDayGrowth() {
+    public ArrayList<Float> getDayGrowth() {
         return this.growth_EachDay;
     }
 
@@ -220,12 +220,12 @@ public class Plant {
 
     public int days_Available() {
         //This function will go through the days and return the number that is available
-        for (int i = 0; i < growth_EachDay.length; i++) {
-            if (growth_EachDay[i] == 0) {
+        for (int i = 0; i < growth_EachDay.size(); i++) {
+            if (growth_EachDay.get(i) == 0) {
                 return i;
             }
         }
-        return growth_EachDay.length;
+        return growth_EachDay.size();
     }
 
     public float[] getWeek_days(int weeks) {
@@ -238,8 +238,8 @@ public class Plant {
 
         int j = 0;
         if (weeks != 0) {
-            for (int i = 0; i < growth_EachDay.length; i++) {
-                weekSum += growth_EachDay[i];
+            for (int i = 0; i < growth_EachDay.size(); i++) {
+                weekSum += growth_EachDay.get(i);
                 if (i % 7 == 0) {
                     weeksAverageHeights[j] = weekSum / 7;
                     j += 1;
@@ -249,30 +249,14 @@ public class Plant {
         } else if (weeks == 0) {
             int averageheight = 0;
             for (int i = 0; i < daysAvailable; i++) {
-                averageheight += growth_EachDay[i];
+                averageheight += growth_EachDay.get(i);
             }
             weeksAverageHeights[0] = averageheight / 7;
         }
         return weeksAverageHeights; // Return the plant height statistics back to the user
     }
 
-    public float calculateWater_PreDetermined() {
 
-        float evapIndex = evapotransIndex();
-
-        return (cropCoefficients + this.getCropCoefficient_SoilEvaporation()) * evapIndex;
-       /* int totalHavestDayLengths = 0;
-        for (int i = 0; i < HarvestDayLength.length; i++) {
-
-            totalHavestDayLengths += HarvestDayLength[i];
-            if (this.currentDayNumber <= totalHavestDayLengths) {
-                //With that index, we can use it to get the crop coefficient for that day
-                double[] coefficients = cropCoefficients[i];
-                double amount = calculateCrop(coefficients, this.currentDayNumber) * evapIndex;
-                return amount;
-            }*/
-
-    }
   /*  public double calculatedWater_Calulated(int day){
         //This function will return the corrresponding water calculation based on the
     }*/
@@ -323,7 +307,7 @@ public class Plant {
         return humiditySensor;
     }
 
-    public float[] getHumititySensor_harvestPeriod() {
+    public ArrayList<Float> getHumititySensor_harvestPeriod() {
         return humiditySensor_harvestPeriod;
     }
 
@@ -406,15 +390,29 @@ public class Plant {
 
     public void setHumiditySensor_harvestPeriod_dayNumber(float humiditySensor_Day, int dayNumber) {
         if (dayNumber < getHarvestDayLength()) {
-            this.humiditySensor_harvestPeriod[dayNumber - 1] = humiditySensor_Day;
+            this.humiditySensor_harvestPeriod.set(dayNumber - 1, humiditySensor_Day);
         }
     }
+
     public void setWaterDistribution_harvestPeriod_dayNumber(float waterDistribution, int dayNumber) {
         if (dayNumber < getHarvestDayLength()) {
-            this.waterDistribution[dayNumber - 1] = waterDistribution;
+            this.waterDistribution.set(dayNumber - 1, waterDistribution);
         }
     }
-    public float[] getWaterDistribution(){
+
+    public ArrayList<Float> getWaterDistribution() {
         return this.waterDistribution;
+    }
+
+    public void setGrowth_EachDay(ArrayList<Float> growth_EachDay) {
+        this.growth_EachDay = growth_EachDay;
+    }
+
+    public void setHumiditySensor_harvestPeriod(ArrayList<Float> humiditySensor_harvestPeriod) {
+        this.humiditySensor_harvestPeriod = humiditySensor_harvestPeriod;
+    }
+
+    public void setWaterDistribution(ArrayList<Float> waterDistribution) {
+        this.waterDistribution = waterDistribution;
     }
 }

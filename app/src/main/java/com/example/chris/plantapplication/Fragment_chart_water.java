@@ -76,7 +76,7 @@ public class Fragment_chart_water extends Fragment {
         return view;
     }
 
-    public void createGraphChart(float values[], View view) {
+    public void createGraphChart(ArrayList<Float> values, View view) {
         GraphView tvLabel = (GraphView) view.findViewById(R.id.chart2);
 
         LineChart graph = (LineChart) view.findViewById(R.id.chart2);
@@ -84,8 +84,8 @@ public class Fragment_chart_water extends Fragment {
 /*
         float test[] = {0, 2, 3, 5, 6, 7, 8, 9, 10, 3, 6, 19, 20, 0};*/
 
-        for (int i = 0; i < values.length; i++) {
-            float y = values[i]; //Set the values of the chart to the points of the dat chart
+        for (int i = 0; i < values.size(); i++) {
+            float y = values.get(i); //Set the values of the chart to the points of the dat chart
             entries.add(new Entry((float) i, y));
         }
 

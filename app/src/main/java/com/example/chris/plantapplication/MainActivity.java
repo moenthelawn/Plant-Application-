@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     Thread myThread;
 
     private GlobalConstants constants;
+    private WebServer currentDB;
     private plantDataBase plantH;
 
     @Override
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
      //   TextView plantText = findViewById(R.id.textView31);
 
-        TcpClient client = new TcpClient(MainActivity.this);
+        WebServer client = new WebServer(this);
         new Thread(client).start();
 
         /* myThread = new Thread(client); //Creating the new TCP thread
@@ -80,12 +81,10 @@ public class MainActivity extends AppCompatActivity {
         //updateButtonText();
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-        String value = preferences.getString("Message", "");
-        if (value != "") {
-            UIData uiData = new UIData(value);
-
+        float water_tank = preferences.getFloat("Water Tank", -1);
+        if (water_tank != -1) {
             //Update the level of the water tank and also the plant data base paramaters for the slot number sent
-            updateWaterTankLevels(uiData.getWaterTank());
+            updateWaterTankLevels(water_tank);
 
         }
 
