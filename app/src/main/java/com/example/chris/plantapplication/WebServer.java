@@ -8,6 +8,7 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.view.ViewGroup;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -24,7 +25,7 @@ public class WebServer implements Runnable {
     private Firebase mRef;
     private plantDataBase plantH;
     private Activity _activity;
-
+    private boolean success;
 
     public WebServer(Activity _activity) {
         this._activity = _activity;
@@ -39,61 +40,28 @@ public class WebServer implements Runnable {
 
     @Override
     public void run() {
-        setWaterTankNotification(1f / GlobalConstants.MAX_WATERTANK);
+
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                success = true;
                 //   Object object = dataSnapshot.getValue(Object.class);
                 int i = 1;
                 float currentWaterLevels = dataSnapshot.child("Water Tank").getValue(float.class);
-
+                setWaterTankNotification(currentWaterLevels / GlobalConstants.MAX_WATERTANK);
 
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(_activity);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putFloat("Water Tank", currentWaterLevels);
                 editor.apply();
-                int slotNumber = 1;
-                for (DataSnapshot eachVase : dataSnapshot.child("Plant Vases").getChildren()) {
-                    String currentPlantName = eachVase.child("Plant Name").getValue(String.class);
 
-                    if (currentPlantName != "" && currentPlantName != null) {
-                        if (plantH.getPlantBySlot(slotNumber) == null) {
-                            int harvestPeriod = eachVase.child("Harvest Period").getValue(int.class);
-                            String plantType = eachVase.child("Plant Type").getValue(String.class);
-                            int buttonID = eachVase.child("Button ID").getValue(int.class);
-                            plantH.addPlant(currentPlantName, buttonID, slotNumber, harvestPeriod, plantType);
-
-                        }
-                            Plant currentPlant = plantH.getPlantBySlot(slotNumber);
-
-                            ArrayList<Float> soilHumidity = getArray(eachVase.child("Soil Humidity"));
-                            ArrayList<Float> waterDistribution = getArray(eachVase.child("Water Distribution"));
-                            ArrayList<Float> plantHeight = getArray(eachVase.child("Plant Height"));
+                retrieve_load_data(dataSnapshot.child("Plant Vases"));
 
 
-                            currentPlant.setGrowth_EachDay(plantHeight);
-                            currentPlant.setHumiditySensor_harvestPeriod(soilHumidity);
-                            currentPlant.setWaterDistribution(waterDistribution);
-                            int dayNumber = (int) eachVase.child("Soil Humidity").getChildrenCount();
-
-                    }
-
-                    slotNumber += 1;
-                }
             }
 
 
-            public ArrayList<Float> getArray(DataSnapshot children) {
-                ArrayList<Float> Values = new ArrayList();
 
-                for (DataSnapshot eachChild : children.getChildren()) {
-                    //  String current = eachChild.getValue();
-                    float CurrentValue = eachChild.getValue(float.class);
-                    Values.add(CurrentValue);
-
-                }
-                return Values;
-            }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
@@ -103,7 +71,46 @@ public class WebServer implements Runnable {
         });
 
     }
+    public void retrieve_load_data(DataSnapshot dataSnapshot){
+        int slotNumber = 1;
+        for (DataSnapshot eachVase : dataSnapshot.getChildren()) {
+            String currentPlantName = eachVase.child("Plant Name").getValue(String.class);
 
+            if (currentPlantName != "" && currentPlantName != null) {
+                if (plantH.getPlantBySlot(slotNumber) == null) {
+                    int harvestPeriod = eachVase.child("Harvest Period").getValue(int.class);
+                    String plantType = eachVase.child("Plant Type").getValue(String.class);
+                    int buttonID = eachVase.child("Button ID").getValue(int.class);
+                    plantH.addPlant(currentPlantName, buttonID, slotNumber, harvestPeriod, plantType);
+
+                }
+                Plant currentPlant = plantH.getPlantBySlot(slotNumber);
+
+                ArrayList<Float> soilHumidity = getArray(eachVase.child("Soil Humidity"));
+                ArrayList<Float> waterDistribution = getArray(eachVase.child("Water Distribution"));
+                ArrayList<Float> plantHeight = getArray(eachVase.child("Plant Height"));
+
+
+                currentPlant.setGrowth_EachDay(plantHeight);
+                currentPlant.setHumiditySensor_harvestPeriod(soilHumidity);
+                currentPlant.setWaterDistribution(waterDistribution);
+                int dayNumber = (int) eachVase.child("Soil Humidity").getChildrenCount();
+
+            }
+
+            slotNumber += 1;
+        }
+    } public ArrayList<Float> getArray(DataSnapshot children) {
+        ArrayList<Float> Values = new ArrayList();
+
+        for (DataSnapshot eachChild : children.getChildren()) {
+            //  String current = eachChild.getValue();
+            float CurrentValue = eachChild.getValue(float.class);
+            Values.add(CurrentValue);
+
+        }
+        return Values;
+    }
     public void setWaterTankNotification(float waterTankPercentage) {
         //This will be used to display a notification if it is needed
 
@@ -142,4 +149,11 @@ public class WebServer implements Runnable {
     }
 
 
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
 }

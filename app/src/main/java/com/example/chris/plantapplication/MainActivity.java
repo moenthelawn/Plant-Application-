@@ -51,13 +51,14 @@ public class MainActivity extends AppCompatActivity {
         constants = new GlobalConstants();
 
         setContentView(R.layout.activity_main);
+
+
+        // new Thread(client).start();
+
+
         plantH = plantDataBase.getInstance();
         setImageGrowthVisibility();
-
-     //   TextView plantText = findViewById(R.id.textView31);
-
-        WebServer client = new WebServer(this);
-        new Thread(client).start();
+        contentUpdate();
 
         /* myThread = new Thread(client); //Creating the new TCP thread
         myThread.start();*/
