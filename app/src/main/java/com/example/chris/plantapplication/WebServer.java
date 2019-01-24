@@ -56,8 +56,6 @@ public class WebServer implements Runnable {
                 editor.apply();
 
                 retrieve_load_data(dataSnapshot.child("Plant Vases"));
-
-
             }
 
 
@@ -78,18 +76,25 @@ public class WebServer implements Runnable {
 
             if (currentPlantName != "" && currentPlantName != null) {
                 if (plantH.getPlantBySlot(slotNumber) == null) {
+
                     int harvestPeriod = eachVase.child("Harvest Period").getValue(int.class);
                     String plantType = eachVase.child("Plant Type").getValue(String.class);
                     int buttonID = eachVase.child("Button ID").getValue(int.class);
+
                     plantH.addPlant(currentPlantName, buttonID, slotNumber, harvestPeriod, plantType);
 
                 }
+                float roomTemperature = eachVase.child("Air Temperature").getValue(float.class);
+                float airHumidity = eachVase.child("Air Humidity").getValue(float.class);
+
                 Plant currentPlant = plantH.getPlantBySlot(slotNumber);
 
                 ArrayList<Float> soilHumidity = getArray(eachVase.child("Soil Humidity"));
                 ArrayList<Float> waterDistribution = getArray(eachVase.child("Water Distribution"));
                 ArrayList<Float> plantHeight = getArray(eachVase.child("Plant Height"));
 
+                currentPlant.setAirHumidity(airHumidity);
+                currentPlant.setRoomTemperature(roomTemperature);
 
                 currentPlant.setGrowth_EachDay(plantHeight);
                 currentPlant.setHumiditySensor_harvestPeriod(soilHumidity);

@@ -74,32 +74,39 @@ public class Plant {
         }
     }
 
-    public void updateServerDataBase() {
+    public void updateServerDataBase(int type) {
         //Set the dummy credentials
         Firebase mRef;
         if (this.slotNumber == 1) {
+
             mRef = new Firebase("https://plantsystem-9ff68.firebaseio.com/Plant Vases/Plant Vase 1");
-            setChilds(mRef);
+            setChilds(mRef,type);
         }
         else if (slotNumber == 2){
             mRef = new Firebase("https://plantsystem-9ff68.firebaseio.com/Plant Vases/Plant Vase 2");
-            setChilds(mRef);
+            setChilds(mRef,type);
         }
         else if (slotNumber == 3){
             mRef = new Firebase("https://plantsystem-9ff68.firebaseio.com/Plant Vases/Plant Vase 3");
-           setChilds(mRef);
+           setChilds(mRef,type);
         }
         else {
             return;
         }
 
     }
-    public void setChilds(Firebase mRef){
-        mRef.child("Plant Name").setValue(this.Name);
-        mRef.child("Soil Type").setValue(this.SoilType);
-        mRef.child("Harvest Period").setValue(this.HarvestDayLength);
-        mRef.child("Plant Type").setValue(this.plantType);
-        mRef.child("Button ID").setValue(this.buttonNumber);
+    public void setChilds(Firebase mRef, int type){
+
+            mRef.child("Plant Name").setValue(this.Name);
+            mRef.child("Harvest Period").setValue(this.HarvestDayLength);
+            mRef.child("Plant Type").setValue(this.plantType);
+            mRef.child("Button ID").setValue(this.buttonNumber);
+
+            if (type ==1){
+                mRef.child("Soil Type").setValue(this.SoilType);
+                mRef.child("Soil Depth").setValue(this.plantDepth);
+            }
+
     }
     public int getHarvestDayLength() {
         return this.HarvestDayLength;

@@ -68,7 +68,7 @@ public class PlantDepth extends AppCompatActivity {
                     plantH.setPlantGrowingDepth(slotNumber, 0.0f); //Default is set to 0
                 }
                 Plant currentPlant = plantH.getPlantBySlot(slotNumber);
-                currentPlant.updateServerDataBase();
+                currentPlant.updateServerDataBase(1); //Type corresponding to the predetermined input of plants
                 callIntent(v.getContext(), MainActivity.class);
             }
         });

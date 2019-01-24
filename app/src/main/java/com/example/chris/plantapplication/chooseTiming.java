@@ -78,6 +78,8 @@ public class chooseTiming extends AppCompatActivity {
                     //Add the plant to the database
                     plantDataBase.getInstance().addPlant_SlotNumber(slotNumber, plant);
                     plant.setWaterRequirement_Manual(waterAmount);
+                    plant.updateServerDataBase(2); //Type corresponding to the predetermined input of plants
+
                     callIntent(v.getContext(), MainActivity.class);
 
                 }
