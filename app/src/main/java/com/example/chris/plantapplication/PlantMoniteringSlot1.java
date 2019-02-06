@@ -75,6 +75,8 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         createSharedPreferences(slot_ID_Called); //Create the shared preferences so that the fragments can access it
         currentPlant = plantH.getPlantBySlot(slot_ID_Called);
         plantName.setText(currentPlant.getName());
+
+        setNotifications();
         //Set the needle to point to the current soil moisture direction
         setNeedleDirection(currentPlant.getHumiditySensor(), currentPlant.getPreviousHumiditySensor());
 
@@ -84,6 +86,14 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         ViewPager vpPager = (ViewPager) findViewById(R.id.viewpager);
         adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
         vpPager.setAdapter(adapterViewPager);
+    }
+
+    public void setNotifications(){
+        //This will set the corresponding notifications to the user
+        setTemperatureNotification();
+    }
+    public void setTemperatureNotification(){
+
     }
 
     public void createSharedPreferences(int slotNumber){

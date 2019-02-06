@@ -1,9 +1,12 @@
 package com.example.chris.plantapplication;
 
+import android.app.Dialog;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -14,8 +17,11 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.app.Activity;
 import android.widget.ImageButton;
@@ -59,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         plantH = plantDataBase.getInstance();
         setImageGrowthVisibility();
         contentUpdate();
+        launchDismissDlg(this);
 
         /* myThread = new Thread(client); //Creating the new TCP thread
         myThread.start();*/
@@ -74,6 +81,64 @@ public class MainActivity extends AppCompatActivity {
        }).start();
 */
         addPlants();
+    }
+
+    private void launchDismissDlg(Activity _Activity) {
+        float optimalTemperature = plantH.plantOptimalTemperatureChange();
+        optimalTemperature = Math.round((optimalTemperature*100)/100);
+
+        if (optimalTemperature != 0f) {
+            //Display the dialogue box
+            if (optimalTemperature < 0f) {
+                String message = "Consider cooling your plants down by " + Float.toString(Math.abs(optimalTemperature)) + "°C";
+                displayDialog(_Activity, "Temperature Warning", message);
+            }
+            else{
+                String message = "Consider warming your plants up by " + Float.toString(Math.abs(optimalTemperature)) + "°C";
+                displayDialog(_Activity,"Temperature Warning",message);
+            }
+            //If there is a plant that is not growing in the optimal conditions
+            //
+
+
+        }
+    }
+
+    private void displayDialog(Activity _Activity, String messageType, String message) {
+        final Dialog dialog;
+        dialog = new Dialog(_Activity, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.notificationsymbol);
+        dialog.setCanceledOnTouchOutside(true);
+
+        TextView messageT = (TextView) dialog.findViewById(R.id.textView10);
+        TextView messageError = (TextView) dialog.findViewById(R.id.textView11);
+        messageT.setText(messageType);
+        messageError.setText(message);
+
+        ImageButton btnCancelId = (ImageButton) dialog.findViewById(R.id.imageButton18);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        btnCancelId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+
+        Window window = dialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+
+        wlp.gravity = Gravity.TOP;
+        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(wlp);
+
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+
     }
 
     @Override
@@ -236,11 +301,10 @@ public class MainActivity extends AppCompatActivity {
         String TankLevel = Float.toString(waterHeight_Adjustable) + " %";
         WaterTankLevel.setText(TankLevel); //Also we need to set the percentage of the water tank to the value of the percentage left
 
-        if ((waterPercentage*100) > 1) {
+        if ((waterPercentage * 100) > 1) {
             params.height = convertDipToPixels(this, requiredHeight_Pixels);
             layout.setLayoutParams(params);
-        }
-        else{
+        } else {
             params.height = convertDipToPixels(this, 1);
             layout.setLayoutParams(params);
         }

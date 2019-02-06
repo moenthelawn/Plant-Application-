@@ -1,5 +1,7 @@
 package com.example.chris.plantapplication;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class plantDataBase<E> {
@@ -22,8 +24,21 @@ public class plantDataBase<E> {
 
         int empty1 = -1;
         float empty3 = -1;
-        Plant empty = new Plant("", -1, -1, 0, "");
+        Plant empty = new Plant("", -1, -1, 0, "", 0f, 0f);
         return empty; //otherwise we return empty
+    }
+
+    public boolean isPlant(String plantName) {
+        //This function will loop through and see if that particular plant is growing
+        for (int i = 0; i < allPlants.length; i++) {
+            if (allPlants[i] != null) {
+                String plantType = allPlants[i].getName();
+                if (plantType.equals(plantName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public Plant getPlantBySlot(int slotNumber) {
@@ -118,7 +133,6 @@ public class plantDataBase<E> {
     }
 
 
-
     public Plant[] getAllPlants() {
         return allPlants;
     }
@@ -130,6 +144,95 @@ public class plantDataBase<E> {
         return instance;
     }
 
+    private ArrayList<Pair<Float, Float>> getPlants_Range() {
+        ArrayList<Pair<Float, Float>> tempRange = new ArrayList<>();
+        for (int i = 0; i < allPlants.length; i++) {
+            if (allPlants[i] != null) {
+                Plant currentPlant = allPlants[i];
+                String plantType = currentPlant.getPlantType();
+                if (plantType.equals("Predetermined")) {
+                    tempRange.add(new Pair<Float, Float>(currentPlant.getMinTemperatureRange(), currentPlant.getMaxTemperatureRange()));
+                }
+            }
+        }
+        return tempRange;
+    }
+
+    private Pair<Float, Float> getOverlappingRange(ArrayList<Pair<Float, Float>> tempRange) {
+        //This function will loop through the temperature range and get the overlap between all the temperature ranges
+        //And then return as a pair in the form <MinTemp,MaxTemp>
+        Pair<Float, Float> currentRange = new Pair(-1000000000f, 1000000000f);
+
+        for (int i = 0; i < tempRange.size(); i++) {
+            if (i == 0 && i < tempRange.size() - 1) {
+                float x1 = tempRange.get(i).getFirst();
+                float x2 = tempRange.get(i).getSecond();
+
+                float y1 = tempRange.get(i + 1).getFirst();
+                float y2 = tempRange.get(i + 1).getSecond();
+                i += 1;
+                if (Float.max(x1, y1) <= Float.min(x2, y2)) {
+                    //Then there is an overlap in the range
+                    float e = Math.max(x1, y1);
+                    float f = Math.min(x2, y2);
+                    currentRange.setFirst(Float.min(e, f));
+                    currentRange.setSecond(Float.max(e, f));
+                }
+            } else {
+                //We are at the last index
+                float x1 = currentRange.getFirst();
+                float x2 = currentRange.getSecond();
+
+                float y1 = tempRange.get(i).getFirst();
+                float y2 = tempRange.get(i).getSecond();
+
+                if (x1 <= y2 && y1 <= x2) {
+                    //Then there is an overlap in the range
+                    float e = Math.max(x1, y1);
+                    float f = Math.min(x2, y2);
+                    currentRange.setFirst(e);
+                    currentRange.setSecond(f);
+                }
+
+
+            }
+        }
+        return currentRange;
+    }
+
+    public float plantOptimalTemperatureChange() {
+        ArrayList<Pair<Float, Float>> tempRange = getPlants_Range(); //This function will get the current plants growing and return the list of their respective ranges
+        Pair<Float, Float> overlappingRange = getOverlappingRange(tempRange);
+
+        for (int i = 0; i < allPlants.length; i++) {
+            if (allPlants[i] != null) {
+                float currentTemperature = allPlants[i].getRoomTemperature();
+                float minTemperature = allPlants[i].getMinTemperatureRange();
+                float maxTemperature = allPlants[i].getMaxTemperatureRange();
+
+                if (currentTemperature > maxTemperature) {
+                    //Then we will get the range to the
+                    return (overlappingRange.getSecond() - currentTemperature);
+                } else if (currentTemperature < minTemperature) {
+                    return overlappingRange.getFirst() - currentTemperature;
+                }
+
+            }
+        }
+        return 0f;
+ /*       //PlantParamaters
+        for (int i = 0; i < allPlants.length; i++) {
+            if (isOverlap) {
+                //Find the amount of temperature overlap
+                float currentTempMin = allPlants[i].getMinTemperatureRange();
+                float currentPlantTemperature = allPlants[i].getRoomTemperature();
+                if (current)
+            }
+
+        }
+        return true;*/
+    }
+
     private plantDataBase() {
         //we want to add a Basil Plant
         allPlants = new Plant[GlobalConstants.MAXPLANTS];
@@ -137,9 +240,9 @@ public class plantDataBase<E> {
     }
 
     public void addPlant(String PlantName, int buttonID, int slotNumber,
-                         int harvestPeriod_days, String plantType) {
+                         int harvestPeriod_days, String plantType, float minTemp, float maxTemp) {
 
-        allPlants[slotNumber - 1] = new Plant(PlantName, buttonID, slotNumber, harvestPeriod_days, plantType);
+        allPlants[slotNumber - 1] = new Plant(PlantName, buttonID, slotNumber, harvestPeriod_days, plantType, minTemp, maxTemp);
         added = true;
     }
 

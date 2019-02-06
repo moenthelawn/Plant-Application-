@@ -21,6 +21,10 @@ public class Plant {
 
     private String Name;
     private Calendar startDate;
+
+    private float maxTemp;
+    private float minTemp;
+
     private int currentDayNumber;
     private int currentPlantHeight;
     private float previousHumiditySensor;
@@ -44,11 +48,14 @@ public class Plant {
     private float waterRequirement_Manual; //This is the amount of manual water that is required for the manual input
     private float waterRequirement_Predetermined;
 
-    public Plant(String Name, int buttonID, int slotNumber, int harvestPeriod_days, String plantType) {
+    public Plant(String Name, int buttonID, int slotNumber, int harvestPeriod_days, String plantType, float minTemp, float maxTemp) {
         this.slotNumber = slotNumber;
         this.Name = Name; //We haven't named it yet
         this.buttonNumber = buttonID;
         this.HarvestDayLength = harvestPeriod_days;
+
+        this.maxTemp = maxTemp;
+        this.minTemp = minTemp;
 
         this.plantType = plantType;
         this.previousHumiditySensor = 0;
@@ -80,34 +87,35 @@ public class Plant {
         if (this.slotNumber == 1) {
 
             mRef = new Firebase("https://plantsystem-9ff68.firebaseio.com/Plant Vases/Plant Vase 1");
-            setChilds(mRef,type);
-        }
-        else if (slotNumber == 2){
+            setChilds(mRef, type);
+        } else if (slotNumber == 2) {
             mRef = new Firebase("https://plantsystem-9ff68.firebaseio.com/Plant Vases/Plant Vase 2");
-            setChilds(mRef,type);
-        }
-        else if (slotNumber == 3){
+            setChilds(mRef, type);
+        } else if (slotNumber == 3) {
             mRef = new Firebase("https://plantsystem-9ff68.firebaseio.com/Plant Vases/Plant Vase 3");
-           setChilds(mRef,type);
-        }
-        else {
+            setChilds(mRef, type);
+        } else {
             return;
         }
 
     }
-    public void setChilds(Firebase mRef, int type){
 
-            mRef.child("Plant Name").setValue(this.Name);
-            mRef.child("Harvest Period").setValue(this.HarvestDayLength);
-            mRef.child("Plant Type").setValue(this.plantType);
-            mRef.child("Button ID").setValue(this.buttonNumber);
+    public void setChilds(Firebase mRef, int type) {
 
-            if (type ==1){
-                mRef.child("Soil Type").setValue(this.SoilType);
-                mRef.child("Soil Depth").setValue(this.plantDepth);
-            }
+        mRef.child("Plant Name").setValue(this.Name);
+        mRef.child("Harvest Period").setValue(this.HarvestDayLength);
+        mRef.child("Plant Type").setValue(this.plantType);
+        mRef.child("Button ID").setValue(this.buttonNumber);
+
+        if (type == 1) {
+            mRef.child("Soil Type").setValue(this.SoilType);
+            mRef.child("Soil Depth").setValue(this.plantDepth);
+            mRef.child("Temperature Min").setValue(this.minTemp);
+            mRef.child("Temperature Max").setValue(this.maxTemp);
+        }
 
     }
+
     public int getHarvestDayLength() {
         return this.HarvestDayLength;
     }
@@ -341,7 +349,11 @@ public class Plant {
 
 
     public float getHumiditySensor() {
-        return humiditySensor;
+        if (humiditySensor_harvestPeriod.size() > 0) {
+            return this.humiditySensor_harvestPeriod.get(humiditySensor_harvestPeriod.size() - 1);
+        } else {
+            return 0;
+        }
     }
 
     public ArrayList<Float> getHumititySensor_harvestPeriod() {
@@ -418,8 +430,11 @@ public class Plant {
     }
 
     public float getPreviousHumiditySensor() {
-        return previousHumiditySensor;
-    }
+        if (humiditySensor_harvestPeriod.size() > 1) {
+            return this.humiditySensor_harvestPeriod.get(humiditySensor_harvestPeriod.size() - 2);
+        } else {
+            return 0;
+        } }
 
     public void setPreviousHumiditySensor(float previousHumiditySensor) {
         this.previousHumiditySensor = previousHumiditySensor;
@@ -451,5 +466,21 @@ public class Plant {
 
     public void setWaterDistribution(ArrayList<Float> waterDistribution) {
         this.waterDistribution = waterDistribution;
+    }
+
+    public float getMaxTemperatureRange() {
+        return maxTemp;
+    }
+
+    public void setMaxTemperatureRange(float maxTemperatureRange) {
+        this.maxTemp = maxTemperatureRange;
+    }
+
+    public float getMinTemperatureRange() {
+        return minTemp;
+    }
+
+    public void setMinTemperatureRange(float minTemperatureRange) {
+        this.minTemp = minTemperatureRange;
     }
 }

@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 
 import android.widget.ImageButton;
 import android.app.Activity;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 
 public class Activity2 extends AppCompatActivity {
@@ -21,6 +23,8 @@ public class Activity2 extends AppCompatActivity {
     private ImageButton thyme;
     private ImageButton oregano;
     private ImageButton dill;
+    private TextView warningLabelText;
+    private ImageView ex1;
 
     private ImageButton customPlant;
     private plantDataBase allPlants;
@@ -33,6 +37,12 @@ public class Activity2 extends AppCompatActivity {
         setContentView(R.layout.activity_2);
         Intent activityThatCalled = getIntent();
 
+        //Also display the bottom text
+        warningLabelText = (TextView) findViewById(R.id.textView18);
+        ex1 = (ImageView) findViewById(R.id.imageView10);
+        ex1.setVisibility(ex1.INVISIBLE);
+        warningLabelText.setVisibility(warningLabelText.INVISIBLE);
+
         basil = (ImageButton) findViewById(R.id.imageButton10);
         mint = (ImageButton) findViewById(R.id.imageButton12);
         thyme = (ImageButton) findViewById(R.id.imageButton14);
@@ -42,11 +52,13 @@ public class Activity2 extends AppCompatActivity {
         slotNumber = activityThatCalled.getIntExtra("Slot Number", 0); //get the button session ID so we can modify its .xml paramaters
         allPlants = plantDataBase.getInstance();
 
+        updateButtonLabels(); // This function will update the warning labels of each of the buttons
+
         thyme.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int harvestPeriod_days = 70;//The harvest is spanned over the length of the plant's duration
-                allPlants.addPlant("Mint", buttonID, slotNumber, harvestPeriod_days, "Predetermined");
+                allPlants.addPlant("Thyme", buttonID, slotNumber, harvestPeriod_days, "Predetermined", 15.6f, 26.7f);
 
                 //We want to move to activity addCustomPlant
                 callIntent(v.getContext(), soilType.class);
@@ -58,7 +70,7 @@ public class Activity2 extends AppCompatActivity {
             public void onClick(View v) {
                 int harvestPeriod_days = 90;//The harvest is spanned over the length of the plant's duration
 
-                allPlants.addPlant("Mint", buttonID, slotNumber, harvestPeriod_days, "Predetermined");
+                allPlants.addPlant("Dill", buttonID, slotNumber, harvestPeriod_days, "Predetermined", 10f, 21.1f);
 
                 //We want to move to activity addCustomPlant
                 callIntent(v.getContext(), soilType.class);
@@ -70,7 +82,7 @@ public class Activity2 extends AppCompatActivity {
             public void onClick(View v) {
                 int harvestPeriod_days = 60;//The harvest is spanned over the length of the plant's duration
 
-                allPlants.addPlant("Oregano", buttonID, slotNumber, harvestPeriod_days, "Predetermined");
+                allPlants.addPlant("Oregano", buttonID, slotNumber, harvestPeriod_days, "Predetermined", 15.6f, 21.1f);
 
                 //We want to move to activity addCustomPlant
                 callIntent(v.getContext(), soilType.class);
@@ -82,7 +94,7 @@ public class Activity2 extends AppCompatActivity {
             public void onClick(View v) {
                 int harvestPeriod_days = 90;//The harvest is spanned over the length of the plant's duration
 
-                allPlants.addPlant("Mint", buttonID, slotNumber, harvestPeriod_days, "Predetermined");
+                allPlants.addPlant("Mint", buttonID, slotNumber, harvestPeriod_days, "Predetermined", 15.6f, 26.7f);
 
                 //We want to move to activity addCustomPlant
                 callIntent(v.getContext(), soilType.class);
@@ -110,12 +122,30 @@ public class Activity2 extends AppCompatActivity {
                 // basilPlant.setpFactor(0.25); //Hardcoded value for the plant database
                 //     basilPlant.setMeanTemperature(22.5);
 
-                allPlants.addPlant("Basil", buttonID, slotNumber, harvestPeriod_days, "Predetermined");
+                allPlants.addPlant("Basil", buttonID, slotNumber, harvestPeriod_days, "Predetermined", 23.9f, 29.4f);
                 //We want to move to activity addCustomPlant
                 callIntent(v.getContext(), soilType.class);
                 //openMainActivity("Basil");
             }
         });
+    }
+
+    private void updateButtonLabels() {
+        //We want to see the current plants that are growing and check if there are any types of plants
+        //that are incompatible
+
+        if (allPlants.isPlant("Basil")) {
+            //If the user is currently growing basil, then we should issue a notification error to the user
+            //Then we issue an error to either Thyme, Oregano, dill
+            thyme.setImageResource(R.drawable.buttonthyme_warning);
+            oregano.setImageResource(R.drawable.buttonoregano_warning);
+            dill.setImageResource(R.drawable.buttondill_warning);
+            ex1.setVisibility(ex1.VISIBLE);
+            warningLabelText.setVisibility(warningLabelText.VISIBLE);
+
+        }
+
+
     }
 
     public void callIntent(Context c, Class destination) {
