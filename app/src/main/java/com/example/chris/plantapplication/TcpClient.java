@@ -114,7 +114,7 @@ public class TcpClient implements Runnable {
 
             CurrentPlant.setHumiditySensor_harvestPeriod_dayNumber(soilHumidity, numberDay); //height
             CurrentPlant.setDayGrowth_Number(height, numberDay);
-            CurrentPlant.setHumiditySensor(soilHumidity);
+           // CurrentPlant.setHumiditySensor(soilHumidity);
             CurrentPlant.setCurrentDayNumber(numberDay);
             CurrentPlant.setWaterDistribution_harvestPeriod_dayNumber(waterDistribution,numberDay);
             //Send the correct watering amount to the server database

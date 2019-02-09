@@ -90,13 +90,13 @@ public class chooseTiming extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 //Update the plant text
-                int days = Integer.parseInt(plantGrowth_Days.getText().toString());
-                if (days <= 24) {//Their entrance text must be less than 24 hours
+            //     int days = Integer.parseInt(plantGrowth_Days.getText().toString());
+           //     if (days <= 24) {//Their entrance text must be less than 24 hours
                     updateDisplayText();
-                }
-                else{
+             //   }
+             //   else{
                     //Update the error text
-                }
+            //    }
             }
 
             @Override
@@ -119,11 +119,15 @@ public class chooseTiming extends AppCompatActivity {
                     int buttonID = getActivityThatCalled.getIntExtra("Button ID", 0); //get the button session ID so we can modify its .xml paramaters
                     int slotNumber = getActivityThatCalled.getIntExtra("Slot Number", 0); //get the button session ID so we can modify its .xml paramaters
                     float cropCoefficient = -1;
+
                     Plant plant = new Plant(name, buttonID, slotNumber, -1, "Manual", -1, -1);
 
                     //Add the plant to the database
                     plantDataBase.getInstance().addPlant_SlotNumber(slotNumber, plant);
-                    plant.setWaterRequirement_Manual(waterAmount);
+                    int hours = Integer.parseInt(plantGrowth_Hours.getText().toString());
+                    int days = Integer.parseInt(plantGrowth_Days.getText().toString());
+                    plant.setGrowthInterval(convertToHours(hours,days));
+                    plant.setWaterRequirement_Period(waterAmount);
                     plant.updateServerDataBase(2); //Type corresponding to the predetermined input of plants
 
                     callIntent(v.getContext(), MainActivity.class);
@@ -137,6 +141,12 @@ public class chooseTiming extends AppCompatActivity {
             }
         });
 
+    }
+
+    private int convertToHours(int hours, int days) {
+    //This function takes in the hours and days and converts it to hours
+        int total = hours + (days * 24);
+        return total;
     }
 
     private void updateDisplayText() {

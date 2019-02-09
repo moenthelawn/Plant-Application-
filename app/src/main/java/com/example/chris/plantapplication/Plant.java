@@ -27,7 +27,8 @@ public class Plant {
 
     private int currentDayNumber;
     private int currentPlantHeight;
-    private float previousHumiditySensor;
+    private int growthInterval;
+    private float waterRequirement_Period;
     private float humiditySensor; //Relative humidity sensor as a percentage
     private int HarvestDayLength; // Array of the days allocated over each individual harvest period
 
@@ -45,7 +46,6 @@ public class Plant {
     private float pFactor; //Represents the percentage of sunlight received
     private float MeanTemperature; //As determined from Ed's database
     private float plantDepth;
-    private float waterRequirement_Manual; //This is the amount of manual water that is required for the manual input
     private float waterRequirement_Predetermined;
 
     public Plant(String Name, int buttonID, int slotNumber, int harvestPeriod_days, String plantType, float minTemp, float maxTemp) {
@@ -58,10 +58,7 @@ public class Plant {
         this.minTemp = minTemp;
 
         this.plantType = plantType;
-        this.previousHumiditySensor = 0;
         this.humiditySensor = 0;
-
-        this.waterRequirement_Manual = -1; //Default is set to -1 in that we haven't started using it yet unless it is specified as a manual inputted plant
         this.SoilType = ""; //set the soil type to a non value
         this.plantDepth = 0;
         this.startDate = Calendar.getInstance();
@@ -103,17 +100,22 @@ public class Plant {
     public void setChilds(Firebase mRef, int type) {
 
         mRef.child("Plant Name").setValue(this.Name);
-        mRef.child("Harvest Period").setValue(this.HarvestDayLength);
+
         mRef.child("Plant Type").setValue(this.plantType);
         mRef.child("Button ID").setValue(this.buttonNumber);
+
 
         if (type == 1) {
             mRef.child("Soil Type").setValue(this.SoilType);
             mRef.child("Soil Depth").setValue(this.plantDepth);
+            mRef.child("Harvest Period").setValue(this.HarvestDayLength);
             mRef.child("Temperature Min").setValue(this.minTemp);
             mRef.child("Temperature Max").setValue(this.maxTemp);
         }
-
+        if (type == 2) {
+            mRef.child("Water Period").setValue(this.growthInterval);
+            mRef.child("Water Amount").setValue(this.waterRequirement_Period);
+        }
     }
 
     public int getHarvestDayLength() {
@@ -360,11 +362,6 @@ public class Plant {
         return humiditySensor_harvestPeriod;
     }
 
-    public void setHumiditySensor(float humiditySensor) {
-        this.previousHumiditySensor = this.humiditySensor;
-        this.humiditySensor = humiditySensor;
-    }
-
     public float getPlantDepth() {
         return plantDepth;
     }
@@ -375,14 +372,6 @@ public class Plant {
 
     public void setSoilType(String soilType) {
         SoilType = soilType;
-    }
-
-    public float getWaterRequirement_Manual() {
-        return waterRequirement_Manual;
-    }
-
-    public void setWaterRequirement_Manual(float waterRequirement_Manual) { //The units for this our [mm]
-        this.waterRequirement_Manual = waterRequirement_Manual;
     }
 
     public Calendar getStartDate() {
@@ -434,10 +423,7 @@ public class Plant {
             return this.humiditySensor_harvestPeriod.get(humiditySensor_harvestPeriod.size() - 2);
         } else {
             return 0;
-        } }
-
-    public void setPreviousHumiditySensor(float previousHumiditySensor) {
-        this.previousHumiditySensor = previousHumiditySensor;
+        }
     }
 
     public void setHumiditySensor_harvestPeriod_dayNumber(float humiditySensor_Day, int dayNumber) {
@@ -482,5 +468,23 @@ public class Plant {
 
     public void setMinTemperatureRange(float minTemperatureRange) {
         this.minTemp = minTemperatureRange;
+    }
+
+    public int getGrowthInterval() {
+        return growthInterval;
+    }
+
+    public void setGrowthInterval(int hours) {
+        //This function converts the inputted hours and days to the corresponding minutes\
+        this.growthInterval = hours; //interval is set to hours
+        return;
+    }
+
+    public float getWaterRequirement_Period() {
+        return waterRequirement_Period;
+    }
+
+    public void setWaterRequirement_Period(float waterRequirement_Period) {
+        this.waterRequirement_Period = waterRequirement_Period;
     }
 }

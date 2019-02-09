@@ -91,14 +91,16 @@ public class WebServer implements Runnable {
                     int buttonID = eachVase.child("Button ID").getValue(int.class);
                     float minTemp = eachVase.child("Temperature Min").getValue(float.class);
                     float maxTemp = eachVase.child("Temperature Max").getValue(float.class);
-
                     plantH.addPlant(currentPlantName, buttonID, slotNumber, harvestPeriod, plantType,minTemp,maxTemp);
 
                 }
                 float roomTemperature = eachVase.child("Air Temperature").getValue(float.class);
                 float airHumidity = eachVase.child("Air Humidity").getValue(float.class);
-
+                int waterPeriod = eachVase.child("Water Period").getValue(Integer.class);
+                float waterRequirement_period = eachVase.child("Water Amount").getValue(Float.class);
                 Plant currentPlant = plantH.getPlantBySlot(slotNumber);
+                currentPlant.setWaterRequirement_Period(waterRequirement_period);
+                currentPlant.setGrowthInterval(waterPeriod);
 
                 ArrayList<Float> soilHumidity = getArray(eachVase.child("Soil Humidity"));
                 ArrayList<Float> waterDistribution = getArray(eachVase.child("Water Distribution"));

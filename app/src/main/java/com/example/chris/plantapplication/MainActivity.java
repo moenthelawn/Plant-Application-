@@ -57,8 +57,6 @@ public class MainActivity extends AppCompatActivity {
         constants = new GlobalConstants();
 
         setContentView(R.layout.activity_main);
-
-
         // new Thread(client).start();
 
 
@@ -85,17 +83,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void launchDismissDlg(Activity _Activity) {
         float optimalTemperature = plantH.plantOptimalTemperatureChange();
-        optimalTemperature = Math.round((optimalTemperature*100)/100);
+        optimalTemperature = Math.round((optimalTemperature * 100) / 100);
 
         if (optimalTemperature != 0f) {
             //Display the dialogue box
             if (optimalTemperature < 0f) {
                 String message = "Consider cooling your plants down by " + Float.toString(Math.abs(optimalTemperature)) + "°C";
                 displayDialog(_Activity, "Temperature Warning", message);
-            }
-            else{
+            } else {
                 String message = "Consider warming your plants up by " + Float.toString(Math.abs(optimalTemperature)) + "°C";
-                displayDialog(_Activity,"Temperature Warning",message);
+                displayDialog(_Activity, "Temperature Warning", message);
             }
             //If there is a plant that is not growing in the optimal conditions
             //
@@ -265,11 +262,15 @@ public class MainActivity extends AppCompatActivity {
                 if (currentPlant != null) {
                     int currentButtonID = currentPlant.getButtonNumber();
                     int slotNumber = currentPlant.getSlotNumber();
+                    String plantType = currentPlant.getPlantType();
+
                     if (slotNumber != -1) {
                         ImageButton changingButton = (ImageButton) findViewById(currentButtonID);
                         changingButton.setImageResource(R.drawable.addplantmonitor);//Update it to the eye symbol so that we know it is already in plac
 
-                        setGrowthStage(currentPlant);
+                        if (plantType.equals("Predetermined")) {
+                            setGrowthStage(currentPlant);
+                        }
                         //   threeButtons.setButtonNumberToSlot(currentButtonID, slotNumber); //Set the current slots number
                         //   threeButtons.setPlant(currentButtonID, allPlants[i], slotNumber);
                         updateButtonText(slotNumber, allPlants[i].getName(), allPlants[i]);
@@ -348,7 +349,6 @@ public class MainActivity extends AppCompatActivity {
         return (int) (dips * context.getResources().getDisplayMetrics().density + 0.5f);
     }
 
-
     private void addPlants() {
 
         button = (ImageButton) findViewById(R.id.imageButton4);
@@ -391,6 +391,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //If this button is clicked, then we will open activity2
                 //We want to set the location of the linear actuator
+            //    String plantType = plantDataBase.getInstance().getPlantBySlot(1).getPlantType();
+                
                 moveWateringHeightMeter(1); //Move the watering meter which corresponds to the first position in the plant vase
                 openActivity2(button.getId(), 1);
             }
@@ -400,6 +402,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //If this button is clicked, then we will open activity2
+              ///  String plantType = plantDataBase.getInstance().getPlantBySlot(2).getPlantType();
+
                 moveWateringHeightMeter(2); //Move the watering meter which corresponds to the seoncd position in the plant vase
                 openActivity2(button1.getId(), 2);
             }
@@ -409,6 +413,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //If this button is clicked, then we will open activity2
+             //   String plantType = plantDataBase.getInstance().getPlantBySlot(3).getPlantType();
+
                 moveWateringHeightMeter(3);
                 openActivity2(button2.getId(), 3);
             }

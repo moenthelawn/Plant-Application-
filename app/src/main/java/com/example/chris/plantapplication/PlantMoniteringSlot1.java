@@ -47,8 +47,11 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
     private TextView growth_day;
     private TextView plantName;
     private ImageButton HarvestButton;
+    private ImageButton back;
     int buttonID_Called;
     int slot_ID_Called;
+    private ImageButton minusPlant;
+    private ImageButton addPlant;
 
     /*private ImageView needle;*/
     private Needle needle;
@@ -58,16 +61,21 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plant_monitering_slot1);
+
+        minusPlant = (ImageButton) findViewById(R.id.imageButton21);
+        addPlant = (ImageButton) findViewById(R.id.imageButton19);
         //We want to grab an instance of the plant data base that will be used for this slot
         //needle = findViewById(R.id.imageView6); //The image of the needle
+
 
         needle = (Needle) findViewById(R.id.needle);
         HarvestButton = (ImageButton) findViewById(R.id.imageButton5);
         growth_day = (TextView) findViewById(R.id.textView25);
         plantName = (TextView) findViewById(R.id.textView16);
-
+        TextView harvestTime = (TextView) findViewById(R.id.textView36);
+        harvestTime.setVisibility(harvestTime.INVISIBLE);
         plantH = plantDataBase.getInstance();
-
+        back = (ImageButton) findViewById(R.id.imageButton3);
         Intent activityThatCalled = getIntent();
         buttonID_Called = activityThatCalled.getIntExtra("Button ID", 0); //get the button session ID so we can modify its .xml paramaters
         slot_ID_Called = activityThatCalled.getIntExtra("Slot Number", 0);
@@ -82,26 +90,144 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
 
         Log.i("Passed Value", "Button " + Integer.toString(buttonID_Called) + "passed to PlanMoniteringSlot1.java");
         displayPlantData(slot_ID_Called);
+        displayManual_Predetermined(currentPlant);
 
         ViewPager vpPager = (ViewPager) findViewById(R.id.viewpager);
         adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
+
+        addPlant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //set the watering level of the text as well
+                float waterRequirements = currentPlant.getWaterRequirement_Period() + 1.0f;
+                //set the plant as well.
+                currentPlant.setWaterRequirement_Period(waterRequirements);
+                int growthInterval = currentPlant.getGrowthInterval();
+                displayString_water_message(waterRequirements, growthInterval);
+            }
+        });
+        minusPlant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //set the watering level of the text as well
+                float waterRequirements = currentPlant.getWaterRequirement_Period() - 1.0f;
+                currentPlant.setWaterRequirement_Period(waterRequirements);
+
+                int growthInterval = currentPlant.getGrowthInterval();
+                displayString_water_message(waterRequirements, growthInterval);
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String plantType = currentPlant.getPlantType();
+                if (plantType.equals("Manual")) {
+                    currentPlant.updateServerDataBase(2);
+                }
+                openMainActivity();
+            }
+        });
+
         vpPager.setAdapter(adapterViewPager);
+
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        String plantType = currentPlant.getPlantType();
+        if (plantType.equals("Manual")) {
+            currentPlant.updateServerDataBase(2);
+        }
+        // Do extra stuff here
+    }
+    private void displayManual_Predetermined(Plant currentPlant) {
+        if (currentPlant.getPlantType().equals("Manual")) {
+            ImageButton minusPlant = (ImageButton) findViewById(R.id.imageButton21);
+            ImageButton addPlant = (ImageButton) findViewById(R.id.imageButton19);
+            addPlant.setVisibility(addPlant.VISIBLE);
+            minusPlant.setVisibility(minusPlant.VISIBLE);
+
+            //This function will display the plant data responsible for either
+            TextView harvestTime = (TextView) findViewById(R.id.textView36);
+            ImageButton harvestButton = (ImageButton) findViewById(R.id.imageButton5);
+            ProgressBar progress = (ProgressBar) findViewById(R.id.progressBar);
+
+            TextView number = (TextView) findViewById(R.id.textView3);
+            number.setVisibility(number.INVISIBLE);
+
+            displayString_water_message(currentPlant.getWaterRequirement_Period(), currentPlant.getGrowthInterval());
+
+            harvestButton.setVisibility(harvestButton.INVISIBLE);
+            progress.setVisibility(progress.INVISIBLE);
+            harvestTime.setVisibility(harvestTime.INVISIBLE);
+
+
+        }
     }
 
-    public void setNotifications(){
+    private void displayString_water_message(float waterRequirement_period, int growthInterval) {
+        String waterRequirements = Float.toString(waterRequirement_period);
+
+        TextView wateringRequirements = (TextView) findViewById(R.id.textView30);
+        String wateringPeriod = "";
+        if (growthInterval <= 24) {
+            String floatvalue = Float.toString(growthInterval);
+            wateringPeriod = floatvalue + " hours"; //Just hours
+        } else {
+            //Convert the hours to days
+            wateringPeriod = convertHours_Days(growthInterval); //
+            // We have to convert it to something else like
+        }
+
+        String wateringMessage = "Your plant will be watered " + waterRequirements + "mm every " + wateringPeriod;
+        wateringRequirements.setText(wateringMessage);
+    }
+
+    private String convertHours_Days(int growthInterval) {
+        //This function converts the growth intervals from hours to days.
+        int currentCount = 0;
+        int multFactor = 0;
+        double days = (growthInterval / 24.0f);
+        double days_rounded = Math.floor(days);
+        double diff = (float) (days - days_rounded);
+
+
+        double hours = diff * 24.0f;
+        float hours_rounded = (float) Math.round(hours);
+        if (Math.round(hours) == 0) {
+
+            String message = Float.toString((int) days_rounded) + " days";
+            return message;
+        }
+
+        if (days_rounded > 1) {
+
+            String message = Float.toString((int) days_rounded) + " days and " + Float.toString(hours_rounded) + " hours";
+            return message;
+        } else {
+
+            String message = Float.toString((int) days_rounded) + " day and " + Float.toString(hours_rounded) + " hours";
+            return message;
+        }
+
+    }
+
+    public void setNotifications() {
         //This will set the corresponding notifications to the user
         setTemperatureNotification();
     }
-    public void setTemperatureNotification(){
+
+    public void setTemperatureNotification() {
 
     }
 
-    public void createSharedPreferences(int slotNumber){
+    public void createSharedPreferences(int slotNumber) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("SlotNumber",slotNumber);
+        editor.putInt("SlotNumber", slotNumber);
         editor.apply();
     }
+
     public void openMainActivity() { //We want to open that activity and navigate over to the specific class
 
         finish();
@@ -205,11 +331,11 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0: // Fragment # 0 - This will show FirstFragment
-                    return fragment_chart1.newInstance(1,"Page #1");
+                    return fragment_chart1.newInstance(1, "Page #1");
                 case 1: // Fragment # 0 - This will show FirstFragsment different title
-                    return GraphHumiditySensor.newInstance(2,"Page #2");
+                    return GraphHumiditySensor.newInstance(2, "Page #2");
                 case 2: // Fragment # 1 - This will show SecondFragment
-                    return Fragment_chart_water.newInstance(3,"Page #3");
+                    return Fragment_chart_water.newInstance(3, "Page #3");
                 default:
                     return null;
             }
@@ -244,13 +370,13 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
                 }
             });
             harvestName.setVisibility(harvestName.VISIBLE);// This will control the visibility for the text that overlays the harvest button
-            timeTillHarvest.setVisibility(timeTillHarvest.INVISIBLE);
+            //timeTillHarvest.setVisibility(timeTillHarvest.INVISIBLE);
             animateHarvestTimeProgress(remainingDays, remainingDays); //We want to animate the change in the progress bar
 
         } else {
             harvestButton.setVisibility(harvestButton.INVISIBLE); //If we have time remaining in the slot, then there is no point in displaying it
             harvestName.setVisibility(harvestName.INVISIBLE);
-            timeTillHarvest.setVisibility(timeTillHarvest.VISIBLE);
+            //  timeTillHarvest.setVisibility(timeTillHarvest.VISIBLE);
 
             HarvestDay.setText(HarvestTime);
             animateHarvestTimeProgress(remainingDays, totalHarvestPeriod); //We want to animate the change in the progress bar
@@ -266,6 +392,10 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         //Here we want to update the graphical charts to show the type of plant that we have
         plantH = plantDataBase.getInstance();
         Plant requiredPlant = plantH.getPlantBySlot(slotNumber);
+        ImageButton minusPlant = (ImageButton) findViewById(R.id.imageButton21);
+        ImageButton addPlant = (ImageButton) findViewById(R.id.imageButton19);
+        addPlant.setVisibility(addPlant.INVISIBLE);
+        minusPlant.setVisibility(minusPlant.INVISIBLE);
 
         float roomTemperature = requiredPlant.getRoomTemperature();
         float humidity = requiredPlant.getAirHumidity();
@@ -273,12 +403,14 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         int totalHarvestPeriod = requiredPlant.getHarvestDayLength();
         int remainingDays = requiredPlant.getRemainingDays_Harvest();
         //float growth_EachDay = requiredPlant.getGrowthStage()
-       // float growth_EachWeek[] = requiredPlant.getWeek_days((dayNumber / 7)); //getting the total number of days from the entire period
-        float growth_currentDay = Math.round((requiredPlant.getCurrentDayGrowth()*100)/100);
+        // float growth_EachWeek[] = requiredPlant.getWeek_days((dayNumber / 7)); //getting the total number of days from the entire period
+        float growth_currentDay = Math.round((requiredPlant.getCurrentDayGrowth() * 100) / 100);
         //Update various paramaters for our plant statistics
         updateRoomTemperature(roomTemperature);
         updateHumidity(humidity);
-        updateHarvestTime(remainingDays, totalHarvestPeriod);
+        if (requiredPlant.getPlantType().equals("Predetermined")) {
+            updateHarvestTime(remainingDays, totalHarvestPeriod);
+        }
         updatePlantGrowth(growth_currentDay);
 
         Log.i("Plant", requiredPlant.getName() + " added to PlantMoniteringSlot1");
