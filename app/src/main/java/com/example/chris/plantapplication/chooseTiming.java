@@ -19,9 +19,11 @@ public class chooseTiming extends AppCompatActivity {
     private TextView error;
     private EditText waterPlantName;
     private EditText waterAmountText;
-    private EditText plantGrowth_Hours;
+    private EditText hours;
     private TextView elapsedGrowthPeriod;
-    private EditText plantGrowth_Days;
+    private EditText days;
+    private EditText seconds;
+    private EditText minutes; 
     private int progressChangedValue;
     private Button next;
     private Boolean touched_progress = false;
@@ -35,10 +37,16 @@ public class chooseTiming extends AppCompatActivity {
 
         waterAmounts = (SeekBar) findViewById(R.id.test);
         waterPlantName = (EditText) findViewById(R.id.editText4);
-        plantGrowth_Hours = (EditText) findViewById(R.id.editText8);
-        plantGrowth_Days = (EditText) findViewById(R.id.editText);
-        elapsedGrowthPeriod = (TextView) findViewById(R.id.textView31);
-        elapsedGrowthPeriod.setVisibility(elapsedGrowthPeriod.INVISIBLE);
+
+        hours = (EditText) findViewById(R.id.editText);
+        days = (EditText) findViewById(R.id.editText8);
+        minutes = (EditText) findViewById(R.id.editText3);
+        seconds = (EditText) findViewById(R.id.editText5);
+
+        hours.setText("0");
+        days.setText("0");
+        minutes.setText("0");
+        seconds.setText("30");
 
         waterAmountText = (EditText) findViewById(R.id.editText6);
         error = (TextView) findViewById(R.id.textView5);
@@ -50,9 +58,9 @@ public class chooseTiming extends AppCompatActivity {
         waterAmounts.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                waterAmountText.setVisibility(waterAmountText.VISIBLE);
+                    waterAmountText.setVisibility(waterAmountText.VISIBLE);
                 waterAmountText.setText(Integer.toString(progress), TextView.BufferType.EDITABLE);
-                updateDisplayText();
+
             }
 
             @Override
@@ -65,7 +73,7 @@ public class chooseTiming extends AppCompatActivity {
 
             }
         });
-        plantGrowth_Days.addTextChangedListener(new TextWatcher() {
+        days.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -73,7 +81,7 @@ public class chooseTiming extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                updateDisplayText();
+
             }
 
             @Override
@@ -81,7 +89,7 @@ public class chooseTiming extends AppCompatActivity {
 
             }
         });
-        plantGrowth_Hours.addTextChangedListener(new TextWatcher() {
+        hours.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -90,9 +98,8 @@ public class chooseTiming extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 //Update the plant text
-            //     int days = Integer.parseInt(plantGrowth_Days.getText().toString());
-           //     if (days <= 24) {//Their entrance text must be less than 24 hours
-                    updateDisplayText();
+            //     int days = Integer.parseInt(days.getText().toString());
+           //     if (days <= 24) {//Their entrance text must be less than 24 hour
              //   }
              //   else{
                     //Update the error text
@@ -120,15 +127,18 @@ public class chooseTiming extends AppCompatActivity {
                     int slotNumber = getActivityThatCalled.getIntExtra("Slot Number", 0); //get the button session ID so we can modify its .xml paramaters
                     float cropCoefficient = -1;
 
-                    Plant plant = new Plant(name, buttonID, slotNumber, -1, "Manual", -1, -1);
+                    Plant plant = new Plant(name, buttonID, slotNumber, -1, "Manual");
 
                     //Add the plant to the database
                     plantDataBase.getInstance().addPlant_SlotNumber(slotNumber, plant);
-                    int hours = Integer.parseInt(plantGrowth_Hours.getText().toString());
-                    int days = Integer.parseInt(plantGrowth_Days.getText().toString());
-                    plant.setGrowthInterval(convertToHours(hours,days));
-                    plant.setWaterRequirement_Period(waterAmount);
-                    plant.updateServerDataBase(2); //Type corresponding to the predetermined input of plants
+                    int hours_value = Integer.parseInt(hours.getText().toString());
+                    int days_value = Integer.parseInt(days.getText().toString());
+                    int minutes_value = Integer.parseInt(minutes.getText().toString());
+                    int seconds_value = Integer.parseInt(seconds.getText().toString());
+
+                    plant.setWater_period(waterAmount);
+                    plant.setWaterRequirement_Period(days_value, hours_value, minutes_value, seconds_value);
+                    plant.updateServerDataBase(2,slotNumber); //Type corresponding to the predetermined input of plants
 
                     callIntent(v.getContext(), MainActivity.class);
 
@@ -149,56 +159,60 @@ public class chooseTiming extends AppCompatActivity {
         return total;
     }
 
-    private void updateDisplayText() {
-        int plantHoursLength = plantGrowth_Hours.getText().toString().trim().length();
-        int plantDaysLength = plantGrowth_Days.getText().toString().trim().length();
+   /* private void updateDisplayText() {
+        int plantHoursLength = hours.getText().toString().trim().length();
+        int plantDaysLength = days.getText().toString().trim().length();
+        int plantMinutesLength = minutes.getText().toString().trim().length();
+        int plantSecondsLength = seconds.getText().toString().trim().length();
+
         int waterAmountLength = waterAmountText.getText().toString().trim().length();
 
         String waterAmount = waterAmountText.getText().toString();
-        String hours = plantGrowth_Hours.getText().toString();
-        String days = plantGrowth_Days.getText().toString();
+        String hours_text = hours.getText().toString();
+        String days_text = days.getText().toString();
         String total = "";
 
         if (waterAmountLength != 0 && (plantHoursLength != 0 || plantDaysLength != 0)) {
-            total = "Your plant will be watered ";
+            total = "Plant will be watered ";
             total += waterAmount + "mm ";
             if (plantDaysLength != 0) {
-                total += "every " + days + " days";
+                total += "every " + days_text + " days";
                 elapsedGrowthPeriod.setVisibility(elapsedGrowthPeriod.VISIBLE);
 
             } else if (plantHoursLength != 0 ) {
-                total += "every " + hours + " hours";
+                total += "every " + hours_text + " hours";
                 elapsedGrowthPeriod.setVisibility(elapsedGrowthPeriod.VISIBLE);
                 elapsedGrowthPeriod.setText(total);
                 return;
             }
             if ( plantHoursLength != 0) {
-                total += " and " + hours + " hours";
+                total += ", " + hours_text + " hours";
                 elapsedGrowthPeriod.setVisibility(elapsedGrowthPeriod.VISIBLE);
                 elapsedGrowthPeriod.setText(total);
                 return;
             }
 
-                    /*if (hours == "" && days == "") {
+                    *//*if (hours == "" && days == "") {
                         total = "Your pla"
                     }if (hours != "") {
                         total = waterAmount + " mm" + "every " + hours;
                     }
-                   */
+                   *//*
                 elapsedGrowthPeriod.setText(total);
         }
         else{
             elapsedGrowthPeriod.setVisibility(elapsedGrowthPeriod.INVISIBLE);
         }
-    }
+    }*/
 
     private boolean isError() {
         boolean totalerror = false;
         int count = 0;
         if (waterPlantName.getText().toString().trim().length() == 0
                 || waterAmountText.getText().toString().trim().length() == 0
-                || plantGrowth_Hours.getText().toString().trim().length() == 0
-                || plantGrowth_Days.getText().toString().trim().length() == 0) {
+                || (hours.getText().toString().trim().length() == 0 && days.getText().toString().trim().length() == 0 &&
+                    minutes.getText().toString().trim().length() == 0 &&
+                    seconds.getText().toString().trim().length() == 0)) {
             error.setVisibility(error.VISIBLE);
             error.setText("Please enter a valid ");
             error.setTextColor(getResources().getColor(R.color.Red));
@@ -215,8 +229,8 @@ public class chooseTiming extends AppCompatActivity {
             error.append("plant name");
             count += 1;
         }
-        if (plantGrowth_Hours.getText().toString().trim().length() == 0
-                || plantGrowth_Days.getText().toString().trim().length() == 0) {
+        if (hours.getText().toString().trim().length() == 0
+                || days.getText().toString().trim().length() == 0) {
             if (count >= 1) {
                 error.append(" and ");
             }

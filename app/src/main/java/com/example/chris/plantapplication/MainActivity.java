@@ -24,10 +24,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.app.Activity;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.firebase.client.Firebase;
 
 import org.w3c.dom.Text;
 
@@ -45,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton button1;
     private ImageButton button2;
     private ImageButton button_updates;
+    private Switch powerSystem;
     Thread myThread;
 
     private GlobalConstants constants;
@@ -57,14 +62,15 @@ public class MainActivity extends AppCompatActivity {
         constants = new GlobalConstants();
 
         setContentView(R.layout.activity_main);
-        // new Thread(client).start();
+        powerSystem = (Switch) findViewById(R.id.system_power);
 
+        // new Thread(client).start();
 
         plantH = plantDataBase.getInstance();
         setImageGrowthVisibility();
         contentUpdate();
         launchDismissDlg(this);
-
+        launchReminderDlg(this);
         /* myThread = new Thread(client); //Creating the new TCP thread
         myThread.start();*/
        /* Runnable_thread runnable = new Runnable_thread(this);
@@ -78,6 +84,36 @@ public class MainActivity extends AppCompatActivity {
            }
        }).start();
 */
+        powerSystem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // do something, the isChecked will be
+                if (powerSystem.isChecked() == true) {
+                    //Then we write a 1 to the server database
+                    String url = "https://plantsystem-9ff68.firebaseio.com/";
+                    //Then we need to put 1 into ir
+                    Firebase mRef = new Firebase(url);
+                    mRef.child("Power").setValue(1);
+                    //Set the bit of the
+                    mRef.child("Sub Write Bits").child("Power System").setValue(1);
+                    mRef.child("Phone Application Write").setValue(1);
+
+                    //Launch a dismiss dialogue to the user
+                    displayDialog(MainActivity.this, "Plant system is ON", "Your plant system will begin watering");
+
+                } else {
+                    String url = "https://plantsystem-9ff68.firebaseio.com/";
+                    //Then we need to put 1 into ir
+                    Firebase mRef = new Firebase(url);
+                    mRef.child("Phone Application Write").setValue(1);
+                    mRef.child("Power").setValue(0);
+                    mRef.child("Sub Write Bits").child("Power System").setValue(1);
+
+                    displayDialog(MainActivity.this, "Plant system is OFF", "Your plant system will stop watering");
+
+                }
+                // true if the switch is in the On position
+            }
+        });
         addPlants();
     }
 
@@ -95,9 +131,20 @@ public class MainActivity extends AppCompatActivity {
                 displayDialog(_Activity, "Temperature Warning", message);
             }
             //If there is a plant that is not growing in the optimal conditions
-            //
+        }
+    }
 
-
+    private void launchReminderDlg(Activity activity) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+        boolean powerValue = preferences.getBoolean("Power System", false);
+        if (powerValue == false){
+            //Then we send a reminder to the user that their system is off
+            String message = "Press Run/Stop to start plant watering!";
+            powerSystem.setChecked(false);
+            displayDialog(activity, "System will not begin", message);
+        }
+        else{
+            powerSystem.setChecked(true);
         }
     }
 
@@ -148,7 +195,6 @@ public class MainActivity extends AppCompatActivity {
         if (water_tank != -1) {
             //Update the level of the water tank and also the plant data base paramaters for the slot number sent
             updateWaterTankLevels(water_tank);
-
         }
 
        /* SharedPreferences prefs = getPreferences(MODE)
@@ -354,45 +400,14 @@ public class MainActivity extends AppCompatActivity {
         button = (ImageButton) findViewById(R.id.imageButton4);
         button1 = (ImageButton) findViewById(R.id.imageButton6);
         button2 = (ImageButton) findViewById(R.id.imageButton7);
-        button_updates = (ImageButton) findViewById(R.id.imageButton2);
 
-        button_updates.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //If this button is clicked, then we will open activity2
-                //String message = client.message;
-
-
-                /*  plantH.getPlantBySlot(1).setHumiditySensor(12);
-                 */
-                /* plantH.getPlantBySlot(1).setWaterRequirement_Predetermined(500);*//*
-
-                float waterAmount = plantH.getWaterAmount_Interrupt(1);
-                plantH.getPlantBySlot(1).setHumiditySensor(1);
-                waterAmount = plantH.getWaterAmount_Interrupt(1);
-                plantH.getPlantBySlot(1).setHumiditySensor(30);
-                waterAmount = plantH.getWaterAmount_Interrupt(1);
-                plantH.getPlantBySlot(1).setHumiditySensor(25);
-                waterAmount = plantH.getWaterAmount_Interrupt(1);
-*/
-
-/*
-                if (message != null && !message.isEmpty()) {
-                    //This is a test so that we can determine how well the water amount works
-
-                    updateIU_PacketUpdate(message);
-                }*/
-                //client.run();
-                // //frame.execute(e1.getTest)
-            }
-        });
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //If this button is clicked, then we will open activity2
                 //We want to set the location of the linear actuator
-            //    String plantType = plantDataBase.getInstance().getPlantBySlot(1).getPlantType();
-                
+                //    String plantType = plantDataBase.getInstance().getPlantBySlot(1).getPlantType();
+
                 moveWateringHeightMeter(1); //Move the watering meter which corresponds to the first position in the plant vase
                 openActivity2(button.getId(), 1);
             }
@@ -402,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //If this button is clicked, then we will open activity2
-              ///  String plantType = plantDataBase.getInstance().getPlantBySlot(2).getPlantType();
+                ///  String plantType = plantDataBase.getInstance().getPlantBySlot(2).getPlantType();
 
                 moveWateringHeightMeter(2); //Move the watering meter which corresponds to the seoncd position in the plant vase
                 openActivity2(button1.getId(), 2);
@@ -413,7 +428,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //If this button is clicked, then we will open activity2
-             //   String plantType = plantDataBase.getInstance().getPlantBySlot(3).getPlantType();
+                //   String plantType = plantDataBase.getInstance().getPlantBySlot(3).getPlantType();
 
                 moveWateringHeightMeter(3);
                 openActivity2(button2.getId(), 3);

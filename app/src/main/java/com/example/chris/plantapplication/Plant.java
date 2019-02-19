@@ -28,7 +28,13 @@ public class Plant {
     private int currentDayNumber;
     private int currentPlantHeight;
     private int growthInterval;
-    private float waterRequirement_Period;
+
+    private float water_period;
+    private int days_water;
+    private int hours_water;
+    private int minutes_water;
+    private int seconds_water;
+
     private float humiditySensor; //Relative humidity sensor as a percentage
     private int HarvestDayLength; // Array of the days allocated over each individual harvest period
 
@@ -48,14 +54,14 @@ public class Plant {
     private float plantDepth;
     private float waterRequirement_Predetermined;
 
-    public Plant(String Name, int buttonID, int slotNumber, int harvestPeriod_days, String plantType, float minTemp, float maxTemp) {
+    public Plant(String Name, int buttonID, int slotNumber, int harvestPeriod_days, String plantType) {
         this.slotNumber = slotNumber;
         this.Name = Name; //We haven't named it yet
         this.buttonNumber = buttonID;
         this.HarvestDayLength = harvestPeriod_days;
 
-        this.maxTemp = maxTemp;
-        this.minTemp = minTemp;
+        this.maxTemp = setMaxTemp();
+        this.minTemp = setMinTemp();
 
         this.plantType = plantType;
         this.humiditySensor = 0;
@@ -66,30 +72,91 @@ public class Plant {
         this.growth_EachDay = new ArrayList<>();
         this.humiditySensor_harvestPeriod = new ArrayList<>();
         this.waterDistribution = new ArrayList<>();
+        this.HarvestDayLength = setHarvestDayLength();
 
         this.water_remaining_current_day = 0;
         currentDayNumber = 1;
 
     }
+    private float setMaxTemp(){
+        if (Name.equals("Basil")) {
+            //Returns basil's plant growth period
+            return 29.4f;
+        } else if (Name.equals("Mint")) {
+            return 26.7f;
+        } else if (Name.equals("Thyme")) {
+            return 21.1f;
+        } else if (Name.equals("Oregano")) {
+            return 21.1f;
+        } else if (Name.equals("Dill")) {
+            return 21.1f;
+        } else {
+            return -1;
+        }
+    }
+    private float setMinTemp(){
+        if (Name.equals("Basil")) {
+            //Returns basil's plant growth period
+            return 23.9f;
+        } else if (Name.equals("Mint")) {
+            return 15.6f;
+        } else if (Name.equals("Thyme")) {
+            return 15.6f;
+        } else if (Name.equals("Oregano")) {
+            return 15.6f;
+        } else if (Name.equals("Dill")) {
+            return 10f;
+        } else {
+            return -1;
+        }
+    }
 
+    private int setHarvestDayLength() {
+        if (Name.equals("Basil")) {
+            //Returns basil's plant growth period
+            return 56;
+        } else if (Name.equals("Mint")) {
+            return 90;
+        } else if (Name.equals("Thyme")) {
+            return 70;
+        } else if (Name.equals("Oregano")) {
+            return 60;
+        } else if (Name.equals("Dill")) {
+            return 90;
+        } else {
+            return -1;
+        }
+
+    }
     private void initializeGraphs(float graph[]) {
         for (int i = 0; i < graph.length; i++) {
             graph[i] = 0.00f; //We want to initialize all paramaters to zero for the default plant height growth
         }
     }
 
-    public void updateServerDataBase(int type) {
-        //Set the dummy credentials
+    public void updateServerDataBase(int type, int slotNumber) {
         Firebase mRef;
+        Firebase mRef_Bit;
+        mRef_Bit = new Firebase("https://plantsystem-9ff68.firebaseio.com/");
+        mRef_Bit.child("Phone Application Write").setValue(1); //set the main write bit for the current system
+
         if (this.slotNumber == 1) {
 
+            Firebase mRef_sub_bit = new Firebase("https://plantsystem-9ff68.firebaseio.com/Sub Write Bits");
             mRef = new Firebase("https://plantsystem-9ff68.firebaseio.com/Plant Vases/Plant Vase 1");
+            //Set the sub bit to whatever the plant vase number is
+            mRef_sub_bit.child("Plant Vase 1").setValue(1);
             setChilds(mRef, type);
         } else if (slotNumber == 2) {
+
+            Firebase mRef_sub_bit = new Firebase("https://plantsystem-9ff68.firebaseio.com/Sub Write Bits");
             mRef = new Firebase("https://plantsystem-9ff68.firebaseio.com/Plant Vases/Plant Vase 2");
+            mRef_sub_bit.child("Plant Vase 2").setValue(2);
             setChilds(mRef, type);
         } else if (slotNumber == 3) {
+            Firebase mRef_sub_bit = new Firebase("https://plantsystem-9ff68.firebaseio.com/Sub Write Bits");
             mRef = new Firebase("https://plantsystem-9ff68.firebaseio.com/Plant Vases/Plant Vase 3");
+            mRef_sub_bit.child("Plant Vase 3").setValue(3);
             setChilds(mRef, type);
         } else {
             return;
@@ -107,19 +174,22 @@ public class Plant {
 
         if (type == 1) {
             mRef.child("Soil Type").setValue(this.SoilType);
-            mRef.child("Soil Depth").setValue(this.plantDepth);
+
             mRef.child("Harvest Period").setValue(this.HarvestDayLength);
             mRef.child("Temperature Min").setValue(this.minTemp);
             mRef.child("Temperature Max").setValue(this.maxTemp);
         }
         if (type == 2) {
-            mRef.child("Water Period").setValue(this.growthInterval);
-            mRef.child("Water Amount").setValue(this.waterRequirement_Period);
+            mRef.child("Water Amount").setValue(this.water_period);
+            mRef.child("Water Period").child("Days").setValue(this.days_water);
+            mRef.child("Water Period").child("Hours").setValue(this.hours_water);
+            mRef.child("Water Period").child("Minutes").setValue(this.minutes_water);
+            mRef.child("Water Period").child("Seconds").setValue(this.seconds_water);
         }
     }
 
     public int getHarvestDayLength() {
-        return this.HarvestDayLength;
+        return HarvestDayLength;
     }
 
     public int getCurrentDayNumber() {
@@ -480,11 +550,36 @@ public class Plant {
         return;
     }
 
-    public float getWaterRequirement_Period() {
-        return waterRequirement_Period;
+    public float getWater_Days() {
+        return days_water;
     }
 
-    public void setWaterRequirement_Period(float waterRequirement_Period) {
-        this.waterRequirement_Period = waterRequirement_Period;
+    public float getWater_Hours() {
+        return hours_water;
+    }
+
+    public float getWater_Minutes() {
+        return minutes_water;
+    }
+
+    public float getWater_Seconds() {
+        return seconds_water;
+    }
+
+
+    public void setWaterRequirement_Period(int days, int hours, int seconds, int minutes) {
+        this.days_water = days;
+        this.hours_water = hours;
+        this.minutes_water = seconds;
+        this.seconds_water = minutes;
+
+    }
+
+    public float getWater_period() {
+        return water_period;
+    }
+
+    public void setWater_period(float water_period) {
+        this.water_period = water_period;
     }
 }

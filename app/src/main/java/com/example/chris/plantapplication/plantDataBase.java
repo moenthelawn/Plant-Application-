@@ -24,7 +24,7 @@ public class plantDataBase<E> {
 
         int empty1 = -1;
         float empty3 = -1;
-        Plant empty = new Plant("", -1, -1, 0, "", 0f, 0f);
+        Plant empty = new Plant("", -1, -1, 0, "");
         return empty; //otherwise we return empty
     }
 
@@ -205,7 +205,7 @@ public class plantDataBase<E> {
         Pair<Float, Float> overlappingRange = getOverlappingRange(tempRange);
 
         for (int i = 0; i < allPlants.length; i++) {
-            if (allPlants[i] != null) {
+            if (allPlants[i] != null && allPlants[i].getPlantType().equals("Predetermined")) {
                 float currentTemperature = allPlants[i].getRoomTemperature();
                 float minTemperature = allPlants[i].getMinTemperatureRange();
                 float maxTemperature = allPlants[i].getMaxTemperatureRange();
@@ -213,7 +213,11 @@ public class plantDataBase<E> {
                 if (currentTemperature > maxTemperature) {
                     //Then we will get the range to the
                     return (overlappingRange.getSecond() - currentTemperature);
-                } else if (currentTemperature < minTemperature) {
+                }
+                else if (overlappingRange.getFirst() == -1e9f || overlappingRange.getSecond() == 1e9f){
+                    return 0;
+                }
+                else if (currentTemperature < minTemperature) {
                     return overlappingRange.getFirst() - currentTemperature;
                 }
 
@@ -240,9 +244,9 @@ public class plantDataBase<E> {
     }
 
     public void addPlant(String PlantName, int buttonID, int slotNumber,
-                         int harvestPeriod_days, String plantType, float minTemp, float maxTemp) {
+                         int harvestPeriod_days, String plantType) {
 
-        allPlants[slotNumber - 1] = new Plant(PlantName, buttonID, slotNumber, harvestPeriod_days, plantType, minTemp, maxTemp);
+        allPlants[slotNumber - 1] = new Plant(PlantName, buttonID, slotNumber, harvestPeriod_days, plantType);
         added = true;
     }
 

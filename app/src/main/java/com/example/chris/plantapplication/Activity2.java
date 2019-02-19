@@ -58,7 +58,7 @@ public class Activity2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int harvestPeriod_days = 70;//The harvest is spanned over the length of the plant's duration
-                allPlants.addPlant("Thyme", buttonID, slotNumber, harvestPeriod_days, "Predetermined", 15.6f, 26.7f);
+                allPlants.addPlant("Thyme", buttonID, slotNumber, harvestPeriod_days, "Predetermined");
 
                 //We want to move to activity addCustomPlant
                 callIntent(v.getContext(), soilType.class);
@@ -70,7 +70,7 @@ public class Activity2 extends AppCompatActivity {
             public void onClick(View v) {
                 int harvestPeriod_days = 90;//The harvest is spanned over the length of the plant's duration
 
-                allPlants.addPlant("Dill", buttonID, slotNumber, harvestPeriod_days, "Predetermined", 10f, 21.1f);
+                allPlants.addPlant("Dill", buttonID, slotNumber, harvestPeriod_days, "Predetermined");
 
                 //We want to move to activity addCustomPlant
                 callIntent(v.getContext(), soilType.class);
@@ -82,7 +82,7 @@ public class Activity2 extends AppCompatActivity {
             public void onClick(View v) {
                 int harvestPeriod_days = 60;//The harvest is spanned over the length of the plant's duration
 
-                allPlants.addPlant("Oregano", buttonID, slotNumber, harvestPeriod_days, "Predetermined", 15.6f, 21.1f);
+                allPlants.addPlant("Oregano", buttonID, slotNumber, harvestPeriod_days, "Predetermined");
 
                 //We want to move to activity addCustomPlant
                 callIntent(v.getContext(), soilType.class);
@@ -94,7 +94,7 @@ public class Activity2 extends AppCompatActivity {
             public void onClick(View v) {
                 int harvestPeriod_days = 90;//The harvest is spanned over the length of the plant's duration
 
-                allPlants.addPlant("Mint", buttonID, slotNumber, harvestPeriod_days, "Predetermined", 15.6f, 26.7f);
+                allPlants.addPlant("Mint", buttonID, slotNumber, harvestPeriod_days, "Predetermined");
 
                 //We want to move to activity addCustomPlant
                 callIntent(v.getContext(), soilType.class);
@@ -122,7 +122,7 @@ public class Activity2 extends AppCompatActivity {
                 // basilPlant.setpFactor(0.25); //Hardcoded value for the plant database
                 //     basilPlant.setMeanTemperature(22.5);
 
-                allPlants.addPlant("Basil", buttonID, slotNumber, harvestPeriod_days, "Predetermined", 23.9f, 29.4f);
+                allPlants.addPlant("Basil", buttonID, slotNumber, harvestPeriod_days, "Predetermined");
                 //We want to move to activity addCustomPlant
                 callIntent(v.getContext(), soilType.class);
                 //openMainActivity("Basil");

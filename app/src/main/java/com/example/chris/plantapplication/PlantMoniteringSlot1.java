@@ -17,10 +17,14 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -46,12 +50,16 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
 
     private TextView growth_day;
     private TextView plantName;
+    private TextView addWater;
+    private ImageView waterEditSlot;
+    private EditText waterEditValues;
+    private TextView waterAmountMessage;
+    private Button confirmButton;
+
     private ImageButton HarvestButton;
     private ImageButton back;
     int buttonID_Called;
     int slot_ID_Called;
-    private ImageButton minusPlant;
-    private ImageButton addPlant;
 
     /*private ImageView needle;*/
     private Needle needle;
@@ -62,11 +70,20 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plant_monitering_slot1);
 
-        minusPlant = (ImageButton) findViewById(R.id.imageButton21);
-        addPlant = (ImageButton) findViewById(R.id.imageButton19);
+        addWater = (TextView) findViewById(R.id.textView40);
+        waterEditSlot = (ImageView) findViewById(R.id.imageView21);
+        waterEditValues = (EditText) findViewById(R.id.editText2);
+        confirmButton = (Button) findViewById(R.id.button2);
+        waterAmountMessage = (TextView) findViewById(R.id.textView31);
+
+        confirmButton.setVisibility(confirmButton.INVISIBLE);
+        waterAmountMessage.setVisibility(waterAmountMessage.INVISIBLE);
+        waterEditSlot.setVisibility(waterEditSlot.INVISIBLE);
+        addWater.setVisibility(addWater.INVISIBLE);
+        waterEditValues.setVisibility(waterEditValues.INVISIBLE);
+
         //We want to grab an instance of the plant data base that will be used for this slot
         //needle = findViewById(R.id.imageView6); //The image of the needle
-
 
         needle = (Needle) findViewById(R.id.needle);
         HarvestButton = (ImageButton) findViewById(R.id.imageButton5);
@@ -95,35 +112,48 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         ViewPager vpPager = (ViewPager) findViewById(R.id.viewpager);
         adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
 
-        addPlant.setOnClickListener(new View.OnClickListener() {
+        waterEditValues.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                //set the watering level of the text as well
-                float waterRequirements = currentPlant.getWaterRequirement_Period() + 1.0f;
-                //set the plant as well.
-                currentPlant.setWaterRequirement_Period(waterRequirements);
-                int growthInterval = currentPlant.getGrowthInterval();
-                displayString_water_message(waterRequirements, growthInterval);
-            }
-        });
-        minusPlant.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //set the watering level of the text as well
-                float waterRequirements = currentPlant.getWaterRequirement_Period() - 1.0f;
-                currentPlant.setWaterRequirement_Period(waterRequirements);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                int growthInterval = currentPlant.getGrowthInterval();
-                displayString_water_message(waterRequirements, growthInterval);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //Edit the water text values
+                int s_length = s.length();
+                if (s_length > 0) {
+                    String message = s.toString() + "mL";
+                    waterAmountMessage.setVisibility(waterAmountMessage.VISIBLE);
+                    confirmButton.setVisibility(confirmButton.VISIBLE);
+
+
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Then we update the text of the on click listener with the correct value
+                String waterAmountValue = waterEditValues.getText().toString();
+                currentPlant.setWater_period(Float.parseFloat(waterAmountValue));
+                String message = "Your plant will be watered " + waterAmountValue + ".0mm each cycle";
+                waterAmountMessage.setText(message);
+                String plantType = currentPlant.getPlantType();
+                currentPlant.updateServerDataBase(2,currentPlant.getSlotNumber());
+
+                confirmButton.setVisibility(confirmButton.INVISIBLE);
+            }
+        });
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String plantType = currentPlant.getPlantType();
-                if (plantType.equals("Manual")) {
-                    currentPlant.updateServerDataBase(2);
-                }
                 openMainActivity();
             }
         });
@@ -131,41 +161,50 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         vpPager.setAdapter(adapterViewPager);
 
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         String plantType = currentPlant.getPlantType();
         if (plantType.equals("Manual")) {
-            currentPlant.updateServerDataBase(2);
+            currentPlant.updateServerDataBase(2,currentPlant.getSlotNumber());
         }
         // Do extra stuff here
     }
+
     private void displayManual_Predetermined(Plant currentPlant) {
         if (currentPlant.getPlantType().equals("Manual")) {
-            ImageButton minusPlant = (ImageButton) findViewById(R.id.imageButton21);
-            ImageButton addPlant = (ImageButton) findViewById(R.id.imageButton19);
-            addPlant.setVisibility(addPlant.VISIBLE);
-            minusPlant.setVisibility(minusPlant.VISIBLE);
+
+            waterEditSlot.setVisibility(waterEditSlot.VISIBLE);
+            addWater.setVisibility(addWater.VISIBLE);
+            waterEditValues.setVisibility(waterEditValues.VISIBLE);
 
             //This function will display the plant data responsible for either
             TextView harvestTime = (TextView) findViewById(R.id.textView36);
+            TextView message = (TextView) findViewById(R.id.textView30);
+            waterAmountMessage.setVisibility(waterAmountMessage.VISIBLE);
+
+            //Then we set hte watering amount
+            float water_period = currentPlant.getWater_period();
+            String waterAmount_current = Float.toString(water_period);
+            String waterAmount_message = "Your plant will be watered " + waterAmount_current + "mm each cycle";
+
+            waterAmountMessage.setText(waterAmount_message);
+            message.setText("Edit your plant watering values");
             ImageButton harvestButton = (ImageButton) findViewById(R.id.imageButton5);
             ProgressBar progress = (ProgressBar) findViewById(R.id.progressBar);
 
             TextView number = (TextView) findViewById(R.id.textView3);
             number.setVisibility(number.INVISIBLE);
 
-            displayString_water_message(currentPlant.getWaterRequirement_Period(), currentPlant.getGrowthInterval());
 
             harvestButton.setVisibility(harvestButton.INVISIBLE);
             progress.setVisibility(progress.INVISIBLE);
             harvestTime.setVisibility(harvestTime.INVISIBLE);
-
-
         }
     }
 
-    private void displayString_water_message(float waterRequirement_period, int growthInterval) {
+  /*  private void displayString_water_message(float waterRequirement_period, int growthInterval) {
         String waterRequirements = Float.toString(waterRequirement_period);
 
         TextView wateringRequirements = (TextView) findViewById(R.id.textView30);
@@ -181,7 +220,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
 
         String wateringMessage = "Your plant will be watered " + waterRequirements + "mm every " + wateringPeriod;
         wateringRequirements.setText(wateringMessage);
-    }
+    }*/
 
     private String convertHours_Days(int growthInterval) {
         //This function converts the growth intervals from hours to days.
@@ -362,13 +401,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         if (remainingDays <= 0) {
             //Then we need to add a button that says we should harvest the plant
             harvestButton.setVisibility(harvestButton.VISIBLE); //This will control the visibility for the Harvest button
-            HarvestButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //Once we do this, we will delete the plant from the database since it is no longer needed to harvest
-                    plantH.deletePlant(currentPlant);
-                }
-            });
+
             harvestName.setVisibility(harvestName.VISIBLE);// This will control the visibility for the text that overlays the harvest button
             //timeTillHarvest.setVisibility(timeTillHarvest.INVISIBLE);
             animateHarvestTimeProgress(remainingDays, remainingDays); //We want to animate the change in the progress bar
@@ -392,11 +425,6 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         //Here we want to update the graphical charts to show the type of plant that we have
         plantH = plantDataBase.getInstance();
         Plant requiredPlant = plantH.getPlantBySlot(slotNumber);
-        ImageButton minusPlant = (ImageButton) findViewById(R.id.imageButton21);
-        ImageButton addPlant = (ImageButton) findViewById(R.id.imageButton19);
-        addPlant.setVisibility(addPlant.INVISIBLE);
-        minusPlant.setVisibility(minusPlant.INVISIBLE);
-
         float roomTemperature = requiredPlant.getRoomTemperature();
         float humidity = requiredPlant.getAirHumidity();
         int dayNumber = requiredPlant.getCurrentDayNumber();

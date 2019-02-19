@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -26,7 +27,10 @@ import com.firebase.client.ValueEventListener;
 import com.google.firebase.database.DatabaseReference;
 
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 public class WebServer implements Runnable {
@@ -34,11 +38,15 @@ public class WebServer implements Runnable {
     private Firebase mRef;
     private plantDataBase plantH;
     private Activity _activity;
+    private String currentDate;
+    private float airTemperature;
+    private boolean powerSystem;
     private boolean success;
 
     public WebServer(Activity _activity) {
         this._activity = _activity;
         this.dataBase = "https://plantsystem-9ff68.firebaseio.com/";
+        this.powerSystem = false;
         //Load the data in from the serve
 
         mRef = new Firebase(dataBase);
@@ -57,18 +65,24 @@ public class WebServer implements Runnable {
                 //   Object object = dataSnapshot.getValue(Object.class);
                 int i = 1;
                 float currentWaterLevels = dataSnapshot.child("Water Tank").getValue(float.class);
+                powerSystem = getPowerSystem(dataSnapshot.child("Power").getValue(String.class));
+                currentDate = dataSnapshot.child("Current Date").getValue(String.class);
+                airTemperature = dataSnapshot.child("Air Temperature").getValue(float.class);
+
                 setWaterTankNotification(currentWaterLevels / GlobalConstants.MAX_WATERTANK);
 
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(_activity);
                 SharedPreferences.Editor editor = preferences.edit();
+
                 editor.putFloat("Water Tank", currentWaterLevels);
+                editor.putBoolean("Power System", powerSystem);
+
                 editor.apply();
 
                 retrieve_load_data(dataSnapshot.child("Plant Vases"));
+                mRef.child("Hardware System Write").setValue(0);
+
             }
-
-
-
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
@@ -78,11 +92,19 @@ public class WebServer implements Runnable {
         });
 
     }
-    public void retrieve_load_data(DataSnapshot dataSnapshot){
+
+    private boolean getPowerSystem(String power_system) {
+        if (power_system.equals("1")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void retrieve_load_data(DataSnapshot dataSnapshot) {
         int slotNumber = 1;
         for (DataSnapshot eachVase : dataSnapshot.getChildren()) {
             String currentPlantName = eachVase.child("Plant Name").getValue(String.class);
-
             if (currentPlantName != "" && currentPlantName != null) {
                 if (plantH.getPlantBySlot(slotNumber) == null) {
 
@@ -91,55 +113,87 @@ public class WebServer implements Runnable {
                     int buttonID = eachVase.child("Button ID").getValue(int.class);
                     float minTemp = eachVase.child("Temperature Min").getValue(float.class);
                     float maxTemp = eachVase.child("Temperature Max").getValue(float.class);
-                    plantH.addPlant(currentPlantName, buttonID, slotNumber, harvestPeriod, plantType,minTemp,maxTemp);
+                    plantH.addPlant(currentPlantName, buttonID, slotNumber, harvestPeriod, plantType);
 
                 }
-                float roomTemperature = eachVase.child("Air Temperature").getValue(float.class);
                 float airHumidity = eachVase.child("Air Humidity").getValue(float.class);
-                int waterPeriod = eachVase.child("Water Period").getValue(Integer.class);
-                float waterRequirement_period = eachVase.child("Water Amount").getValue(Float.class);
+                float water_period = eachVase.child("Water Amount").getValue(Integer.class);
+
+                int days = eachVase.child("Water Period").child("Days").getValue(Integer.class);
+                int hours = eachVase.child("Water Period").child("Hours").getValue(Integer.class);
+                int minutes = eachVase.child("Water Period").child("Minutes").getValue(Integer.class);
+                int seconds = eachVase.child("Water Period").child("Seconds").getValue(Integer.class);
+
+
+                String startDay = eachVase.child("Growth Start").getValue(String.class);
+                int dayNumber = getTimeFrameDifference(startDay, currentDate);
+
                 Plant currentPlant = plantH.getPlantBySlot(slotNumber);
-                currentPlant.setWaterRequirement_Period(waterRequirement_period);
-                currentPlant.setGrowthInterval(waterPeriod);
+
+                currentPlant.setCurrentDayNumber(dayNumber);
+                currentPlant.setWaterRequirement_Period(days, hours, minutes, seconds);
+                currentPlant.setWater_period(water_period);
 
                 ArrayList<Float> soilHumidity = getArray(eachVase.child("Soil Humidity"));
                 ArrayList<Float> waterDistribution = getArray(eachVase.child("Water Distribution"));
                 ArrayList<Float> plantHeight = getArray(eachVase.child("Plant Height"));
 
                 currentPlant.setAirHumidity(airHumidity);
-                currentPlant.setRoomTemperature(roomTemperature);
+                currentPlant.setRoomTemperature(airTemperature);
                 //launchDismissDlg(this);
 
                 currentPlant.setGrowth_EachDay(plantHeight);
                 currentPlant.setHumiditySensor_harvestPeriod(soilHumidity);
                 currentPlant.setWaterDistribution(waterDistribution);
-                int dayNumber = (int) eachVase.child("Soil Humidity").getChildrenCount();
 
             }
 
             slotNumber += 1;
+            //  _activity.recreate();
+
         }
+
     }
+
+    private int getTimeFrameDifference(String startDay, String currentDay) {
+        //This function will get the day number between two dates
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+        Date date_current;
+        Date date_start;
+        try {
+            date_current = sdf.parse(currentDay);
+            date_start = sdf.parse(startDay);
+            long diff = date_current.getTime() - date_start.getTime();
+            int diffDays = (int) ((diff) / (24 * 60 * 60 * 1000));
+            return diffDays;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+
+    }
+
     private void launchDismissDlg(Activity _Activity) {
         float optimalTemperature = plantH.plantOptimalTemperatureChange();
-        optimalTemperature = Math.round((optimalTemperature*100)/100);
+        optimalTemperature = Math.round((optimalTemperature * 100) / 100);
 
         if (optimalTemperature != 0f) {
             //Display the dialogue box
             if (optimalTemperature < 0f) {
                 String message = "Consider cooling your plants down by " + Float.toString(Math.abs(optimalTemperature)) + "°C";
                 displayDialog(_Activity, "Temperature Warning", message);
-            }
-            else{
+            } else {
                 String message = "Consider warming your plants up by " + Float.toString(Math.abs(optimalTemperature)) + "°C";
-                displayDialog(_Activity,"Temperature Warning",message);
+                displayDialog(_Activity, "Temperature Warning", message);
             }
             //If there is a plant that is not growing in the optimal conditions
             //
 
 
         }
-    }private void displayDialog(Activity _Activity, String messageType, String message) {
+    }
+
+    private void displayDialog(Activity _Activity, String messageType, String message) {
         final Dialog dialog;
         dialog = new Dialog(_Activity, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -175,6 +229,7 @@ public class WebServer implements Runnable {
         dialog.show();
 
     }
+
     public ArrayList<Float> getArray(DataSnapshot children) {
         ArrayList<Float> Values = new ArrayList();
 
@@ -186,6 +241,7 @@ public class WebServer implements Runnable {
         }
         return Values;
     }
+
     public void setWaterTankNotification(float waterTankPercentage) {
         //This will be used to display a notification if it is needed
 

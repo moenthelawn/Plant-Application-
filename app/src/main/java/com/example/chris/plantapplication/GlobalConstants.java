@@ -1,9 +1,9 @@
 package com.example.chris.plantapplication;
 
 public class GlobalConstants {
-    public static final float MAX_WATERTANK = 15f; //The units are in L
+    public static final float MAX_WATERTANK = 5f; //The units are in L
     public static final int MAXPLANTS = 3;
-    public static final float MAXHEIGHT = 0.5f;//Max height of the plant vase
+    public static final float MAXHEIGHT = 0.1397f;//Max height of the plant vase
     public static final int MAXSOILTYPES = 6;
     public static final float AVAILABILITYCOEFFICIENT = 0.5f; //This is the availability coefficient used to determine the maximum amount of water that can be applied
     public static final float MAXSOILDEVIATION = 5f; //Max deviation above is ~5%

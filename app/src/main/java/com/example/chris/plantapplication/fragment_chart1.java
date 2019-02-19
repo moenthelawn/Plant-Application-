@@ -1,37 +1,25 @@
 package com.example.chris.plantapplication;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.example.chris.plantapplication.Plant;
-import com.example.chris.plantapplication.R;
-import com.example.chris.plantapplication.plantDataBase;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.LimitLine;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.jjoe64.graphview.GraphView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.Context.MODE_WORLD_READABLE;
 
 public class fragment_chart1 extends Fragment {
     // Store instance variables
@@ -70,27 +58,76 @@ public class fragment_chart1 extends Fragment {
         return view;
     }
 
+    public ArrayList<Float> partitionArrayList(ArrayList<Float> list, int partitionNumber) {
+        //This function will go through the array list and partition the array list by the partition number
+        ArrayList<Float> holder = new ArrayList<>();
+        int index = 0;
+        float averageValue = 0;
+        for (float eachValue : list) {
+            averageValue += eachValue;
+            // Each value in the list
+            if (index == partitionNumber) { //Instead, index on incremented values
+                //Then we add the value to the array since it is at that multiple
+                averageValue = averageValue / (index);
+                holder.add(averageValue);
+                averageValue = 0;
+                index = 0;
+            }
+
+            index += 1;
+        }
+        return holder;
+    }
+
     public void createGraphChart(ArrayList<Float> values, View view) {
+        ArrayList<Float> partitionedArray = new ArrayList<>();
+        String message = "";
+        int values_size = values.size();
+        if (values_size <= 168) {
+            partitionedArray = values;
+
+            String size = Integer.toString(partitionedArray.size());
+            message = "Plant height over the last " + size + " hours";
+
+        } else if (values_size > 168  && values_size <= 744) {
+            // If our values are less than 168 hours, then we can divide the data up into days
+            partitionedArray = partitionArrayList(values, 24);
+            String size = Integer.toString(partitionedArray.size());
+            message = "Plant height over the last " + size + " days";
+
+
+        } else if (values_size > 744 && values_size <= 2976) {
+            //Then we divide the data up into weeks
+            partitionedArray = partitionArrayList(values, 24 * 7);
+            String size = Integer.toString(partitionedArray.size());
+            message = "Plant height over the last " + size + " weeks";
+
+        } else if (values_size > 2976) {
+            //Then we divide the data up into months
+            partitionedArray = partitionArrayList(values, 24 * 7 * 4);
+            String size = Integer.toString(partitionedArray.size());
+            message = "Plant height over the last " + size + " months";
+
+        }
+
         GraphView tvLabel = (GraphView) view.findViewById(R.id.chart);
 
         LineChart graph = (LineChart) view.findViewById(R.id.chart);
         List<Entry> entries = new ArrayList<Entry>();
 /*
-
         float test[] = {0, 2, 3, 5, 6, 7, 8, 9, 10, 3, 6, 19, 20, 0};
 */
-
-        for (int i = 0; i < values.size(); i++) {
-            float y = values.get(i); //Set the values of the chart to the points of the dat chart
+        for (int i = 0; i < partitionedArray.size(); i++) {
+            float y = partitionedArray.get(i); //Set the values of the chart to the points of the dat chart
             entries.add(new Entry((float) i, y));
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "Plant height over elapsed days"); // add entries to dataset
+        LineDataSet dataSet = new LineDataSet(entries, message); // add entries to dataset
         dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER); //cubic
         dataSet.setDrawValues(false);
 
         dataSet.setDrawCircles(false);
-        Drawable drawable = ContextCompat.getDrawable(view.getContext(),R.drawable.graph_fragment_1);
+        Drawable drawable = ContextCompat.getDrawable(view.getContext(), R.drawable.graph_fragment_1);
         dataSet.setFillDrawable(drawable);
 
         //(getResources().getColor(R.color.gradient_plant_height));
