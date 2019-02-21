@@ -7,6 +7,7 @@ import android.widget.Button;
 import com.firebase.client.Firebase;
 
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,7 +18,7 @@ import static java.lang.StrictMath.pow;
 public class Plant {
     // All data is in SI units.
     private int slotNumber;
-    private int buttonNumber;
+    private Date lastWaterDate;
 
     private String Name;
     private Calendar startDate;
@@ -54,11 +55,10 @@ public class Plant {
     private float plantDepth;
     private float waterRequirement_Predetermined;
 
-    public Plant(String Name, int buttonID, int slotNumber, int harvestPeriod_days, String plantType) {
+    public Plant(String Name, int slotNumber, String plantType) {
         this.slotNumber = slotNumber;
-        this.Name = Name; //We haven't named it yet
-        this.buttonNumber = buttonID;
-        this.HarvestDayLength = harvestPeriod_days;
+        this.Name = Name; //We haven't named it y
+        this.HarvestDayLength = setHarvestDayLength();
 
         this.maxTemp = setMaxTemp();
         this.minTemp = setMinTemp();
@@ -73,7 +73,7 @@ public class Plant {
         this.humiditySensor_harvestPeriod = new ArrayList<>();
         this.waterDistribution = new ArrayList<>();
         this.HarvestDayLength = setHarvestDayLength();
-
+        this.lastWaterDate = null;
         this.water_remaining_current_day = 0;
         currentDayNumber = 1;
 
@@ -169,7 +169,6 @@ public class Plant {
         mRef.child("Plant Name").setValue(this.Name);
 
         mRef.child("Plant Type").setValue(this.plantType);
-        mRef.child("Button ID").setValue(this.buttonNumber);
 
 
         if (type == 1) {
@@ -246,10 +245,6 @@ public class Plant {
 
     public int getSlotNumber() {
         return slotNumber;
-    }
-
-    public int getButtonNumber() {
-        return buttonNumber;
     }
 
     public void setPlantDepth(float depth) {
@@ -384,15 +379,6 @@ public class Plant {
         return availabilityCoefficient;
     }
 
-    public boolean setPlantSlotNumber(int ButtonID, int SlotNumber) { //This function will handle adding the plant to the correct slot number
-        if (buttonNumber == -1) {
-            buttonNumber = ButtonID;
-            slotNumber = SlotNumber;
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     public void setpFactor(float pFactor) {
         this.pFactor = pFactor;
@@ -581,5 +567,13 @@ public class Plant {
 
     public void setWater_period(float water_period) {
         this.water_period = water_period;
+    }
+
+    public Date getLastWaterDate() {
+        return lastWaterDate;
+    }
+
+    public void setLastWaterDate(Date lastWaterDate) {
+        this.lastWaterDate = lastWaterDate;
     }
 }

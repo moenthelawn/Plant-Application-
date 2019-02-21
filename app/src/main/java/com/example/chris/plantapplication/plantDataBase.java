@@ -24,7 +24,7 @@ public class plantDataBase<E> {
 
         int empty1 = -1;
         float empty3 = -1;
-        Plant empty = new Plant("", -1, -1, 0, "");
+        Plant empty = new Plant("", -1, "");
         return empty; //otherwise we return empty
     }
 
@@ -63,6 +63,7 @@ public class plantDataBase<E> {
         }
 
     }
+/*
 
     public boolean buttonExists(int buttonNumber) {
         if (added == true) {
@@ -77,6 +78,7 @@ public class plantDataBase<E> {
         }
         return false;
     }
+*/
 
     public void setSoilType(int slotNumber, String soilType) {
         allPlants[slotNumber - 1].setSoilType(soilType);
@@ -246,7 +248,7 @@ public class plantDataBase<E> {
     public void addPlant(String PlantName, int buttonID, int slotNumber,
                          int harvestPeriod_days, String plantType) {
 
-        allPlants[slotNumber - 1] = new Plant(PlantName, buttonID, slotNumber, harvestPeriod_days, plantType);
+        allPlants[slotNumber - 1] = new Plant(PlantName, slotNumber, plantType);
         added = true;
     }
 

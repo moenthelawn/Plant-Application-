@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -306,12 +307,12 @@ public class MainActivity extends AppCompatActivity {
                 //Current Button ID is an array of all the buttons the plant is attached too
                 Plant currentPlant = allPlants[i];
                 if (currentPlant != null) {
-                    int currentButtonID = currentPlant.getButtonNumber();
+
                     int slotNumber = currentPlant.getSlotNumber();
                     String plantType = currentPlant.getPlantType();
 
                     if (slotNumber != -1) {
-                        ImageButton changingButton = (ImageButton) findViewById(currentButtonID);
+                        ImageButton changingButton = getButtonID_Slot(slotNumber);
                         changingButton.setImageResource(R.drawable.addplantmonitor);//Update it to the eye symbol so that we know it is already in plac
 
                         if (plantType.equals("Predetermined")) {
@@ -327,6 +328,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+
+    private ImageButton getButtonID_Slot(int slotNumber) {
+        if (slotNumber == 1){
+            ImageButton view13 = (ImageButton) findViewById(R.id.imageButton4);
+            return view13;
+        }else if (slotNumber == 2){
+            ImageButton view16 = (ImageButton) findViewById(R.id.imageButton6);
+            return view16;
+        }else {
+            ImageButton view12 = (ImageButton) findViewById(R.id.imageButton7);
+            return view12;
+        }
+
     }
 
     private void updateWaterTankLevels(float waterTank) {
@@ -460,11 +476,11 @@ public class MainActivity extends AppCompatActivity {
     public void openActivity2(int buttonID, int position_slot) {
         //  boolean existornah = threeButtons.buttonExists buttonID);
 
-        if (plantH.buttonExists(buttonID) == false) {
+
+        if (plantH.getPlantBySlot(position_slot) == null) {
             //The button does not exist as a slot and therefore we can go to the next screen to the add plant section
             Intent intent = new Intent(this, ChooseMoniteringType.class);
 
-            intent.putExtra("Button ID", buttonID);
             intent.putExtra("Slot Number", position_slot);
 
             startActivity(intent);

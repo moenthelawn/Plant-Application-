@@ -127,7 +127,7 @@ public class chooseTiming extends AppCompatActivity {
                     int slotNumber = getActivityThatCalled.getIntExtra("Slot Number", 0); //get the button session ID so we can modify its .xml paramaters
                     float cropCoefficient = -1;
 
-                    Plant plant = new Plant(name, buttonID, slotNumber, -1, "Manual");
+                    Plant plant = new Plant(name, slotNumber, "Manual");
 
                     //Add the plant to the database
                     plantDataBase.getInstance().addPlant_SlotNumber(slotNumber, plant);

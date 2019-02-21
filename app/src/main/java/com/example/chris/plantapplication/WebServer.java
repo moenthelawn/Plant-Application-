@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -27,6 +28,7 @@ import com.firebase.client.ValueEventListener;
 import com.google.firebase.database.DatabaseReference;
 
 import java.lang.reflect.Array;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,6 +44,7 @@ public class WebServer implements Runnable {
     private float airTemperature;
     private boolean powerSystem;
     private boolean success;
+    private int hardwareConnection;
 
     public WebServer(Activity _activity) {
         this._activity = _activity;
@@ -51,7 +54,7 @@ public class WebServer implements Runnable {
 
         mRef = new Firebase(dataBase);
         plantH = plantDataBase.getInstance();
-
+        this.hardwareConnection = 0; //Default is set to 0
     }
 
 
@@ -68,6 +71,18 @@ public class WebServer implements Runnable {
                 powerSystem = getPowerSystem(dataSnapshot.child("Power").getValue(String.class));
                 currentDate = dataSnapshot.child("Current Date").getValue(String.class);
                 airTemperature = dataSnapshot.child("Air Temperature").getValue(float.class);
+                hardwareConnection = dataSnapshot.child("hardware_connection").getValue(Integer.class);
+
+                long startTime = System.currentTimeMillis(); //fetch starting time
+
+           /*     Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        // Actions to do after 10 seconds
+                        mRef.child("phone_connection").setValue(1); //This sets the value for being online
+                    }
+                }, 5000);
+*/
 
                 setWaterTankNotification(currentWaterLevels / GlobalConstants.MAX_WATERTANK);
 
@@ -80,6 +95,7 @@ public class WebServer implements Runnable {
                 editor.apply();
 
                 retrieve_load_data(dataSnapshot.child("Plant Vases"));
+
                 mRef.child("Hardware System Write").setValue(0);
 
             }
@@ -88,6 +104,7 @@ public class WebServer implements Runnable {
             public void onCancelled(FirebaseError firebaseError) {
 
             }
+
 
         });
 
@@ -116,6 +133,8 @@ public class WebServer implements Runnable {
                     plantH.addPlant(currentPlantName, buttonID, slotNumber, harvestPeriod, plantType);
 
                 }
+                /*Value Paramaters from the database*/
+                Date lastWaterDate = getLastWaterDate(eachVase.child("Last Water Time").getValue(String.class), "MM-dd-yyyy-hh:mmaa");
                 float airHumidity = eachVase.child("Air Humidity").getValue(float.class);
                 float water_period = eachVase.child("Water Amount").getValue(Integer.class);
 
@@ -128,14 +147,17 @@ public class WebServer implements Runnable {
                 String startDay = eachVase.child("Growth Start").getValue(String.class);
                 int dayNumber = getTimeFrameDifference(startDay, currentDate);
 
+
+                /*Setting the paramaters into that particular plant */
                 Plant currentPlant = plantH.getPlantBySlot(slotNumber);
 
+                currentPlant.setLastWaterDate(lastWaterDate);
                 currentPlant.setCurrentDayNumber(dayNumber);
                 currentPlant.setWaterRequirement_Period(days, hours, minutes, seconds);
                 currentPlant.setWater_period(water_period);
 
                 ArrayList<Float> soilHumidity = getArray(eachVase.child("Soil Humidity"));
-                ArrayList<Float> waterDistribution = getArray(eachVase.child("Water Distribution"));
+                /*ArrayList<Float> waterDistribution = getArray(eachVase.child("Water Distribution"));*/
                 ArrayList<Float> plantHeight = getArray(eachVase.child("Plant Height"));
 
                 currentPlant.setAirHumidity(airHumidity);
@@ -144,7 +166,9 @@ public class WebServer implements Runnable {
 
                 currentPlant.setGrowth_EachDay(plantHeight);
                 currentPlant.setHumiditySensor_harvestPeriod(soilHumidity);
+/*
                 currentPlant.setWaterDistribution(waterDistribution);
+*/
 
             }
 
@@ -153,6 +177,27 @@ public class WebServer implements Runnable {
 
         }
 
+    }
+    public boolean setBit_HardwareConnection(){
+        long startTime = System.currentTimeMillis(); //fetch starting time
+        int connection = mRef.child("hardware_connection");
+        while(false||(System.currentTimeMillis()-startTime)<10000)
+        {
+            // do something
+
+        }
+    }
+
+    private Date getLastWaterDate(String message, String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        Date lastWater = new Date();
+
+        try {
+            lastWater = sdf.parse(message);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return lastWater;
     }
 
     private int getTimeFrameDifference(String startDay, String currentDay) {
@@ -286,5 +331,13 @@ public class WebServer implements Runnable {
 
     public void setSuccess(boolean success) {
         this.success = success;
+    }
+
+    public int getHardwareConnection() {
+        return hardwareConnection;
+    }
+
+    public void setHardwareConnection(int hardwareConnection) {
+        this.hardwareConnection = hardwareConnection;
     }
 }

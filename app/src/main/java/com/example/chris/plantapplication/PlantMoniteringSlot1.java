@@ -41,12 +41,14 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class PlantMoniteringSlot1 extends AppCompatActivity {
     private plantDataBase plantH; //Plant Database
-    private Plant currentPlant;
+    public Plant currentPlant;
 
     private TextView growth_day;
     private TextView plantName;
@@ -145,7 +147,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
                 String message = "Your plant will be watered " + waterAmountValue + ".0mm each cycle";
                 waterAmountMessage.setText(message);
                 String plantType = currentPlant.getPlantType();
-                currentPlant.updateServerDataBase(2,currentPlant.getSlotNumber());
+                currentPlant.updateServerDataBase(2, currentPlant.getSlotNumber());
 
                 confirmButton.setVisibility(confirmButton.INVISIBLE);
             }
@@ -167,7 +169,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         super.onBackPressed();
         String plantType = currentPlant.getPlantType();
         if (plantType.equals("Manual")) {
-            currentPlant.updateServerDataBase(2,currentPlant.getSlotNumber());
+            currentPlant.updateServerDataBase(2, currentPlant.getSlotNumber());
         }
         // Do extra stuff here
     }
@@ -327,6 +329,7 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
     public void updateHumidity(float humidity) {
         TextView humidityBut = (TextView) findViewById(R.id.textView35); //to be able to set the room temperature to the correct value
         String temp = Float.toString(humidity) + "%";
+
         //temp += "%";
         humidityBut.setText(temp);
     }
@@ -352,8 +355,8 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         animator.start();
     }
 
-    public static class MyPagerAdapter extends FragmentPagerAdapter {
-        private static int NUM_ITEMS = 3;
+    public class MyPagerAdapter extends FragmentPagerAdapter {
+        private int NUM_ITEMS = 2;
 
         public MyPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
@@ -368,80 +371,115 @@ public class PlantMoniteringSlot1 extends AppCompatActivity {
         // Returns the fragment to display for that page
         @Override
         public Fragment getItem(int position) {
-            switch (position) {
-                case 0: // Fragment # 0 - This will show FirstFragment
-                    return fragment_chart1.newInstance(1, "Page #1");
-                case 1: // Fragment # 0 - This will show FirstFragsment different title
-                    return GraphHumiditySensor.newInstance(2, "Page #2");
-                case 2: // Fragment # 1 - This will show SecondFragment
-                    return Fragment_chart_water.newInstance(3, "Page #3");
-                default:
-                    return null;
+
+            if (currentPlant.getPlantType().equals("Predetermined")) {
+                switch (position) {
+                    case 0: // Fragment # 0 - This will show FirstFragment
+                        return fragment_chart1.newInstance(1, "Page #1");
+                    case 1: // Fragment # 0 - This will show FirstFragsment different title
+                        return GraphHumiditySensor.newInstance(2, "Page #2");
+                    //case 2: // Fragment # 1 - This will show SecondFragment
+                     //   return Fragment_chart_water.newInstance(3, "Page #3");
+                    default:
+                        return null;
+                }
+            } else {
+                switch (position) {
+                    case 0: // Fragment # 0 - This will show FirstFragment
+                        return fragment_chart1.newInstance(1, "Page #1");
+                    case 1: // Fragment # 0 - This will show FirstFragsment different title
+                        return GraphHumiditySensor.newInstance(2, "Page #2");
+                //    case 2: // Fragment # 0 - This will show FirstFragsment different title
+                   //     return null;
+                    default:
+                        return null;
+                }
             }
         }
 
-        // Returns the page title for the top indicator
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return "Page " + position;
+
+            // Returns the page title for the top indicator
+            @Override
+            public CharSequence getPageTitle ( int position){
+                return "Page " + position;
+            }
         }
-    }
 
-    public void updateHarvestTime(int remainingDays, int totalHarvestPeriod) {
-        //The harvest day length will be updated with the correct day number. Once it reached the final growth stage,
-        //Then we will update the plant
+        public void updateHarvestTime(int remainingDays, int totalHarvestPeriod) {
+            //The harvest day length will be updated with the correct day number. Once it reached the final growth stage,
+            //Then we will update the plant
 
-        TextView HarvestDay = (TextView) findViewById(R.id.textView3);
-        TextView harvestName = (TextView) findViewById(R.id.textView36);
-        TextView timeTillHarvest = (TextView) findViewById(R.id.textView30);
+            TextView HarvestDay = (TextView) findViewById(R.id.textView3);
+            TextView harvestName = (TextView) findViewById(R.id.textView36);
+            TextView timeTillHarvest = (TextView) findViewById(R.id.textView30);
 
-        ImageButton harvestButton = (ImageButton) findViewById(R.id.imageButton5);
-        String HarvestTime = Integer.toString(remainingDays);
+            ImageButton harvestButton = (ImageButton) findViewById(R.id.imageButton5);
+            String HarvestTime = Integer.toString(remainingDays);
 
-        if (remainingDays <= 0) {
-            //Then we need to add a button that says we should harvest the plant
-            harvestButton.setVisibility(harvestButton.VISIBLE); //This will control the visibility for the Harvest button
+            if (remainingDays <= 0) {
+                //Then we need to add a button that says we should harvest the plant
+                harvestButton.setVisibility(harvestButton.VISIBLE); //This will control the visibility for the Harvest button
 
-            harvestName.setVisibility(harvestName.VISIBLE);// This will control the visibility for the text that overlays the harvest button
-            //timeTillHarvest.setVisibility(timeTillHarvest.INVISIBLE);
-            animateHarvestTimeProgress(remainingDays, remainingDays); //We want to animate the change in the progress bar
+                harvestName.setVisibility(harvestName.VISIBLE);// This will control the visibility for the text that overlays the harvest button
+                //timeTillHarvest.setVisibility(timeTillHarvest.INVISIBLE);
+                animateHarvestTimeProgress(remainingDays, remainingDays); //We want to animate the change in the progress bar
 
-        } else {
-            harvestButton.setVisibility(harvestButton.INVISIBLE); //If we have time remaining in the slot, then there is no point in displaying it
-            harvestName.setVisibility(harvestName.INVISIBLE);
-            //  timeTillHarvest.setVisibility(timeTillHarvest.VISIBLE);
+            } else {
+                harvestButton.setVisibility(harvestButton.INVISIBLE); //If we have time remaining in the slot, then there is no point in displaying it
+                harvestName.setVisibility(harvestName.INVISIBLE);
+                //  timeTillHarvest.setVisibility(timeTillHarvest.VISIBLE);
 
-            HarvestDay.setText(HarvestTime);
-            animateHarvestTimeProgress(remainingDays, totalHarvestPeriod); //We want to animate the change in the progress bar
+                HarvestDay.setText(HarvestTime);
+                animateHarvestTimeProgress(remainingDays, totalHarvestPeriod); //We want to animate the change in the progress bar
+            }
         }
-    }
 
-    public void updatePlantGrowth(float growth_currentDay) {
-        String total = growth_currentDay + " cm";
-        growth_day.setText(total);
-    }
-
-    public void displayPlantData(int slotNumber) {
-        //Here we want to update the graphical charts to show the type of plant that we have
-        plantH = plantDataBase.getInstance();
-        Plant requiredPlant = plantH.getPlantBySlot(slotNumber);
-        float roomTemperature = requiredPlant.getRoomTemperature();
-        float humidity = requiredPlant.getAirHumidity();
-        int dayNumber = requiredPlant.getCurrentDayNumber();
-        int totalHarvestPeriod = requiredPlant.getHarvestDayLength();
-        int remainingDays = requiredPlant.getRemainingDays_Harvest();
-        //float growth_EachDay = requiredPlant.getGrowthStage()
-        // float growth_EachWeek[] = requiredPlant.getWeek_days((dayNumber / 7)); //getting the total number of days from the entire period
-        float growth_currentDay = Math.round((requiredPlant.getCurrentDayGrowth() * 100) / 100);
-        //Update various paramaters for our plant statistics
-        updateRoomTemperature(roomTemperature);
-        updateHumidity(humidity);
-        if (requiredPlant.getPlantType().equals("Predetermined")) {
-            updateHarvestTime(remainingDays, totalHarvestPeriod);
+        public void updatePlantGrowth(float growth_currentDay) {
+            String total = growth_currentDay + " cm";
+            growth_day.setText(total);
         }
-        updatePlantGrowth(growth_currentDay);
 
-        Log.i("Plant", requiredPlant.getName() + " added to PlantMoniteringSlot1");
+        public void displayPlantData(int slotNumber) {
+            //Here we want to update the graphical charts to show the type of plant that we have
+            plantH = plantDataBase.getInstance();
+            Plant requiredPlant = plantH.getPlantBySlot(slotNumber);
+            float roomTemperature = requiredPlant.getRoomTemperature();
+            float humidity = requiredPlant.getAirHumidity();
+            int dayNumber = requiredPlant.getCurrentDayNumber();
+            int totalHarvestPeriod = requiredPlant.getHarvestDayLength();
+            int remainingDays = requiredPlant.getRemainingDays_Harvest();
+            //float growth_EachDay = requiredPlant.getGrowthStage()
+            // float growth_EachWeek[] = requiredPlant.getWeek_days((dayNumber / 7)); //getting the total number of days from the entire period
+            float growth_currentDay = Math.round((requiredPlant.getCurrentDayGrowth() * 100) / 100);
+            Date lastWaterDate = currentPlant.getLastWaterDate();
+
+            //Update various paramaters for our plant statistics
+            updateRoomTemperature(roomTemperature);
+            updateLastWateringDate(lastWaterDate);
+            if (requiredPlant.getPlantType().equals("Predetermined")) {
+                updateHarvestTime(remainingDays, totalHarvestPeriod);
+            }
+            updatePlantGrowth(growth_currentDay);
+
+            Log.i("Plant", requiredPlant.getName() + " added to PlantMoniteringSlot1");
+
+        }
+
+    private void updateLastWateringDate(Date lastWaterDate) {
+        TextView lastWaterTime = (TextView) findViewById(R.id.textView35); //to be able to set the room temperature to the correct value
+
+
+        if (lastWaterDate == null || lastWaterDate.toString() == ""){
+            //Then display something along the lines of
+            String message = "Plant watering has not begun";
+            lastWaterTime.setText(message);
+        }
+        else{
+            SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM, h:mma");
+            String currentDateandTime = sdf.format(lastWaterDate);
+
+            lastWaterTime.setText(currentDateandTime);
+        }
 
     }
 }
