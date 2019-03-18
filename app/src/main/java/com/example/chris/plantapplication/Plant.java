@@ -151,12 +151,12 @@ public class Plant {
 
             Firebase mRef_sub_bit = new Firebase("https://plantsystem-9ff68.firebaseio.com/Sub Write Bits");
             mRef = new Firebase("https://plantsystem-9ff68.firebaseio.com/Plant Vases/Plant Vase 2");
-            mRef_sub_bit.child("Plant Vase 2").setValue(2);
+            mRef_sub_bit.child("Plant Vase 2").setValue(1);
             setChilds(mRef, type);
         } else if (slotNumber == 3) {
             Firebase mRef_sub_bit = new Firebase("https://plantsystem-9ff68.firebaseio.com/Sub Write Bits");
             mRef = new Firebase("https://plantsystem-9ff68.firebaseio.com/Plant Vases/Plant Vase 3");
-            mRef_sub_bit.child("Plant Vase 3").setValue(3);
+            mRef_sub_bit.child("Plant Vase 3").setValue(1);
             setChilds(mRef, type);
         } else {
             return;

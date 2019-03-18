@@ -148,7 +148,7 @@ public class fragment_chart1 extends Fragment {
         graph.getAxisLeft().setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                return String.format("%.1f m", value);
+                return String.format("%.1f cm", value);
             }
         });
 /*

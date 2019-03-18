@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.firebase.client.Firebase;
+
 import org.w3c.dom.Text;
 
 public class chooseTiming extends AppCompatActivity {
@@ -34,7 +36,7 @@ public class chooseTiming extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_timing);
-
+        Firebase.setAndroidContext(this);
         waterAmounts = (SeekBar) findViewById(R.id.test);
         waterPlantName = (EditText) findViewById(R.id.editText4);
 

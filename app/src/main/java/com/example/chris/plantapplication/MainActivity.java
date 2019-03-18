@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                     Firebase mRef = new Firebase(url);
                     mRef.child("Power").setValue(1);
                     //Set the bit of the
-                    mRef.child("Sub Write Bits").child("Power System").setValue(1);
+                    mRef.child("Sub Write Bits").child("Power").setValue(1);
                     mRef.child("Phone Application Write").setValue(1);
 
                     //Launch a dismiss dialogue to the user
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                     Firebase mRef = new Firebase(url);
                     mRef.child("Phone Application Write").setValue(1);
                     mRef.child("Power").setValue(0);
-                    mRef.child("Sub Write Bits").child("Power System").setValue(1);
+                    mRef.child("Sub Write Bits").child("Power").setValue(1);
 
                     displayDialog(MainActivity.this, "Plant system is OFF", "Your plant system will stop watering");
 

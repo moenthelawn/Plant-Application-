@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 public class WebServer implements Runnable {
     private String dataBase;
@@ -44,6 +45,7 @@ public class WebServer implements Runnable {
     private float airTemperature;
     private boolean powerSystem;
     private boolean success;
+    private boolean systemConnected;
     private int hardwareConnection;
 
     public WebServer(Activity _activity) {
@@ -51,8 +53,9 @@ public class WebServer implements Runnable {
         this.dataBase = "https://plantsystem-9ff68.firebaseio.com/";
         this.powerSystem = false;
         //Load the data in from the serve
-
+        this.systemConnected = false;
         mRef = new Firebase(dataBase);
+        mRef.child("hardware_connection").setValue(1);
         plantH = plantDataBase.getInstance();
         this.hardwareConnection = 0; //Default is set to 0
     }
@@ -67,13 +70,18 @@ public class WebServer implements Runnable {
                 success = true;
                 //   Object object = dataSnapshot.getValue(Object.class);
                 int i = 1;
+
+
                 float currentWaterLevels = dataSnapshot.child("Water Tank").getValue(float.class);
                 powerSystem = getPowerSystem(dataSnapshot.child("Power").getValue(String.class));
                 currentDate = dataSnapshot.child("Current Date").getValue(String.class);
                 airTemperature = dataSnapshot.child("Air Temperature").getValue(float.class);
                 hardwareConnection = dataSnapshot.child("hardware_connection").getValue(Integer.class);
+                if (hardwareConnection == 0){
 
-                long startTime = System.currentTimeMillis(); //fetch starting time
+                    //Then we set the system connection as true
+                    systemConnected = true;
+                }
 
            /*     Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -177,15 +185,6 @@ public class WebServer implements Runnable {
 
         }
 
-    }
-    public boolean setBit_HardwareConnection(){
-        long startTime = System.currentTimeMillis(); //fetch starting time
-        int connection = mRef.child("hardware_connection");
-        while(false||(System.currentTimeMillis()-startTime)<10000)
-        {
-            // do something
-
-        }
     }
 
     private Date getLastWaterDate(String message, String format) {
@@ -339,5 +338,13 @@ public class WebServer implements Runnable {
 
     public void setHardwareConnection(int hardwareConnection) {
         this.hardwareConnection = hardwareConnection;
+    }
+
+    public boolean isSystemConnected() {
+        return systemConnected;
+    }
+
+    public void setSystemConnected(boolean systemConnected) {
+        this.systemConnected = systemConnected;
     }
 }
